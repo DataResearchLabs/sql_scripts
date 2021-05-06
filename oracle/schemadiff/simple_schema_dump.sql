@@ -8,7 +8,7 @@
 -- can compare snapshots to quick isolate and identify what changed over time 
 -- or is different between environments.
 ------------------------------------------------------------------------------------
--- Platform:          Oracle
+-- Platform:          Oracle 11g or later
 -- Author:            DataResearchLabs
 -- GitHub:            https://www.github.com/DataResearchLabs
 -- YouTube Tutorials: https://www.youtube.com/channel/UCQciXv3xaBykeUFc04GxSXA
@@ -18,7 +18,7 @@
 -- Each given row is a variable, with the value you change preceding the "AS" command
 WITH vars
 AS (
-  SELECT 'MYSCHEMA' AS v_SchemaName
+  SELECT 'HR' AS v_SchemaName
   FROM dual
 )
 
@@ -75,7 +75,7 @@ AS (
 , metaAllCols
 AS (
   SELECT schemaname, tablename, objecttype, objectname, 'Properties' AS propertyname
-  , LISTAGG(propertyvalue, ' | ' ON OVERFLOW TRUNCATE WITH COUNT) 
+  , LISTAGG(propertyvalue, ' | ') 
     WITHIN GROUP (ORDER BY propertyname, propertyvalue) AS propertyvalue
   FROM (
           SELECT * FROM metaForCol_dataType
@@ -128,6 +128,5 @@ FROM allMetadata
 ORDER BY schemaname, tablename, objecttype
 , CASE WHEN objecttype='Column' THEN propertyvalue ELSE ' ' END
 , objectname, propertyname
-
 
 
