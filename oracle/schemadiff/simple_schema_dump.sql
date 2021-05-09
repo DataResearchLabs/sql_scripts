@@ -25,7 +25,7 @@ AS (
 
 , baseTbl
 AS (
-  SELECT owner, table_type, table_name, comments 
+  SELECT owner, table_type, table_name /*, comments */ 
   FROM SYS.ALL_TAB_COMMENTS
   WHERE table_name NOT LIKE 'BIN%' -- Leave this as is to ignore the Oracle10g and forard Recycle Bin tables
     AND owner = (SELECT v_SchemaName FROM vars) 
@@ -120,9 +120,9 @@ AS (
   UNION SELECT * FROM metaForIdxs
 )
 
-SELECT CASE WHEN objecttype IN('(Table)','(View)') THEN schemaname ELSE ' ' END AS schemaname
-, CASE WHEN objecttype IN('(Table)','(View)') THEN tablename ELSE ' ' END AS tablename
-, objecttype, objectname, /*propertyname,*/ propertyvalue AS properties
+SELECT CASE WHEN objecttype IN('(Table)','(View)') THEN schemaname ELSE ' ' END AS schema_nm
+, CASE WHEN objecttype IN('(Table)','(View)') THEN tablename ELSE ' ' END AS tbl_nm
+, objecttype AS obj_typ, objectname AS obj_nm, /*propertyname,*/ propertyvalue AS properties
 FROM allMetadata 
 ORDER BY schemaname, tablename, objecttype
 , CASE WHEN objecttype='Column' THEN propertyvalue ELSE ' ' END
