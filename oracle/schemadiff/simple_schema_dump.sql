@@ -18,7 +18,7 @@
 -- Each given row is a variable, with the value you change preceding the "AS" command
 WITH vars
 AS (
-  SELECT 'HR' AS v_SchemaName
+  SELECT 'HR' AS v_SchemaName  -- <<<<<<<<<<<< CHANGE THIS VALUE to Schema you want to dump
   FROM dual
 )
 
@@ -28,8 +28,7 @@ AS (
   SELECT owner, table_type, table_name, comments 
   FROM SYS.ALL_TAB_COMMENTS
   WHERE table_name NOT LIKE 'BIN%' -- Leave this as is to ignore the Oracle10g and forard Recycle Bin tables
-    AND owner = (SELECT v_SchemaName FROM vars) -- <<<<<<<<<<<< CHANGE THIS VALUE to Schema you want to dump
-  /*AND comm.table_name IN('Table1','Table2','Table3') -- <<<<<< Change this value to include a specific list of tables to snapshot */
+    AND owner = (SELECT v_SchemaName FROM vars) 
 )
 
 , metaForTbl
@@ -128,4 +127,5 @@ FROM allMetadata
 ORDER BY schemaname, tablename, objecttype
 , CASE WHEN objecttype='Column' THEN propertyvalue ELSE ' ' END
 , objectname, propertyname
+
 
