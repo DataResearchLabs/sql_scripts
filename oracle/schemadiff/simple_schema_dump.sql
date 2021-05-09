@@ -120,9 +120,9 @@ AS (
   UNION SELECT * FROM metaForIdxs
 )
 
-SELECT CASE WHEN objecttype IN('(Table)','(View)') THEN schemaname ELSE ' ' END AS schemanameX
-, CASE WHEN objecttype IN('(Table)','(View)') THEN tablename ELSE ' ' END AS tablenameX
-, objecttype, objectname, /*propertyname,*/ propertyvalue
+SELECT CASE WHEN objecttype IN('(Table)','(View)') THEN schemaname ELSE ' ' END AS schemaname
+, CASE WHEN objecttype IN('(Table)','(View)') THEN tablename ELSE ' ' END AS tablename
+, objecttype, objectname, /*propertyname,*/ propertyvalue AS properties
 FROM allMetadata 
 ORDER BY schemaname, tablename, objecttype
 , CASE WHEN objecttype='Column' THEN propertyvalue ELSE ' ' END
