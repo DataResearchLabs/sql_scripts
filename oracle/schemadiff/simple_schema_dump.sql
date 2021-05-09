@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------------
 -- Simple Schema Dump:  
--- This SQL script will dump several table, column, key, and index design related 
--- information so that you can copy-paste or export to a text file.  
+-- This SQL script will dump table, column, key, and index design related metadata
+-- so that you can copy-paste or export to a text file.  
 -- Even better, you can make other snapshots over time (same database schema earlier
 -- points in time), OR in different environments (DEV, PPMO, STAGE, PROD).  Then,
 -- using your favorite free Text File Diff Tool (DiffMerge, ExamDiff, etc.) you
