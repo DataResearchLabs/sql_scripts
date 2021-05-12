@@ -132,41 +132,12 @@ AS (
   WHERE schemaname = (SELECT v_SchemaName FROM vars)
 )
 
-/* -- Greenplum Only
-, metaForDKeys
-AS (
-  SELECT SchemaName, TableName 
-  , 'DistribKey' AS ObjectType
-  , 'n/a' AS ObjectName
-  , 'FieldList' AS PropertyName
-  , COALESCE(distribution_keys,'DISTRIBUTED RANDOMLY') AS PropertyValue
-  FROM 
-  ( SELECT pgn.nspname AS SchemaName, 
-      pgc.relname AS TableName,
-      pga.attname AS distribution_keys
-    FROM 
-       ( SELECT gdp.localoid
-         , CASE WHEN ( Array_upper(gdp.attrnums, 1) > 0 ) THEN Unnest(gdp.attrnums)
-                ELSE NULL
-           END As attnum
-         FROM gp_distribution_policy gdp 
-         ORDER BY gdp.localoid 
-	   ) AS distrokey
-    INNER JOIN pg_class AS pgc ON distrokey.localoid = pgc.oid
-    INNER JOIN pg_namespace pgn ON pgc.relnamespace = pgn.oid
-    LEFT OUTER JOIN pg_attribute pga ON distrokey.attnum = pga.attnum AND distrokey.localoid = pga.attrelid
-    WHERE pgn.nspname = (SELECT v_SchemaName FROM vars)
-  ) AS a
-)
-*/
-
 , allMetadata
 AS (
         SELECT * FROM metaForTbl
   UNION SELECT * FROM metaAllCols
   UNION SELECT * FROM metaForKeys
   UNION SELECT * FROM metaForIdxs
-/*UNION SELECT * FROM metaForDKeys*/	
 )
 
 SELECT CASE WHEN objecttype IN('(Table)','(View)') THEN schemaname ELSE ' ' END AS schema_nm
