@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------------------
 -- Platform:          MySQL Server
 -- Author:            DataResearchLabs
--- GitHub:            https://www.github.com/DataResearchLabs
+-- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskUT0kz-4aB68EsollbmelcjT
 ----------------------------------------------------------------------------------
 USE sakila   -- <<<<<<<<<<<<<  Change schema here
