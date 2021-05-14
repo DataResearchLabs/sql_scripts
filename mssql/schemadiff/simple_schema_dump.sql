@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------------------
 -- Platform:          Microsoft SQL Server
 -- Author:            DataResearchLabs
--- GitHub:            https://www.github.com/DataResearchLabs
+-- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskUSlZTVZmllGTdSuvyI4LBiE
 ----------------------------------------------------------------------------------
 
