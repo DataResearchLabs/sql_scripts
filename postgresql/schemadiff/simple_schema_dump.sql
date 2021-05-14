@@ -11,7 +11,7 @@
 -- Platform:          PostgreSQL Server
 -- Author:            DataResearchLabs
 -- GitHub:            https://www.github.com/DataResearchLabs
--- YouTube Tutorials: https://www.youtube.com/playlist?list=**************************
+-- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskURPrZpH0Zkzfa1OQjNfj2Gg
 ----------------------------------------------------------------------------------
 WITH vars
 AS (
