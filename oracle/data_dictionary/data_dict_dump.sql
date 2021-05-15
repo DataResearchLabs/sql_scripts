@@ -79,8 +79,8 @@ AS (
 
 
 SELECT md.SCHEMA_NM, md.TABLE_NM
-, COALESCE(pk.IS_KEY, ' ') AS KEYS
 , md.ORD_POS AS ORD
+, COALESCE(pk.IS_KEY, ' ') AS KEYS
 , md.COLUMN_NM, md.DATA_TYP, md.NULLABLE, md.DESCRIPTION
 FROM      meta_data     md
 LEFT JOIN meta_for_keys pk ON pk.SCHEMA_NM = md.SCHEMA_NM AND pk.TABLE_NM = md.TABLE_NM AND pk.COLUMN_NM = md.COLUMN_NM
