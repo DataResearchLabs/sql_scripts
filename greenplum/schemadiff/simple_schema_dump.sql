@@ -15,7 +15,7 @@
 ----------------------------------------------------------------------------------
 WITH vars
 AS (
-  SELECT 'acq_cms' :: CHARACTER VARYING(50) AS v_SchemaName
+  SELECT 'your_schema_name' :: CHARACTER VARYING(50) AS v_SchemaName   -- <<<<<<<<<  Change here
 )
 
 
