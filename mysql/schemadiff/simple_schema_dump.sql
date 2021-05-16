@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------------------
 -- Platform:          MySQL Server
 -- Author:            DataResearchLabs
--- GitHub:            https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md
+-- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskUT0kz-4aB68EsollbmelcjT
 ----------------------------------------------------------------------------------
 USE sakila   -- <<<<<<<<<<<<<  Change schema here
@@ -107,7 +107,8 @@ AS (
      ON cons.TABLE_SCHEMA = kcu.TABLE_SCHEMA  
     AND cons.TABLE_NAME = kcu.TABLE_NAME
 	AND cons.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
-  WHERE cons.table_name IN(SELECT DISTINCT table_name FROM baseTbl)
+  WHERE cons.table_schema = (SELECT v_SchemaName FROM vars) 
+    AND cons.table_name IN(SELECT DISTINCT table_name FROM baseTbl)
     AND cons.constraint_type IN('PRIMARY KEY','FOREIGN KEY','UNIQUE') 
   GROUP BY cons.TABLE_SCHEMA, cons.TABLE_NAME, cons.CONSTRAINT_TYPE, cons.CONSTRAINT_NAME
 )
