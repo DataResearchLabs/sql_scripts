@@ -26,12 +26,12 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "Oracle" SchemaDiff Script and Tutorial
-  * Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)
-    <kbd>
-    <a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
-     <img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
-    </a>
-    </kbd>
+* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
+  <img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
+  </a>
+  </kbd>
 <br>
 <br>
 
