@@ -78,8 +78,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "MySQL"
-* MySQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
-* MySQL Tutorial: Click thumbnail below...<br>
+* [MySQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
+* [MySQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU)<br>
 </td>
 <td>
 <kbd>
@@ -100,8 +100,8 @@ Links to the script source code as well as video tutorials are listed below, by 
     
     
 ## "Oracle"
-* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
-* Oracle Tutorial: Click thumbnail below...<br>
+* [Oracle Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
+* [Oracle Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s)<br>
 </td>
 <td>
 <kbd>
@@ -121,8 +121,8 @@ Links to the script source code as well as video tutorials are listed below, by 
     
     
 ## "PostgreSQL"
-* PostgreSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
-* PostgreSQL Tutorial: Click thumbnail below...<br>
+* [PostgreSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
+* [PostgreSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0)<br>
 </td>
 <td>
 <kbd>
