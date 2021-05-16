@@ -68,12 +68,23 @@ AS (
 		 ELSE ''
     END AS data_typ
   , CASE WHEN tut.IS_NULLABLE = 'YES' THEN 'NULL' ELSE 'NOT NULL' END AS nullable
-  , de.value AS description
+  FROM       INFORMATION_SCHEMA.COLUMNS tut
+  INNER JOIN baseTbl                    bt  ON bt.SchemaName = tut.TABLE_CATALOG AND bt.table_name = tut.table_name
+)
+
+, descr
+AS (
+  SELECT 
+    bt.SchemaName          AS schema_nm
+  , bt.table_name          AS table_nm
+  , tut.column_name        AS column_nm
+  , STRING_AGG(CAST(de.value AS VARCHAR(1024)), '.  ') WITHIN GROUP (ORDER BY de.value) AS description
   FROM       INFORMATION_SCHEMA.COLUMNS tut
   INNER JOIN baseTbl                    bt  ON bt.SchemaName = tut.TABLE_CATALOG AND bt.table_name = tut.table_name
   LEFT JOIN  sys.extended_properties    de  ON de.major_id = OBJECT_ID(bt.table_schema + '.' + bt.table_name) 
                                            AND de.minor_id = tut.ORDINAL_POSITION
 										   AND de.name = 'MS_Description'
+  GROUP BY bt.SchemaName, bt.table_name, tut.column_name
 )
 
 
@@ -107,8 +118,9 @@ AS (
 SELECT md.schema_nm, md.table_nm, md.obj_typ, md.ord_pos
 , COALESCE(mk.is_key, ' ') AS keys
 , md.column_nm, md.data_typ, md.nullable
-, md.description
+, de.[description]
 FROM      metadata      md
+LEFT JOIN descr         de ON de.schema_nm = md.schema_nm  AND  de.table_nm = md.table_nm  AND  de.column_nm = md.column_nm
 LEFT JOIN metadata_keys mk ON mk.schema_nm = md.schema_nm  AND  mk.table_nm = md.table_nm  AND  mk.column_nm = md.column_nm
 ORDER BY schema_nm, table_nm, ord_pos
 
