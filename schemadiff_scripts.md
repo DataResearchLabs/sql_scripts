@@ -11,6 +11,9 @@ It all boils down to comparing different states to quickly identify what changed
 * Maybe you need to quickly identify what changed between this release (AFTER) and the prior release (BEFORE).  
 * Maybe you want to run the script daily and output state snapshots to text files so that in the event of an emergency you can quickly identify what changed between given dates.
 
+Using your favorite text diff-ing tool, here is what a sample schema script comparison between "yesterday's" and "today's" schemas might look like:
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/01_schemadiff_side_by_side.png" width="1000px">
+
 
 Links to the script source code as well as video tutorials are listed below, by platform.
 <br>
