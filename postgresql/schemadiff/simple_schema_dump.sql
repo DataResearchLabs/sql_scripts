@@ -116,7 +116,7 @@ AS (
     AND cons.TABLE_NAME = kcu.TABLE_NAME
   WHERE cons.TABLE_NAME IN(SELECT DISTINCT table_name FROM baseTbl)
     AND cons.TABLE_SCHEMA = (SELECT v_SchemaName FROM vars)
-	AND cons.constraint_type IN('PRIMARY KEY','FOREIGN KEY','UNIQUE') 
+    AND cons.constraint_type IN('PRIMARY KEY','FOREIGN KEY','UNIQUE') 
   GROUP BY cons.TABLE_SCHEMA, cons.TABLE_NAME, cons.CONSTRAINT_TYPE, cons.CONSTRAINT_NAME
 )
 
