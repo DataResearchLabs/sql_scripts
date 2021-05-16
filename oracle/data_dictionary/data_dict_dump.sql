@@ -1,8 +1,8 @@
 
 ------------------------------------------------------------------------------------
 -- Data Dictionary Dump:  
--- This SQL script will dump table, column, and description design related metadata
--- so that you can copy-paste or export to Excel as a Data Dictionary.  
+-- This SQL script will dump table, column, key, and description design related 
+-- metadata so that you can copy-paste or export to Excel as a Data Dictionary.  
 ------------------------------------------------------------------------------------
 -- Platform:          Oracle
 -- Author:            DataResearchLabs
