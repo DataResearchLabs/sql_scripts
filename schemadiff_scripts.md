@@ -38,7 +38,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 * Greenplum Tutorial: Click thumbnail below...<br>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=U8p6YJZtPM8" target="_blank">
-<img src="http://img.youtube.com/vi/U8p6YJZtPM8/0.jpg" alt="Overview Video" width="200" />
+<img align="right" src="http://img.youtube.com/vi/U8p6YJZtPM8/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
     <br>
