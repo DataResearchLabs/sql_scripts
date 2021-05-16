@@ -102,14 +102,14 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## "Oracle"
 * Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
 * Oracle Tutorial: Click thumbnail below...<br>
+</td>
+<td>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
 <img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
-    <br>
-    <br>
-  </td>
+</td>
 </tr>
 
 
@@ -123,14 +123,14 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## "PostgreSQL"
 * PostgreSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
 * PostgreSQL Tutorial: Click thumbnail below...<br>
+</td>
+<td>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0" target="_blank">
 <img src="http://img.youtube.com/vi/I3Gr2d7tob0/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
-    <br>
-    <br>
-  </td>
+</td>
 </tr>
 
 
