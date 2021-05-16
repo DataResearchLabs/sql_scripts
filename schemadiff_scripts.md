@@ -40,11 +40,10 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=U8p6YJZtPM8" target="_blank">
-<img align="right" src="http://img.youtube.com/vi/U8p6YJZtPM8/0.jpg" alt="Overview Video" width="200" />
+<img src="http://img.youtube.com/vi/U8p6YJZtPM8/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
 </td>
-
 </tr>
 
 
@@ -59,14 +58,14 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## "MS SQL Server"
 * MSSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
 * MSSQL Tutorial: Click thumbnail below...<br>
+</td>
+<td>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=Vxf3SM38Ar0" target="_blank">
 <img src="http://img.youtube.com/vi/Vxf3SM38Ar0/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
-    <br>
-    <br>
-  </td>
+</td>
 </tr>
 
 
@@ -81,14 +80,14 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## "MySQL"
 * MySQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
 * MySQL Tutorial: Click thumbnail below...<br>
+</td>
+<td>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU" target="_blank">
 <img src="http://img.youtube.com/vi/LwfagEfficU/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
-    <br>
-    <br>
-  </td>
+</td>
 </tr>
 
 
