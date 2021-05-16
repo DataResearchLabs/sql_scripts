@@ -11,11 +11,11 @@
 -- Platform:          Greenplum Server
 -- Author:            DataResearchLabs
 -- GitHub:            https://github.com/DataResearchLabs/sql_scripts
--- YouTube Tutorials: https://www.youtube.com/playlist?list=**************************
+-- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskUSWcPnDztPhXOnQT1R-rg0t
 ----------------------------------------------------------------------------------
 WITH vars
 AS (
-  SELECT 'your_schema_name' :: CHARACTER VARYING(50) AS v_SchemaName   -- <<<<<<<<<  Change here
+  SELECT 'acq_cms' :: CHARACTER VARYING(50) AS v_SchemaName
 )
 
 
