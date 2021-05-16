@@ -22,7 +22,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <br>
 
 
-<img align="left" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" width="132px">
+<img align="left" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" width="96px">
 
 
 ## "Oracle" SchemaDiff Script and Tutorial
