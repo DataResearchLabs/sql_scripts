@@ -26,13 +26,9 @@ Links to the script source code as well as video tutorials are listed below, by 
   <tr>
     <td><img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" width="96px"></td>
     <td>
-
-
-## "Oracle" SchemaDiff Script and Tutorial
-</td>
-<tr>
-  <td></td>
-  <td>
+      
+      
+    ## "Oracle" SchemaDiff Script and Tutorial
     * Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
     * Oracle Tutorial: Click thumbnail below...<br>
     <kbd>
