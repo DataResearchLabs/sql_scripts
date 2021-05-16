@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------------------
 -- Platform:          Oracle 11g or later
 -- Author:            DataResearchLabs
--- GitHub:            https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md
+-- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/channel/UCQciXv3xaBykeUFc04GxSXA
 ----------------------------------------------------------------------------------
 
@@ -96,7 +96,8 @@ AS (
   , LISTAGG(cols.column_name, ',') WITHIN GROUP (ORDER BY cols.position) AS PropertyValue 
   FROM all_constraints cons 
     INNER JOIN all_cons_columns cols ON cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner 
-  WHERE cons.table_name IN(SELECT DISTINCT table_name FROM baseTbl)
+  WHERE cons.owner = (SELECT v_SchemaName FROM vars)
+    AND cons.table_name IN(SELECT DISTINCT table_name FROM baseTbl)
     AND cons.constraint_type IN('P','R','U') 
   GROUP BY cons.owner, cols.table_name, cons.constraint_type, cons.constraint_name
 )
