@@ -34,8 +34,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "Greenplum"
-* Greenplum Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/schemadiff/simple_schema_dump.sql)<br>
-* Greenplum Tutorial: Click thumbnail to the right...<br>
+* [Greenplum Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/schemadiff/simple_schema_dump.sql)<br>
+* [Greenplum Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=U8p6YJZtPM8)<br>
 </td>
 <td>
 <kbd>
@@ -56,8 +56,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "MS SQL Server"
-* MSSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
-* MSSQL Tutorial: Click thumbnail below...<br>
+* [MSSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
+* [MSSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Vxf3SM38Ar0)<br>
 </td>
 <td>
 <kbd>
