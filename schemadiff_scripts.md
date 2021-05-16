@@ -23,26 +23,6 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 <table>
-<tr>
-  <td valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" height="96px">
-  </td>
-  <td>
-
-
-## "Oracle" SchemaDiff Script and Tutorial
-* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
-* Oracle Tutorial: Click thumbnail below...<br>
-<kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
-<img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
-</a>
-</kbd>
-    <br>
-    <br>
-  </td>
-</tr>
-
 
 <tr>
   <td valign="top">
@@ -64,6 +44,25 @@ Links to the script source code as well as video tutorials are listed below, by 
   </td>
 </tr>
 
+<tr>
+  <td valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" height="96px">
+  </td>
+  <td>
+
+
+## "Oracle" SchemaDiff Script and Tutorial
+* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
+* Oracle Tutorial: Click thumbnail below...<br>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
+<img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+    <br>
+    <br>
+  </td>
+</tr>
 
 
 </table>
