@@ -91,6 +91,27 @@ Links to the script source code as well as video tutorials are listed below, by 
 </tr>
 
 
+<tr>
+  <td valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="96px">
+  </td>
+  <td>
+    
+    
+## "PostgreSQL"
+* PostgreSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
+* PostgreSQL Tutorial: Click thumbnail below...<br>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0" target="_blank">
+<img src="http://img.youtube.com/vi/I3Gr2d7tob0/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+    <br>
+    <br>
+  </td>
+</tr>
+
+
 </table>
 
 
