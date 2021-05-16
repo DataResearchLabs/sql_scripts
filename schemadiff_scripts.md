@@ -44,11 +44,6 @@ Links to the script source code as well as video tutorials are listed below, by 
   </td>
 </tr>
 
-<tr>
-  <td valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" height="96px">
-  </td>
-  <td>
 
 
 <tr>
