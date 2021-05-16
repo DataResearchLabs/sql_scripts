@@ -1,5 +1,7 @@
-# sql_scripts
-Useful sql scripts and snippets for MSSQL, Oracle, Greenplum, and MySQL
+# SQL Scripts
+Useful sql scripts and snippets for MSSQL, Oracle, Greenplum, and MySQL.
+
+Below is redirected from page:  https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md
 
 -----------------------------------
 
