@@ -24,7 +24,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <table>
   <tr>
-    <td>
+    <td valign="top">
       <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" width="96px">
     </td>
     <td>
