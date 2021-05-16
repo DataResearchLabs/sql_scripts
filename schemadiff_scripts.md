@@ -23,15 +23,15 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 <table>
-  <tr>
-    <td valign="top">
-      <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" width="96px">
-    </td>
-    <td>
+<tr>
+  <td valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" width="96px">
+  </td>
+  <td>
 
 
 ## "Oracle" SchemaDiff Script and Tutorial
-* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
+* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
 * Oracle Tutorial: Click thumbnail below...<br>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
@@ -42,6 +42,30 @@ Links to the script source code as well as video tutorials are listed below, by 
     <br>
   </td>
 </tr>
+
+
+<tr>
+  <td valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/img/mssql_icon.png" width="96px">
+  </td>
+  <td>
+
+
+## "MS SQL Server" SchemaDiff Script and Tutorial
+* MSSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
+* MSSQL Tutorial: Click thumbnail below...<br>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=Vxf3SM38Ar0" target="_blank">
+<img src="http://img.youtube.com/vi/Vxf3SM38Ar0/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+    <br>
+    <br>
+  </td>
+</tr>
+
+
+
 </table>
 
 
