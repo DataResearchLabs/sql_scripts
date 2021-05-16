@@ -25,6 +25,10 @@ AS (
 	SELECT
 	  atc.owner       AS SCHEMA_NM
 	, atc.table_name  AS TABLE_NM
+	, CASE WHEN t.TABLE_TYPE = 'TABLE' THEN 'TBL'
+	       WHEN t.TABLE_TYPE = 'VIEW'  THEN 'VW'
+	       ELSE 'UK'
+	  END AS OBJ_TYP
 	, atc.column_id   AS ORD_POS
 	, atc.column_name AS COLUMN_NM 
 	, (atc.data_type ||
@@ -78,7 +82,7 @@ AS (
 )
 
 
-SELECT md.SCHEMA_NM, md.TABLE_NM
+SELECT md.SCHEMA_NM, md.TABLE_NM, md.OBJ_TYP
 , md.ORD_POS AS ORD
 , COALESCE(pk.IS_KEY, ' ') AS KEYS
 , md.COLUMN_NM, md.DATA_TYP, md.NULLABLE, md.DESCRIPTION
