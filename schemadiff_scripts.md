@@ -51,6 +51,33 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td>
 
 
+<tr>
+  <td valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/img/mysql_icon.png" height="96px">
+  </td>
+  <td>
+
+
+## "MySQL"
+* MySQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
+* MySQL Tutorial: Click thumbnail below...<br>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU" target="_blank">
+<img src="http://img.youtube.com/vi/LwfagEfficU/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+    <br>
+    <br>
+  </td>
+</tr>
+
+
+
+<tr>
+  <td valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_icon.png" height="96px">
+  </td>
+  <td>
 ## "Oracle"
 * Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
 * Oracle Tutorial: Click thumbnail below...<br>
