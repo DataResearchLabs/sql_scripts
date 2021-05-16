@@ -31,7 +31,7 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td>
 
 
-## "MS SQL Server" SchemaDiff Script and Tutorial
+## "MS SQL Server"
 * MSSQL Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
 * MSSQL Tutorial: Click thumbnail below...<br>
 <kbd>
@@ -51,7 +51,7 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td>
 
 
-## "Oracle" SchemaDiff Script and Tutorial
+## "Oracle"
 * Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
 * Oracle Tutorial: Click thumbnail below...<br>
 <kbd>
