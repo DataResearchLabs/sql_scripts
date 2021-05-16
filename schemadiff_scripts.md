@@ -20,8 +20,7 @@ Using your favorite text diff-ing tool, here is what two sample schemas (PPMO-Ol
 ***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
 <br>
 <br>
-Links to the script source code as well as video tutorials are listed below, by platform.
-<br>
+Links to the script source code as well as video tutorials are listed below, by platform (MSSQL, Oracle, MySQL, etc.):
 <br>
 <br>
 
