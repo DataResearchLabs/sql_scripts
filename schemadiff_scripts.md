@@ -6,16 +6,19 @@
 There are many reasons you may need a SQL script that captures table, view, column, and key properties.  
 It all boils down to comparing different states to quickly identify what changed, or what is different.
 
-Maybe you need to quickly isolate what got missed in the migrations from DEV to TEST environments.  
-Maybe you need to quickly identify what changed between this release (AFTER) and the prior release (BEFORE).  
-Maybe you want to run the script daily and output state snapshots to text files so that in the event of an emergency you can quickly identify what changed between given dates.
+
+* Maybe you need to quickly isolate what got missed in the migrations from DEV to TEST environments.  
+* Maybe you need to quickly identify what changed between this release (AFTER) and the prior release (BEFORE).  
+* Maybe you want to run the script daily and output state snapshots to text files so that in the event of an emergency you can quickly identify what changed between given dates.
+
 
 Links to the script source code as well as video tutorials are listed below, by platform.
 
 
 
-***Video #1 "Oracle SchemaDiff Script"***<br>
+***"Oracle" SchemaDiff Script and Tutorial***<br>
 <kbd>
+* Oracle Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
  <img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
 </a>
