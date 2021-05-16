@@ -13,7 +13,13 @@ It all boils down to comparing different states to quickly identify what changed
 
 
 Links to the script source code as well as video tutorials are listed below, by platform.
-
+<br>
+<br>
+<br>
+***If you like this tool, be sure to click the "Star" button above in GitHub.*** <br>
+<br>
+***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
+<br>
 
 
 ## "Oracle" SchemaDiff Script and Tutorial
@@ -27,8 +33,4 @@ Links to the script source code as well as video tutorials are listed below, by 
 <br>
 
 
-***If you like this tool, be sure to click the "Star" button above in GitHub.*** <br>
-<br>
-***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
-<br>
 
