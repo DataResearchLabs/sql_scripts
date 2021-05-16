@@ -27,21 +27,24 @@ Links to the script source code as well as video tutorials are listed below, by 
 <table>
 
 <tr>
-  <td valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
-  </td>
-  <td>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=U8p6YJZtPM8" target="_blank">
-<img align="right" src="http://img.youtube.com/vi/U8p6YJZtPM8/0.jpg" alt="Overview Video" width="200" />
-</a>
+<td valign="top">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
+</td>
+<td>
 
 
 ## "Greenplum"
 * Greenplum Script: [Click Here to see SQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/schemadiff/simple_schema_dump.sql)<br>
-* Greenplum Tutorial: Click thumbnail below...<br>
-    <br>
-    <br>
-  </td>
+* Greenplum Tutorial: Click thumbnail to the right...<br>
+</td>
+<td>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=U8p6YJZtPM8" target="_blank">
+<img align="right" src="http://img.youtube.com/vi/U8p6YJZtPM8/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+</td>
+
 </tr>
 
 
