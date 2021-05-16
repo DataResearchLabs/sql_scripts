@@ -26,7 +26,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
   <td valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/img/mssql_icon.png" width="96px">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
   </td>
   <td>
 
@@ -48,7 +48,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
   <td valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/img/mysql_icon.png" width="96px">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="96px">
   </td>
   <td>
 
@@ -70,7 +70,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
   <td valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/img/oracle_iconX.png" width="96px">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="96px">
   </td>
   <td>
     
