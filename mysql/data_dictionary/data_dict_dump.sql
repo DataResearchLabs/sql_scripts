@@ -15,7 +15,7 @@ USE sakila   -- <<<<<<<<<<<<<  Change schema here
 WITH vars
 AS (
   SELECT 
-    DATABASE()  AS v_SchemaName  -- <<<<<<<<<<<< CHANGE THIS VALUE to Schema you want to dump
+    DATABASE()  AS v_SchemaName  -- Do not change this value...it is changed up above on line 12 and passed thru to here
   , 'NO'        AS v_TablesOnly  -- YES=Limit To Tables only; NO=Include views too 
 )
 
