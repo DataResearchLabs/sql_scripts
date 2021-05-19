@@ -43,16 +43,16 @@ AS (
 	, tut.ordinal_position   AS ord_pos
 	, tut.column_name        AS column_nm 
     , CONCAT(tut.data_type, 
-      CASE WHEN tut.data_type IN('varchar','char')        THEN CONCAT('(', tut.CHARACTER_MAXIMUM_LENGTH, ')')
+      CASE WHEN tut.data_type IN('varchar','char')            THEN CONCAT('(', tut.CHARACTER_MAXIMUM_LENGTH, ')')
 	       WHEN tut.data_type IN('date','time')           THEN CONCAT('(3)')
 	       WHEN tut.data_type = 'datetime'                THEN CONCAT('(8)')
 	       WHEN tut.data_type = 'timestamp'               THEN CONCAT('(4)')
 	       WHEN tut.data_type LIKE '%int%'                THEN CONCAT('(', tut.NUMERIC_PRECISION, ')')
 	       WHEN tut.data_type = 'decimal'                 THEN CONCAT('(', tut.NUMERIC_PRECISION, ',', tut.NUMERIC_SCALE, ')')
 	       WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN CONCAT('(', tut.CHARACTER_MAXIMUM_LENGTH, ')')
-		   WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN CONCAT('(', tut.DATETIME_PRECISION, ')')
+		   WHEN tut.DATETIME_PRECISION IS NOT NULL    THEN CONCAT('(', tut.DATETIME_PRECISION, ')')
 	       WHEN tut.NUMERIC_PRECISION IS NOT NULL
-		    AND tut.NUMERIC_SCALE     IS NULL             THEN CONCAT('(', tut.NUMERIC_PRECISION, ')')
+		    AND tut.NUMERIC_SCALE     IS NULL         THEN CONCAT('(', tut.NUMERIC_PRECISION, ')')
 	       WHEN tut.NUMERIC_PRECISION IS NOT NULL
 	        AND tut.NUMERIC_SCALE     IS NOT NULL         THEN CONCAT('(', tut.NUMERIC_PRECISION, ',', tut.NUMERIC_SCALE, ')')
 		   ELSE ''
