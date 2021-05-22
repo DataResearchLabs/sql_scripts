@@ -23,6 +23,8 @@ In the table at the bottom of this article, find your preferred database platfor
 
 
 <img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/03_data_dictionary_edit_and_run_script.png" width="500x">
+
+
 #### STEP 2. Run Script
 
 
