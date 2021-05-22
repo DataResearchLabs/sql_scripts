@@ -75,7 +75,7 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td align="center" valign="top">
     <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
   </td>
-  <td valign="top">
+  <td>
 
 
 ## MS SQL Server
@@ -97,10 +97,10 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td align="center" valign="top">
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="105px">
 </td>
-<td valign="top">
-<h2>MySQL</h2>
+<td>
 
 
+## MySQL
 * [MySQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
 * [MySQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY)<br>
 </td>
