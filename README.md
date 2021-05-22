@@ -1,6 +1,6 @@
 # SQL Scripts
 Useful sql scripts for MSSQL, MySQL, Oracle, PostgreSQL, and Greenplum.  These are based on years of usage and refinement.  These are common scripts used by data analysts, software testers, and other database professionals.<br>
-
+<br>
 
 
 <img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/02_data_dictionary_in_xl.png" width="300px">
