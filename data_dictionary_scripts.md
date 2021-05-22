@@ -18,12 +18,14 @@ The following sections walk you thru using the scripts.  At the bottom of the ar
 
 
 ## Running the Script
-### 1. Download Script
+### STEP 1. Download Script
 In the table at the bottom of this article, find your preferred database platform and click the appropriate "Script" link.  This brings up the raw text file in the browser, minus any special HTML formatting so that you can simply copy the script then paste it into a new text file or directly to a SQL editor.  Alternatively you could clone the repository to your local workstation (pull everything using Git for source control), or click the green Code button and download the repository as a zip file.
 
 
-### 2. Run Script
-First, open your preferred SQL Editor (e.g.: Oracle SQL Developer, Toad, pgAdmin, SQL Server Management Studio, DBeaver, MySQL Workbench, etc.).  Then open the SQL script in a SQL editor window like shown below.
+### STEP 2. Run Script
+First, open your preferred SQL Editor (e.g.: Oracle SQL Developer, Toad, pgAdmin, SQL Server Management Studio, DBeaver, MySQL Workbench, etc.).<br>  
+Next, open the SQL script in a SQL editor window like shown below.<br>
+<br>
 Next, there are two switches at the top of each script that you can configure:
 
 
