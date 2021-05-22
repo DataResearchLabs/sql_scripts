@@ -34,7 +34,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
 
 
-## "Greenplum"
+## Greenplum
 * [Greenplum "Schema Dump" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/schemadiff/simple_schema_dump.sql)<br>
 * [Greenplum "Schema Dump" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=U8p6YJZtPM8)<br>
 </td>
@@ -57,7 +57,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
 
 
-## "MS SQL Server"
+## MS SQL Server
 * [MSSQL "Schema Dump" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
 * [MSSQL "Schema Dump" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Vxf3SM38Ar0)<br>
 </td>
@@ -80,7 +80,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
 
 
-## "MySQL"
+## MySQL
 * [MySQL "Schema Dump" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
 * [MySQL "Schema Dump" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU)<br>
 </td>
@@ -103,7 +103,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
     
     
-## "Oracle"
+## Oracle
 * [Oracle "Schema Dump" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
 * [Oracle "Schema Dump" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s)<br>
 </td>
@@ -125,7 +125,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
     
     
-## "PostgreSQL"
+## PostgreSQL
 * [PostgreSQL "Schema Dump" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
 * [PostgreSQL "Schema Dump" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0)<br>
 </td>
