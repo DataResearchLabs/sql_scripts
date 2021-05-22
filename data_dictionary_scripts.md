@@ -24,10 +24,7 @@ In the table at the bottom of this article, find your preferred database platfor
 
 #### STEP 2. Run Script
 <img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/03_data_dictionary_edit_and_run_script.png" width="575x">
-First, open your preferred SQL Editor (e.g.: Oracle SQL Developer, Toad, pgAdmin, SQL Server Management Studio, DBeaver, MySQL Workbench, etc.).<br>  
-Next, open the SQL script in a SQL editor window like shown below.<br>
-<br>
-Next, there are two switches at the top of each script that you can configure and a button to run the script (numbered blue dots):
+**First**, open your preferred SQL Editor (e.g.: MySQL Workbench, Toad, pgAdmin, etc.).  **Next**, open the SQL script in a SQL editor window like shown below.  **Then**, follow the numbered steps (blue dots in screenshot) to configure and run the script:
 
 
 **1. Schema/Database Name:** Select the schema or database name (depends on platform) for which you wish to auto-generate a Data Dictionary<br>
