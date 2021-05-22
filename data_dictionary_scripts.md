@@ -75,10 +75,10 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td align="center" valign="top">
     <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
   </td>
-  <td>
+  <td valign="top">
 
 
-## "MS SQL Server"
+## MS SQL Server
 * [MSSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_dictionary/data_dict_dump.sql)<br>
 * [MSSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY)<br>
 </td>
