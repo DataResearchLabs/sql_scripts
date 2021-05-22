@@ -41,7 +41,7 @@ In the table at the bottom of this article, find your preferred database platfor
 
 
 #### STEP 3. View Results & Export
-xxxxxx
+Once the SQL script is done executing, you should have hundreds or perhaps even thousands of rows of Data Dictionary metadata depending on the size of your schema.  Go ahead and export this to either a CSV file or directly into Microsoft Excel.  From there you can format the data dictionary to make it look pretty and add filters to make it quickly searchable.  See the YouTube tutorials below for more details.
 
 
 
