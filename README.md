@@ -1,5 +1,5 @@
 # SQL Scripts
-Useful sql scripts and snippets for MSSQL, MySQL, Oracle, PostgreSQL, and Greenplum.
+Useful sql scripts for MSSQL, MySQL, Oracle, PostgreSQL, and Greenplum.  These are based on years of usage and refinement.  These are common scripts used by data analysts, software testers, and other database professionals. 
 
 
 
@@ -17,7 +17,10 @@ The Data Dictionary script and tutorials enable you to easily document an existi
 
 ## [SchemaDiff](https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md)
 There are many reasons you may need a SQL script that captures table, view, column, and key properties.  It all boils down to comparing different states to quickly identify what changed, or what is different. Use the script + process to compare schemas over time or across environments.<br>
-
+<br>
+<br>
+<br>
+<br>
 
 
 ***If you like these scripts, please be sure to click the "Star" button above in GitHub.*** <br>
