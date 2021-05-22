@@ -3,7 +3,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
 
 ## What is a Data Dictionary?
-<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/02_data_dictionary_in_xl.png" width="500px">
+<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/02_data_dictionary_in_xl.png" width="575px">
 A "Data Dictionary" is simply a list of tables and views, their column properties such as name, ordinal position, data type/length/size/precision, allows nulls, and of course the column description.  A good data dictionary also indicates which columns are a part of a primary key, foreign key, unique key, or distribution key (Greenplum).<br>
 <br>
 Data dictionaries can be used to train new employees how your system is setup.  They can be used as a baseline for new projects, an "as-built" set of documentation from which to start.  They can be used as close-out documentation to wrap-up a project and push it out into Excel on a wiki or Sharepoint, etc.
@@ -23,7 +23,7 @@ In the table at the bottom of this article, find your preferred database platfor
 
 
 #### STEP 2. Run Script
-<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/03_data_dictionary_edit_and_run_script.png" width="750px">
+<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/03_data_dictionary_edit_and_run_script.png" width="575x">
 First, open your preferred SQL Editor (e.g.: Oracle SQL Developer, Toad, pgAdmin, SQL Server Management Studio, DBeaver, MySQL Workbench, etc.).<br>  
 Next, open the SQL script in a SQL editor window like shown below.<br>
 <br>
