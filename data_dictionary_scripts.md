@@ -56,7 +56,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
 
 
-## "Greenplum"
+## Greenplum
 * [Greenplum "Data Dictionary Script"](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
 * [Greenplum "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
 </td>
@@ -100,7 +100,7 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td>
 
 
-## "MySQL"
+## MySQL
 * [MySQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
 * [MySQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY)<br>
 </td>
@@ -122,7 +122,7 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td>
     
     
-## "Oracle"
+## Oracle
 * [Oracle "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
 * [Oracle "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E)<br>
 </td>
@@ -143,7 +143,7 @@ Links to the script source code as well as video tutorials are listed below, by 
   <td>
     
     
-## "PostgreSQL"
+## PostgreSQL
 * [PostgreSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_dictionary/data_dict_dump.sql)<br>
 * [PostgreSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28)<br>
 </td>
