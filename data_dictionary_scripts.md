@@ -51,7 +51,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
 <td align="center" valign="top">
-<img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
+  <br>
+  <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
 <td>
 
@@ -85,7 +86,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td>
 <kbd>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY" target="_blank">
-<img src="http://img.youtube.com/vi/Y6ZUdLBOufY/0.jpg" alt="Overview Video" width="200" />
+  <br>
+  <img src="http://img.youtube.com/vi/Y6ZUdLBOufY/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
 </td>
@@ -95,7 +97,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
 <td align="center" valign="top">
-  <br><br>
+  <br>
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="105px">
 </td>
 <td>
@@ -118,9 +120,10 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
   <td align="center" valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="96px">
-  </td>
-  <td>
+  <br>
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="96px">
+</td>
+<td>
     
     
 ## Oracle
@@ -138,10 +141,11 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 <tr>
-  <td align="center" valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="125px">
-  </td>
-  <td>
+<td align="center" valign="top">
+  <br>
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="125px">
+</td>
+<td>
     
     
 ## PostgreSQL
