@@ -165,7 +165,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <br>
 <br>
-<br>
+
+
 ***If you like these scripts, be sure to click the "Star" button above in GitHub.*** <br>
 <br>
 ***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
