@@ -73,10 +73,11 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 <tr>
-  <td align="center" valign="top">
-    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
-  </td>
-  <td>
+<td align="center" valign="top">
+  <br>
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
+</td>
+<td>
 
 
 ## MS SQL Server
