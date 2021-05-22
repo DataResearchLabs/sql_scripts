@@ -18,19 +18,21 @@ The following sections walk you thru using the scripts.  At the bottom of the ar
 
 
 ## Running the Script
-### STEP 1. Download Script
+#### STEP 1. Download Script
 In the table at the bottom of this article, find your preferred database platform and click the appropriate "Script" link.  This brings up the raw text file in the browser, minus any special HTML formatting so that you can simply copy the script then paste it into a new text file or directly to a SQL editor.  Alternatively you could clone the repository to your local workstation (pull everything using Git for source control), or click the green Code button and download the repository as a zip file.
 
 
-### STEP 2. Run Script
+#### STEP 2. Run Script
+<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/03_data_dictionary_edit_and_run_script.png" width="750px">
 First, open your preferred SQL Editor (e.g.: Oracle SQL Developer, Toad, pgAdmin, SQL Server Management Studio, DBeaver, MySQL Workbench, etc.).<br>  
 Next, open the SQL script in a SQL editor window like shown below.<br>
 <br>
-Next, there are two switches at the top of each script that you can configure:
+Next, there are two switches at the top of each script that you can configure and a button to run the script (numbered blue dots):
 
 
 **1. Schema/Database Name:** Select the schema or database name (depends on platform) for which you wish to auto-generate a Data Dictionary<br>
 **2. Tables Only?** Set the "v_TablesOnly" vars table value to either "YES" to show tables only, or "NO" (default) to also include views<br>
+**3. Execute** Click the appropriate button in your IDE to run the script
 
 
 
