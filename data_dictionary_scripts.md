@@ -97,10 +97,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 <td align="center" valign="top">
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="105px">
 </td>
-<td>
-<h2>
-MySQL
-</h2>
+<td valign="top">
+<h2>MySQL</h2>
 
 
 * [MySQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
