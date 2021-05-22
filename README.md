@@ -16,7 +16,7 @@ The Data Dictionary script and tutorials enable you to easily document an existi
 
 
 ## [SchemaDiff](https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md)
-There are many reasons you may need a SQL script that captures table, view, column, and key properties.  It all boils down to comparing different states to quickly identify what changed, or what is different. Use the script + process to compare schemas over time or across environments.<br>
+The SchemaDiff script and tutorials enable you to track changes to your schema over time or between environments.  You'll know exactly what changed last night with a deployment vs. the prior night's stable baseline.  You'll know when folks are changing your development or test environment every morning rather than 15 days later, avoiding all the troubleshooting red herrings.<br>
 <br>
 <br>
 <br>
