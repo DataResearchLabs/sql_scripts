@@ -22,8 +22,8 @@ The following sections walk you thru using the scripts.  At the bottom of the ar
 In the table at the bottom of this article, find your preferred database platform and click the appropriate "Script" link.  This brings up the raw text file in the browser, minus any special HTML formatting so that you can simply copy the script then paste it into a new text file or directly to a SQL editor.  Alternatively you could clone the repository to your local workstation (pull everything using Git for source control), or click the green Code button and download the repository as a zip file.
 
 
-#### STEP 2. Run Script
 <img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/03_data_dictionary_edit_and_run_script.png" width="500x">
+#### STEP 2. Run Script
 
 
 **First**, open your SQL Editor (MySQL Workbench, Toad, etc.).  **Next**, open the SQL script as shown below and follow the numbered steps (blue dots in screenshot) to configure and run the script:
