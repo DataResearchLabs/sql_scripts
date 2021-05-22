@@ -42,13 +42,6 @@ In the table at the bottom of this article, find your preferred database platfor
 Once the SQL script is done executing, you should have hundreds or perhaps even thousands of rows of Data Dictionary metadata depending on the size of your schema.  Go ahead and export this to either a CSV file or directly into Microsoft Excel.  From there you can format the data dictionary to make it look pretty and add filters to make it quickly searchable.  See the YouTube tutorials below for more details.
 
 
-***If you like these scripts, be sure to click the "Star" button above in GitHub.*** <br>
-<br>
-***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
-<br>
-<br>
-
-
 ## Scripts & Tutorials by Platform
 Links to the script source code as well as video tutorials are listed below, by platform (MSSQL, Oracle, MySQL, etc.):
 <br>
@@ -64,8 +57,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "Greenplum"
-* [Greenplum Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
-* [Greenplum Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
+* [Greenplum "Data Dictionary Script"](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
+* [Greenplum "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
 </td>
 <td>
 <kbd>
@@ -86,8 +79,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "MS SQL Server"
-* [MSSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_dictionary/data_dict_dump.sql)<br>
-* [MSSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY)<br>
+* [MSSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_dictionary/data_dict_dump.sql)<br>
+* [MSSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY)<br>
 </td>
 <td>
 <kbd>
@@ -108,8 +101,8 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "MySQL"
-* [MySQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
-* [MySQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY)<br>
+* [MySQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
+* [MySQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY)<br>
 </td>
 <td>
 <kbd>
@@ -130,8 +123,8 @@ Links to the script source code as well as video tutorials are listed below, by 
     
     
 ## "Oracle"
-* [Oracle Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
-* [Oracle Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E)<br>
+* [Oracle "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
+* [Oracle "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E)<br>
 </td>
 <td>
 <kbd>
@@ -151,8 +144,8 @@ Links to the script source code as well as video tutorials are listed below, by 
     
     
 ## "PostgreSQL"
-* [PostgreSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_dictionary/data_dict_dump.sql)<br>
-* [PostgreSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28)<br>
+* [PostgreSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_dictionary/data_dict_dump.sql)<br>
+* [PostgreSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28)<br>
 </td>
 <td>
 <kbd>
@@ -162,7 +155,14 @@ Links to the script source code as well as video tutorials are listed below, by 
 </kbd>
 </td>
 </tr>
-
-
 </table>
+
+<br>
+<br>
+<br>
+***If you like these scripts, be sure to click the "Star" button above in GitHub.*** <br>
+<br>
+***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
+<br>
+<br>
 
