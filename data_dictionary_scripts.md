@@ -3,6 +3,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
 
 ## What is a Data Dictionary?
+<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/02_data_dictionary_in_xl.png" width="500px">
 A "Data Dictionary" is simply a list of tables and views, their columns and column properties including ordinal position, whether it is a key (primary key, foreign key, unique key, or in Greenplum a distribution key).  Other important column properties include the data type, length/size/precision, and of course the column description.  Data dictionaries can be used to train new employees how your system is setup.  They can be used as a baseline for new projects, an "as-built" set of documentation from which to start.  They can be used as close-out documentation to wrap-up a project and push it out into Excel on a wiki or Sharepoint, etc.
 
 ## Overview
@@ -27,4 +28,4 @@ Next, there are two switches at the top of each script that you can configure:
 
 
 Using your favorite text diff-ing tool, here is what two sample schemas (PPMO-OldSchema vs. DEV-NewSchema) might look like side-by-side (red markup lines added):
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/01_schemadiff_side_by_side.png" width="900px">
+
