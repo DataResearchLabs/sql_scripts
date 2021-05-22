@@ -15,7 +15,7 @@ Using your favorite text diff-ing tool, here is what two sample schemas (PPMO-Ol
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/01_schemadiff_side_by_side.png" width="900px">
 
 
-***If you like this tool, be sure to click the "Star" button above in GitHub.*** <br>
+***If you like these scripts, be sure to click the "Star" button above in GitHub.*** <br>
 <br>
 ***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
 <br>
