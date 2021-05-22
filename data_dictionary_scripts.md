@@ -58,7 +58,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## Greenplum
-* [Greenplum "Data Dictionary Script"](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
+* [Greenplum "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
 * [Greenplum "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
 </td>
 <td>
@@ -122,7 +122,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <tr>
   <td align="center" valign="top">
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="96px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="102px">
 </td>
 <td>
     
