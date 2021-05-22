@@ -7,6 +7,15 @@ Useful sql scripts and snippets for MSSQL, MySQL, Oracle, PostgreSQL, and Greenp
 <br>
 <br>
 
+
+
+<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/02_data_dictionary_in_xl.png" width="300px">
+## [Data Dictionary](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_dictionary_scripts.md)
+The Data Dictionary script and tutorials enable you to easily document an existing database schema.  You can dump the tables, views, column descriptions, data types/lengths/sizes/precision, key constraints, and other information.  Export to Excel for pretty output and simple filtering, searching, and sharing. <br>
+
+
+
+
 <table>
 
 
