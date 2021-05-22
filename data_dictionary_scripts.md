@@ -95,6 +95,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 <tr>
 <td align="center" valign="top">
+  <br><br>
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="105px">
 </td>
 <td>
