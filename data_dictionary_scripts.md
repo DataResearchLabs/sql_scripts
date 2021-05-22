@@ -108,13 +108,13 @@ Links to the script source code as well as video tutorials are listed below, by 
 
 
 ## "MySQL"
-* [MySQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
-* [MySQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU)<br>
+* [MySQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
+* [MySQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY)<br>
 </td>
 <td>
 <kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU" target="_blank">
-<img src="http://img.youtube.com/vi/LwfagEfficU/0.jpg" alt="Overview Video" width="200" />
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY" target="_blank">
+<img src="http://img.youtube.com/vi/bfpS2LTEVbY/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
 </td>
@@ -130,13 +130,13 @@ Links to the script source code as well as video tutorials are listed below, by 
     
     
 ## "Oracle"
-* [Oracle Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
-* [Oracle Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s)<br>
+* [Oracle Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
+* [Oracle Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E)<br>
 </td>
 <td>
 <kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
-<img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E" target="_blank">
+<img src="http://img.youtube.com/vi/Ic5dafweq1E/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
 </td>
@@ -151,13 +151,13 @@ Links to the script source code as well as video tutorials are listed below, by 
     
     
 ## "PostgreSQL"
-* [PostgreSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
-* [PostgreSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0)<br>
+* [PostgreSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_dictionary/data_dict_dump.sql)<br>
+* [PostgreSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28)<br>
 </td>
 <td>
 <kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0" target="_blank">
-<img src="http://img.youtube.com/vi/I3Gr2d7tob0/0.jpg" alt="Overview Video" width="200" />
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28" target="_blank">
+<img src="http://img.youtube.com/vi/ekLK46G_r28/0.jpg" alt="Overview Video" width="200" />
 </a>
 </kbd>
 </td>
