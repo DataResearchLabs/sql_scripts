@@ -36,16 +36,133 @@ In the table at the bottom of this article, find your preferred database platfor
 **2. Tables Only?** Set the "v_TablesOnly" var to either "YES" for tables only, or "NO" (default) to also include views<br>
 **3. Execute** Click the appropriate button in your IDE to run the script<br>
 <br>
-<br>
-<br>
 
 
 #### STEP 3. View Results & Export
 Once the SQL script is done executing, you should have hundreds or perhaps even thousands of rows of Data Dictionary metadata depending on the size of your schema.  Go ahead and export this to either a CSV file or directly into Microsoft Excel.  From there you can format the data dictionary to make it look pretty and add filters to make it quickly searchable.  See the YouTube tutorials below for more details.
 
 
+***If you like these scripts, be sure to click the "Star" button above in GitHub.*** <br>
+<br>
+***Also, be sure to visit or subscribe to our YouTube channel*** www.DataResearchLabs.com!<br>
+<br>
+<br>
+
+
+## Scripts & Tutorials by Platform
+Links to the script source code as well as video tutorials are listed below, by platform (MSSQL, Oracle, MySQL, etc.):
+<br>
+<br>
+
+<table>
+
+<tr>
+<td align="center" valign="top">
+<img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
+</td>
+<td>
+
+
+## "Greenplum"
+* [Greenplum Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
+* [Greenplum Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
+</td>
+<td>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw" target="_blank">
+<img src="http://img.youtube.com/vi/0BymfeSzqkw/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+</td>
+</tr>
 
 
 
+<tr>
+  <td align="center" valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
+  </td>
+  <td>
 
+
+## "MS SQL Server"
+* [MSSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_dictionary/data_dict_dump.sql)<br>
+* [MSSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY)<br>
+</td>
+<td>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY" target="_blank">
+<img src="http://img.youtube.com/vi/Y6ZUdLBOufY/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+</td>
+</tr>
+
+
+
+<tr>
+  <td align="center" valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="105px">
+  </td>
+  <td>
+
+
+## "MySQL"
+* [MySQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/schemadiff/simple_schema_dump.sql)<br>
+* [MySQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU)<br>
+</td>
+<td>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=LwfagEfficU" target="_blank">
+<img src="http://img.youtube.com/vi/LwfagEfficU/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+</td>
+</tr>
+
+
+
+<tr>
+  <td align="center" valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="96px">
+  </td>
+  <td>
+    
+    
+## "Oracle"
+* [Oracle Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/schemadiff/simple_schema_dump.sql)<br>
+* [Oracle Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s)<br>
+</td>
+<td>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=kzemPW1156s" target="_blank">
+<img src="http://img.youtube.com/vi/kzemPW1156s/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+</td>
+</tr>
+
+
+<tr>
+  <td align="center" valign="top">
+    <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="125px">
+  </td>
+  <td>
+    
+    
+## "PostgreSQL"
+* [PostgreSQL Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/schemadiff/simple_schema_dump.sql)<br>
+* [PostgreSQL Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0)<br>
+</td>
+<td>
+<kbd>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=I3Gr2d7tob0" target="_blank">
+<img src="http://img.youtube.com/vi/I3Gr2d7tob0/0.jpg" alt="Overview Video" width="200" />
+</a>
+</kbd>
+</td>
+</tr>
+
+
+</table>
 
