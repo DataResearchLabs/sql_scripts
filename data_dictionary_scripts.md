@@ -17,7 +17,7 @@ The following sections walk you thru using the scripts.  At the bottom of the ar
 <br>
 
 
-## Running the Script
+## Using the Script
 #### STEP 1. Download Script
 In the table at the bottom of this article, find your preferred database platform and click the appropriate "Script" link.  This brings up the raw text file in the browser, minus any special HTML formatting so that you can simply copy the script then paste it into a new text file or directly to a SQL editor.  Alternatively you could clone the repository to your local workstation (pull everything using Git for source control), or click the green Code button and download the repository as a zip file.
 
@@ -28,12 +28,20 @@ In the table at the bottom of this article, find your preferred database platfor
 #### STEP 2. Run Script
 
 
-**First**, open your SQL Editor (MySQL Workbench, Toad, etc.).  **Next**, open the SQL script as shown below and follow the numbered steps (blue dots in screenshot) to configure and run the script:
+**First**, open your SQL Editor (MySQL Workbench, Toad, etc.).<br>
+**Next**, open the SQL script as shown below and follow the numbered steps (blue dots in screenshot) to configure and run the script:
 
 
 **1. Schema/Database Name:** Select the schema or database name; "sakila" in the example.<br>
 **2. Tables Only?** Set the "v_TablesOnly" var to either "YES" for tables only, or "NO" (default) to also include views<br>
 **3. Execute** Click the appropriate button in your IDE to run the script<br>
+<br>
+<br>
+<br>
+
+
+#### STEP 3. View Results & Export
+xxxxxx
 
 
 
