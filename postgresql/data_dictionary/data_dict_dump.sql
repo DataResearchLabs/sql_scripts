@@ -38,19 +38,19 @@ AS (
 	  END AS obj_typ
 	, tut.ordinal_position   AS ord_pos
 	, tut.column_name        AS column_nm 
-    , CONCAT(tut.data_type, 
-      CASE WHEN tut.data_type IN('varchar','char')            THEN CONCAT('(', tut.CHARACTER_MAXIMUM_LENGTH, ')')
+    , CONCAT(COALESCE(tut.data_type, 'unknown'), 
+      CASE WHEN tut.data_type IN('varchar','char')        THEN CONCAT('(', CAST(tut.CHARACTER_MAXIMUM_LENGTH AS varchar(10)), ')')
 	       WHEN tut.data_type IN('date','time')           THEN CONCAT('(3)')
 	       WHEN tut.data_type = 'datetime'                THEN CONCAT('(8)')
 	       WHEN tut.data_type = 'timestamp'               THEN CONCAT('(4)')
-	       WHEN tut.data_type LIKE '%int%'                THEN CONCAT('(', tut.NUMERIC_PRECISION, ')')
-	       WHEN tut.data_type = 'decimal'                 THEN CONCAT('(', tut.NUMERIC_PRECISION, ',', tut.NUMERIC_SCALE, ')')
-	       WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN CONCAT('(', tut.CHARACTER_MAXIMUM_LENGTH, ')')
-		   WHEN tut.DATETIME_PRECISION IS NOT NULL    THEN CONCAT('(', tut.DATETIME_PRECISION, ')')
+	       WHEN tut.data_type LIKE '%int%'                THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ')')
+	       WHEN tut.data_type = 'decimal'                 THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ',', CAST(tut.NUMERIC_SCALE AS varchar(10)), ')')
+	       WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN CONCAT('(', CAST(tut.CHARACTER_MAXIMUM_LENGTH AS varchar(10)), ')')
+		   WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN CONCAT('(', CAST(tut.DATETIME_PRECISION AS varchar(10)), ')')
 	       WHEN tut.NUMERIC_PRECISION IS NOT NULL
-		    AND tut.NUMERIC_SCALE     IS NULL         THEN CONCAT('(', tut.NUMERIC_PRECISION, ')')
+		    AND tut.NUMERIC_SCALE     IS NULL             THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ')')
 	       WHEN tut.NUMERIC_PRECISION IS NOT NULL
-	        AND tut.NUMERIC_SCALE     IS NOT NULL         THEN CONCAT('(', tut.NUMERIC_PRECISION, ',', tut.NUMERIC_SCALE, ')')
+	        AND tut.NUMERIC_SCALE     IS NOT NULL         THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ',', CAST(tut.NUMERIC_SCALE AS varchar(10)), ')')
 		   ELSE ''
     END ) AS data_typ 
   , CASE WHEN tut.IS_NULLABLE = 'YES' THEN 'NULL' ELSE 'NOT NULL' END AS nullable
@@ -69,6 +69,7 @@ AS (
     , CASE WHEN cons.constraint_type = 'PRIMARY KEY' THEN 'PK'
            WHEN cons.constraint_type = 'UNIQUE'      THEN 'UK'
            WHEN cons.constraint_type = 'FOREIGN KEY' THEN 'FK'
+	       ELSE 'X'
       END AS is_key
     FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS      cons 
     INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu 
