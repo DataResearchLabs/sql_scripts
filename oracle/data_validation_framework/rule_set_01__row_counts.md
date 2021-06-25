@@ -9,19 +9,43 @@ Some of the most common data validation checks involve row counts.  Total row co
 
 ## T001 - Verify FullRowCount() 
 ```sql
--- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
-SELECT CASE WHEN COUNT(*) <> 8 THEN 'FAIL' ELSE 'P' END AS status   
-FROM demo_hr.countries
-WHERE region_id = 1;
+  -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
+	SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
+	FROM demo_hr.countries;
 ```
 
 
-## T002 - "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
+## T002 - Verify PartialRowCount()
 ```sql
--- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
-SELECT CASE WHEN COUNT(*) <> 8 THEN 'FAIL' ELSE 'P' END AS status   
-FROM demo_hr.countries
-WHERE region_id = 1;
+  -- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
+  SELECT CASE WHEN COUNT(*) <> 8 THEN 'FAIL' ELSE 'P' END AS status   
+  FROM demo_hr.countries
+  WHERE region_id = 1;
 ```
+
+
+## T003 - Verify RelativeRowCount()
+```sql
+	-- "RS-1 Row Counts" #3 - Verify RelativeRowCount() table [countries] row count >= 5x table [regions] row count
+  SELECT CASE WHEN countries_count < 5 * regions_count THEN 'FAIL' ELSE 'P' END AS status
+  FROM (
+    SELECT (SELECT COUNT(*) AS row_count FROM demo_hr.countries) AS countries_count 
+    , (SELECT COUNT(*) AS row_count FROM demo_hr.regions)   AS regions_count
+    FROM dual
+  );
+```
+
+
+## T004 - Verify RecentRowCount()
+```sql
+	-- "RS-1 Row Counts" #4 - Verify RecentRowCount() >= 5 in table [countries] where [date_last_updated] in past
+	SELECT CASE WHEN row_count < 5 THEN 'FAIL' ELSE 'P' END AS status
+	FROM (
+    SELECT COUNT(*) AS row_count 
+    FROM demo_hr.countries
+    WHERE date_last_updated >= SYSDATE - 10
+	);
+```
+
 
 
