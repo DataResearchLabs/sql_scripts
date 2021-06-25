@@ -36,7 +36,7 @@ WHERE region_id = 1;
 
 <a id="t003" class="anchor" href="#t003" aria-hidden="true"> </a>
 ### T003 - "Relative" Row Count
-Verify relative row counts between tables or views.  For example, to verify that table countries has at least 5 times the number of rows as table regions:
+Verify relative row counts between tables or views.  The example below verifies that table countries has at least 5 times the number of rows as table regions.  The inner query returns one row with two columns: (a) count of contries, and (b) count of regions.  The outer query can then apply the business logic of comparing the counts and returning a Pass or Fail.
 ```sql
 SELECT CASE WHEN countries_count < 5 * regions_count THEN 'FAIL' ELSE 'P' END AS status
 FROM (
@@ -50,7 +50,7 @@ FROM (
 
 <a id="t004" class="anchor" href="#t004" aria-hidden="true"> </a>
 ### T004 - "Recent" Row Count
-Verify recent row counts.  For example, to verify that table countries has had at least 5 rows updated in the past 10 days based on the date stamp in field date_last_updated:
+Verify recent row counts.  The example below verifies that table countries has had at least 5 rows updated in the past 10 days based on the date stamp in field date_last_updated.  The inner query uses SYSDATE (oracle current date time stamp) and subtracts 10 days.  The inner query counts how many rows in table countries have a date_last_updated with the past 10 days.  The outer query can then confirm that at least 5 rows are recent for a Pass...if not then it returns a Fail.
 ```sql
 SELECT CASE WHEN row_count < 5 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
