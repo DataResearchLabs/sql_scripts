@@ -5,13 +5,13 @@
 
 ### Overview
 Some of the most common data validation tests involve simple row counts:
-* <a href="#T001">T001 - FullRowCount()</a>
-* <a href="#T002">T002 - PartialRowCount()</a>
-* <a href="#T003">T003 - RelativeRowCount()</a>
-* <a href="#T004">T004 - RecentRowCount()</a>
+* [T001 - FullRowCount()](#T001)
+* [T002 - PartialRowCount()](#T001)
+* [T003 - RelativeRowCount()](#T001)
+* [T004 - RecentRowCount()](#T001)
 <br>
 
-<a id="TOO1" class="anchor" href="#T001" aria-hidden="true"> </a>
+<a name="TOO1"></a>
 ### T001 - FullRowCount()
   Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
   ```sql
@@ -22,7 +22,7 @@ Some of the most common data validation tests involve simple row counts:
 <br>
 
 
-<a id="TOO2" class="anchor" href="#T002" aria-hidden="true"> </a>
+<a name="TOO2"></a>
 ### T002 - PartialRowCount()
 Verify partial row count for a subset of a table or view.  For example, there must be 50+ rows in Table X having value "Y" in Field Z.
 ```sql
@@ -34,7 +34,7 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 <br>
 
 
-<a id="TOO3" class="anchor" href="#T003" aria-hidden="true"> </a>
+<a name="TOO3"></a>
 ### T003 - RelativeRowCount()
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
@@ -49,7 +49,7 @@ Verify relative row counts between tables or views.  For example, table X must b
 <br>
 
 
-<a id="TOO4" class="anchor" href="#T004" aria-hidden="true"> </a>
+<a name="TOO4"></a>
 ### T004 - Verify RecentRowCount()
 Verify recent row counts.  For example, the table row count where DateCreated is within past 10 days.
 ```sql
