@@ -5,6 +5,8 @@
 
 ### Overview
 Some of the most common data validation tests involve simple row counts:
+
+
 * [T001 - FullRowCount()](#T001)
 * [T002 - PartialRowCount()](#T001)
 * [T003 - RelativeRowCount()](#T001)
