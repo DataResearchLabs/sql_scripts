@@ -5,15 +5,12 @@
 
 ## Table of Contents
  - <a href="#t001">T001 - FullRowCount()</a>
-
-
-* [T001 - FullRowCount()](#t001)
-* [T002 - PartialRowCount()](#T002)
-* [T003 - RelativeRowCount()](#T003)
-* [T004 - RecentRowCount()](#T004)
+ - <a href="#t002">T002 - PartialRowCount()</a>
+ - <a href="#t003">T003 - RelativeRowCount()</a>
+ - <a href="#t004">T004 - RecentRowCount()</a>
 <br>
 
-<a name="TOO1"></a>
+<a id="t001" class="anchor" href="#t001" aria-hidden="true"> </a>
 ### T001 - FullRowCount()
   Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
   ```sql
@@ -24,7 +21,7 @@
 <br>
 
 
-<a name="TOO2"></a>
+<a id="t002" class="anchor" href="#t002" aria-hidden="true"> </a>
 ### T002 - PartialRowCount()
 Verify partial row count for a subset of a table or view.  For example, there must be 50+ rows in Table X having value "Y" in Field Z.
 ```sql
@@ -36,7 +33,7 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 <br>
 
 
-<a id="t001" class="anchor" href="#t001" aria-hidden="true"> </a>
+<a id="t003" class="anchor" href="#t003" aria-hidden="true"> </a>
 ### T003 - RelativeRowCount()
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
@@ -51,7 +48,7 @@ Verify relative row counts between tables or views.  For example, table X must b
 <br>
 
 
-<a name="TOO4"></a>
+<a id="t004" class="anchor" href="#t004" aria-hidden="true"> </a>
 ### T004 - Verify RecentRowCount()
 Verify recent row counts.  For example, the table row count where DateCreated is within past 10 days.
 ```sql
