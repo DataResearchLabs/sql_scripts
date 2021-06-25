@@ -7,8 +7,8 @@
 
 ## Table of Contents
  - <a href="#t005">T005 - Unique (Native) Key Has No Duplicates</a>
- - <a href="#t006">T006 - Foreign Key Child Is An Orphans</a>
- - <a href="#t007">T007 - Foreign Key Parent Has No Children</a>
+ - <a href="#t006">T006 - Foreign Key Childern Have Orphans</a>
+ - <a href="#t007">T007 - Foreign Key Parent is Childless</a>
 <br>
 
 
@@ -30,7 +30,7 @@ FROM (
 
 
 <a id="t006" class="anchor" href="#t006" aria-hidden="true"> </a>
-### T006 - Foreign Key Child is An Orphan
+### T006 - Foreign Key Children Have Orphans
 Sure, as with T005 UKeys above, good database design implies that foreign keys be enforced by a constraint so that you do not need to test for it.  However, there are times where for whatever reason the constraints do not exist.  In those instances, you will want to periodically run a data validation test to ensure that this core assumption is not being violated (of course adding a foreign key constraint would be best, but if that is not an option then periodically check).
 In the example below, the inner query pulls from the child table countries as the anchor, then left joins out to the parent table regions on the key field region_id. If region_id does not exist in the parent table (p.region_id IS NULL), then the child region_id is an orphan.  The outer query checks the count() of orphaned child rows: if it is >= 1 then the test fails, but if the count() = 0 then it passes.
 ```sql
@@ -46,5 +46,15 @@ FROM (
 
 
 <a id="t007" class="anchor" href="#t007" aria-hidden="true"> </a>
-### T007 - Foreign Key Parent Has No Children
-Sure, as
+### T007 - Foreign Key Parent Is Childless
+Im not sure this particular test is all the useful because often it is okay for the parent-side of a foreign key relationship to not have children.  But, if for some reason you need to be sure there is data present on both sides (parent **and** child), then this test is for you.  You will notice in the example below that the query is very similar to T006 above, but the parent and child tables have switched positions in the FROM and LEFT JOIN lines.  This is because we want to first pull all parent rows, then left join to find missing (FKey field IS NULL) child rows.
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT DISTINCT c.country_id AS child_id, p.country_id AS parent_id
+  FROM      demo_hr.countries p 
+  LEFT JOIN demo_hr.locations c  ON p.country_id = c.country_id
+  WHERE c.country_id IS NULL
+	); 
+ ```
+
