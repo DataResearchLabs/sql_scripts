@@ -15,11 +15,12 @@ Some of the most common data validation tests involve row counts:
 ### T001 - Verify FullRowCount() 
 <details>
   <summary>Oracle</summary>
-```sql
+
+  ```sql
   -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
   SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
   FROM demo_hr.countries;
-```
+  ```
 </details>
 <br>
 
