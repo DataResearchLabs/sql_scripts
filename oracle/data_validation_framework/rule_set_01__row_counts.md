@@ -15,10 +15,8 @@
 
 <a id="t001" class="anchor" href="#t001" aria-hidden="true"> </a>
 ### T001:  "RS-1 #1" - Full Row Count
-Verify full row count for a table or view.  
-For example, verify table countries has exactly 25 rows:
+Verify full row count for a table or view.  For example, verify table countries has exactly 25 rows:
  ```sql
--- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
 SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
 FROM demo_hr.countries;
  ```
@@ -27,13 +25,11 @@ FROM demo_hr.countries;
 
 <a id="t002" class="anchor" href="#t002" aria-hidden="true"> </a>
 ### T002: "RS-1 #2" - Partial Row Count
-Verify partial row count for a subset of a table or view.  
-For example, verify table countries has exactly 8 rows where region_id = 1.
+Verify partial row count for a subset of a table or view.  For example, verify table countries has exactly 8 rows where region_id = 1 (Europe).
 ```sql
-  -- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
-  SELECT CASE WHEN COUNT(*) <> 8 THEN 'FAIL' ELSE 'P' END AS status   
-  FROM demo_hr.countries
-  WHERE region_id = 1;
+SELECT CASE WHEN COUNT(*) <> 8 THEN 'FAIL' ELSE 'P' END AS status   
+FROM demo_hr.countries
+WHERE region_id = 1;
 ```
 <br>
 
