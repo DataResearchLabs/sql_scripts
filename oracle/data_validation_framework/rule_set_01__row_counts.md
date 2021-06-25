@@ -3,6 +3,8 @@
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
 ## Data Validation Examples - Oracle
 
+---
+
 ## Table of Contents
  - <a href="#t001">T001 - FullRowCount()</a>
  - <a href="#t002">T002 - PartialRowCount()</a>
