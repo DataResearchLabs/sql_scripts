@@ -9,14 +9,18 @@ Some of the most common data validation tests involve row counts:
 * T002 - Verify partial row count for a subset of a table or view
 * T003 - Verify relative row counts between tables or views
 * T004 - Verify recent row counts
+<br>
 
 
 ### T001 - Verify FullRowCount() 
+<details>
+  <summary>Oracle</summary>
 ```sql
   -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
   SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
   FROM demo_hr.countries;
 ```
+</details>
 <br>
 
 
