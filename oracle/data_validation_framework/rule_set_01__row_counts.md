@@ -41,7 +41,7 @@ Verify relative row counts between tables or views.  For example, to verify that
 SELECT CASE WHEN countries_count < 5 * regions_count THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT (SELECT COUNT(*) AS row_count FROM demo_hr.countries) AS countries_count 
-  , (SELECT COUNT(*) AS row_count FROM demo_hr.regions)   AS regions_count
+       , (SELECT COUNT(*) AS row_count FROM demo_hr.regions)   AS regions_count
   FROM dual
 );
 ```
