@@ -4,10 +4,10 @@
 ## Data Validation Examples - Oracle
 
 ## Table of Contents
- - <a href="#introduction">1. Introduction</a>
+ - <a href="#t001">T001 - FullRowCount()</a>
 
 
-* [T001 - FullRowCount()](#T001)
+* [T001 - FullRowCount()](#t001)
 * [T002 - PartialRowCount()](#T002)
 * [T003 - RelativeRowCount()](#T003)
 * [T004 - RecentRowCount()](#T004)
@@ -36,7 +36,7 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 <br>
 
 
-<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"> </a>
+<a id="t001" class="anchor" href="#t001" aria-hidden="true"> </a>
 ### T003 - RelativeRowCount()
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
