@@ -6,27 +6,26 @@
 ---
 
 ## Table of Contents
- - <a href="#t001">T001 - FullRowCount()</a>
- - <a href="#t002">T002 - PartialRowCount()</a>
- - <a href="#t003">T003 - RelativeRowCount()</a>
- - <a href="#t004">T004 - RecentRowCount()</a>
+ - <a href="#t001">T001 - "Full" Row Count</a>
+ - <a href="#t002">T002 - "Partial" Row Count</a>
+ - <a href="#t003">T003 - "Relative" Row Count</a>
+ - <a href="#t004">T004 - "Recent" Row Count</a>
 <br>
 
 
 <a id="t001" class="anchor" href="#t001" aria-hidden="true"> </a>
-### T001 - FullRowCount()
+### T001 - "Full" Row Count
 Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
-<kbd>test</kbd> 
-```sql
+<kbd>
 -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
 SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
 FROM demo_hr.countries;
-```
+</kbd> 
 <br>
 
 
 <a id="t002" class="anchor" href="#t002" aria-hidden="true"> </a>
-### T002 - PartialRowCount()
+### T002 - "Partial" Row Count
 Verify partial row count for a subset of a table or view.  For example, there must be 50+ rows in Table X having value "Y" in Field Z.
 ```sql
   -- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
@@ -38,7 +37,7 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 
 
 <a id="t003" class="anchor" href="#t003" aria-hidden="true"> </a>
-### T003 - RelativeRowCount()
+### T003 - "Relative" Row Count
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
   -- "RS-1 Row Counts" #3 - Verify RelativeRowCount() table [countries] row count >= 5x table [regions] row count
@@ -53,7 +52,7 @@ Verify relative row counts between tables or views.  For example, table X must b
 
 
 <a id="t004" class="anchor" href="#t004" aria-hidden="true"> </a>
-### T004 - Verify RecentRowCount()
+### T004 - "Recent" Row Count
 Verify recent row counts.  For example, the table row count where DateCreated is within past 10 days.
 ```sql
   -- "RS-1 Row Counts" #4 - Verify RecentRowCount() >= 5 in table [countries] where [date_last_updated] in past
