@@ -4,15 +4,15 @@
 ## Data Validation Examples - Oracle
 
 ### Overview
-Some of the most common data validation tests involve row counts:
-* T001 - FullRowCount()
-* T002 - PartialRowCount()
-* T003 - RelativeRowCount()
-* T004 - RecentRowCount()
+Some of the most common data validation tests involve simple row counts:
+* [T001 - FullRowCount()](#T001)
+* [T002 - PartialRowCount()](#T002)
+* [T003 - RelativeRowCount()](#T003)
+* [T004 - RecentRowCount()](#T004)
 <br>
 
 
-### T001 - FullRowCount() 
+### T001 - FullRowCount()<a id="TOO1"></a>
   Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
   ```sql
   -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
@@ -22,7 +22,7 @@ Some of the most common data validation tests involve row counts:
 <br>
 
 
-### T002 - PartialRowCount()
+### T002 - PartialRowCount()<a id="TOO2"></a>
 Verify partial row count for a subset of a table or view.  For example, there must be 50+ rows in Table X having value "Y" in Field Z.
 ```sql
   -- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
@@ -33,7 +33,7 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 <br>
 
 
-### T003 - RelativeRowCount()
+### T003 - RelativeRowCount()<a id="TOO3"></a>
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
   -- "RS-1 Row Counts" #3 - Verify RelativeRowCount() table [countries] row count >= 5x table [regions] row count
@@ -47,7 +47,7 @@ Verify relative row counts between tables or views.  For example, table X must b
 <br>
 
 
-### T004 - Verify RecentRowCount()
+### T004 - Verify RecentRowCount()<a id="TOO4"></a>
 Verify recent row counts.  For example, the table row count where DateCreated is within past 10 days.
 ```sql
   -- "RS-1 Row Counts" #4 - Verify RecentRowCount() >= 5 in table [countries] where [date_last_updated] in past
