@@ -5,10 +5,10 @@
 
 ### Overview
 Some of the most common data validation tests involve simple row counts:
-* [T001 - FullRowCount()](#T001)
-* [T002 - PartialRowCount()](#T002)
-* [T003 - RelativeRowCount()](#T003)
-* [T004 - RecentRowCount()](#T004)
+* <a href="#T001">T001 - FullRowCount()</a>
+* <a href="#T002">T002 - PartialRowCount()</a>
+* <a href="#T003">T003 - RelativeRowCount()</a>
+* <a href="#T004">T004 - RecentRowCount()</a>
 <br>
 
 <a id="TOO1" class="anchor" href="#T001" aria-hidden="true"></a>
@@ -22,7 +22,8 @@ Some of the most common data validation tests involve simple row counts:
 <br>
 
 
-### T002 - PartialRowCount()<a id="TOO2"></a>
+<a id="TOO2" class="anchor" href="#T002" aria-hidden="true"></a>
+### T002 - PartialRowCount()
 Verify partial row count for a subset of a table or view.  For example, there must be 50+ rows in Table X having value "Y" in Field Z.
 ```sql
   -- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
@@ -33,7 +34,8 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 <br>
 
 
-### T003 - RelativeRowCount()<a id="TOO3"></a>
+<a id="TOO3" class="anchor" href="#T003" aria-hidden="true"></a>
+### T003 - RelativeRowCount()
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
   -- "RS-1 Row Counts" #3 - Verify RelativeRowCount() table [countries] row count >= 5x table [regions] row count
@@ -47,7 +49,8 @@ Verify relative row counts between tables or views.  For example, table X must b
 <br>
 
 
-### T004 - Verify RecentRowCount()<a id="TOO4"></a>
+<a id="TOO4" class="anchor" href="#T004" aria-hidden="true"></a>
+### T004 - Verify RecentRowCount()
 Verify recent row counts.  For example, the table row count where DateCreated is within past 10 days.
 ```sql
   -- "RS-1 Row Counts" #4 - Verify RecentRowCount() >= 5 in table [countries] where [date_last_updated] in past
