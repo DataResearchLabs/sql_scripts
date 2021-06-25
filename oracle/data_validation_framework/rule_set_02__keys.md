@@ -14,7 +14,7 @@
 
 <a id="t005" class="anchor" href="#t005" aria-hidden="true"> </a>
 ### T005 - Unique Key Has No Duplicates
-Sure, good database design implies that unique keys be enforced by a constraint so that you do not need to test for it.  However, there are times for whatever reason (performance, replicated from a source that does have a constraint, etc.) where a natural key has not constraint.  At work last week, I just ran this test scenario (different tables and fields of course) and found dups where there absolutely should not be any--so it does happen.  
+Sure, good database design implies that unique keys be enforced by a constraint so that you do not need to test for it.  However, there are times (replicated from a source having a constraint so skip it for performance, etc.) where a natural key has **no** constraint.  This does happen!  At work just last week, two of my data vbalidation regression tests for unique keys started failing -- and without these checks the downstream defects would have taken longer to notice, and more time to identify the root cause.
 In the example below, the inner query does a group by on the unique key fields, then using a HAVING clause filters down to those key-values with a count of more than 1 -- the dups.  The outer query returns a fail if any rows come back with dups (match_count >= 2), or a pass if no dups found.
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
@@ -29,4 +29,17 @@ FROM (
 <br>
 
 
-
+<a id="t006" class="anchor" href="#t006" aria-hidden="true"> </a>
+### T006 - Foreign Key Has No Orphans
+Sure, as with T005 UKeys above, good database design implies that foreign keys be enforced by a constraint so that you do not need to test for it.  However, there are times where for whatever reason the constraints do not exist.  In those instances, you will want to periodically run a data validation test to ensure that this core assumption is not being violated (of course adding a foreign key constraint would be best, but if that is not an option then periodically check).
+In the example below, the inner query pulls from the child table countries as the anchor, then left joins out to the parent table regions on the key field region_id. If region_id does not exist in the parent table (p.region_id IS NULL), then the child region_id is an orphan.  The outer query checks the count() of orphaned child rows: if it is >= 1 then the test fails, but if the count() = 0 then it passes.
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT DISTINCT c.region_id AS child_id, p.region_id AS parent_id
+  FROM      demo_hr.countries c 
+  LEFT JOIN demo_hr.regions   p  ON p.region_id = c.region_id
+  WHERE p.region_id IS NULL
+);
+ ```
+<br>
