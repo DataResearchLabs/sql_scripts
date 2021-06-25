@@ -3,8 +3,8 @@
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
 ## Data Validation Examples - Oracle
 
-### Overview
-Some of the most common data validation tests involve simple row counts:
+## Table of Contents
+ - <a href="#introduction">1. Introduction</a>
 
 
 * [T001 - FullRowCount()](#T001)
@@ -36,7 +36,7 @@ Verify partial row count for a subset of a table or view.  For example, there mu
 <br>
 
 
-<a name="TOO3"></a>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"> </a>
 ### T003 - RelativeRowCount()
 Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
