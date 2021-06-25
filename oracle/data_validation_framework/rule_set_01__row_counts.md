@@ -8,9 +8,9 @@ Some of the most common data validation tests involve simple row counts:
 
 
 * [T001 - FullRowCount()](#T001)
-* [T002 - PartialRowCount()](#T001)
-* [T003 - RelativeRowCount()](#T001)
-* [T004 - RecentRowCount()](#T001)
+* [T002 - PartialRowCount()](#T002)
+* [T003 - RelativeRowCount()](#T003)
+* [T004 - RecentRowCount()](#T004)
 <br>
 
 <a name="TOO1"></a>
