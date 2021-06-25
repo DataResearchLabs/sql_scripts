@@ -18,6 +18,7 @@
   Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
   
 <details><summary>Oracle</summary>
+  
   ```sql
   -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
   SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
