@@ -5,27 +5,25 @@
 
 ### Overview
 Some of the most common data validation tests involve row counts:
-* T001 - Verify full row count for a table or view
-* T002 - Verify partial row count for a subset of a table or view
-* T003 - Verify relative row counts between tables or views
-* T004 - Verify recent row counts
+* T001 - FullRowCount()
+* T002 - PartialRowCount()
+* T003 - RelativeRowCount()
+* T004 - RecentRowCount()
 <br>
 
 
-### T001 - Verify FullRowCount() 
-<details>
-  <summary>Oracle</summary>
-
+### T001 - FullRowCount() 
+  Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
   ```sql
   -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
   SELECT CASE WHEN COUNT(*) <> 25 THEN 'FAIL' ELSE 'P' END AS status 
   FROM demo_hr.countries;
   ```
-</details>
 <br>
 
 
-### T002 - Verify PartialRowCount()
+### T002 - PartialRowCount()
+Verify partial row count for a subset of a table or view.  For example, there must be 50+ rows in Table X having value "Y" in Field Z.
 ```sql
   -- "RS-1 Row Counts" #2 - Verify PartialRowCount() = 8 where [region_id] = 1 (Europe) in table [countries]
   SELECT CASE WHEN COUNT(*) <> 8 THEN 'FAIL' ELSE 'P' END AS status   
@@ -35,7 +33,8 @@ Some of the most common data validation tests involve row counts:
 <br>
 
 
-### T003 - Verify RelativeRowCount()
+### T003 - RelativeRowCount()
+Verify relative row counts between tables or views.  For example, table X must be 5 times or more larger than table Y.
 ```sql
   -- "RS-1 Row Counts" #3 - Verify RelativeRowCount() table [countries] row count >= 5x table [regions] row count
   SELECT CASE WHEN countries_count < 5 * regions_count THEN 'FAIL' ELSE 'P' END AS status
@@ -49,6 +48,7 @@ Some of the most common data validation tests involve row counts:
 
 
 ### T004 - Verify RecentRowCount()
+Verify recent row counts.  For example, the table row count where DateCreated is within past 10 days.
 ```sql
   -- "RS-1 Row Counts" #4 - Verify RecentRowCount() >= 5 in table [countries] where [date_last_updated] in past
   SELECT CASE WHEN row_count < 5 THEN 'FAIL' ELSE 'P' END AS status
