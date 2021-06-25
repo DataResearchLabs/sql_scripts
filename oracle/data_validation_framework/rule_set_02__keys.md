@@ -7,14 +7,14 @@
 
 ## Table of Contents
  - <a href="#t005">T005 - Unique (Native) Key Has No Duplicates</a>
- - <a href="#t006">T006 - Foreign Key Has No Orphans</a>
- - <a href="#t007">T007 - Foreign Key Has Children</a>
+ - <a href="#t006">T006 - Foreign Key Child Is An Orphans</a>
+ - <a href="#t007">T007 - Foreign Key Parent Has No Children</a>
 <br>
 
 
 <a id="t005" class="anchor" href="#t005" aria-hidden="true"> </a>
 ### T005 - Unique Key Has No Duplicates
-Sure, good database design implies that unique keys be enforced by a constraint so that you do not need to test for it.  However, there are times (replicated from a source having a constraint so skip it for performance, etc.) where a natural key has **no** constraint.  This does happen!  At work just last week, two of my data vbalidation regression tests for unique keys started failing -- and without these checks the downstream defects would have taken longer to notice, and more time to identify the root cause.
+Sure, good database design implies that unique keys be enforced by a constraint so that you do not need to test for it.  However, there are times where a decision is made to **not** add a constraint to enforce the unique key (e.g.: table is replicated from a source having the constraint so skipped for performance).  This does happen!  At work just last week, two of my data vbalidation regression tests for unique keys started failing -- and without these checks the downstream defects would have taken longer to notice, and more time to identify the root cause.
 In the example below, the inner query does a group by on the unique key fields, then using a HAVING clause filters down to those key-values with a count of more than 1 -- the dups.  The outer query returns a fail if any rows come back with dups (match_count >= 2), or a pass if no dups found.
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
@@ -30,7 +30,7 @@ FROM (
 
 
 <a id="t006" class="anchor" href="#t006" aria-hidden="true"> </a>
-### T006 - Foreign Key Has No Orphans
+### T006 - Foreign Key Child is An Orphan
 Sure, as with T005 UKeys above, good database design implies that foreign keys be enforced by a constraint so that you do not need to test for it.  However, there are times where for whatever reason the constraints do not exist.  In those instances, you will want to periodically run a data validation test to ensure that this core assumption is not being violated (of course adding a foreign key constraint would be best, but if that is not an option then periodically check).
 In the example below, the inner query pulls from the child table countries as the anchor, then left joins out to the parent table regions on the key field region_id. If region_id does not exist in the parent table (p.region_id IS NULL), then the child region_id is an orphan.  The outer query checks the count() of orphaned child rows: if it is >= 1 then the test fails, but if the count() = 0 then it passes.
 ```sql
@@ -43,3 +43,8 @@ FROM (
 );
  ```
 <br>
+
+
+<a id="t007" class="anchor" href="#t007" aria-hidden="true"> </a>
+### T007 - Foreign Key Parent Has No Children
+Sure, as
