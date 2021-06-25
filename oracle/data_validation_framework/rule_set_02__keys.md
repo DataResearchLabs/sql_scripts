@@ -14,7 +14,7 @@
 
 <a id="t005" class="anchor" href="#t005" aria-hidden="true"> </a>
 ### T005 - Unique Key Has No Duplicates
-Sure, good database design implies that unique keys be enforced by a constraint so that you do not need to test for it.  However, there are times where a decision is made to **not** add a constraint to enforce the unique key (e.g.: table is replicated from a source having the constraint so skipped for performance).  This does happen!  At work just last week, two of my data vbalidation regression tests for unique keys started failing -- and without these checks the downstream defects would have taken longer to notice, and more time to identify the root cause.
+Sure, good database design implies that unique keys be enforced by a constraint so that you do not need to test for it.  However, there are times where a decision is made to **not** add a constraint to enforce the unique key (e.g.: table is replicated from a source having the constraint so skipped for performance).  This does happen!  At work just last week, two of my unique key regression tests started failing -- without these checks in place as a wide net, the downstream defects would been around a lot longer.
 In the example below, the inner query does a group by on the unique key fields, then using a HAVING clause filters down to those key-values with a count of more than 1 -- the dups.  The outer query returns a fail if any rows come back with dups (match_count >= 2), or a pass if no dups found.
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
