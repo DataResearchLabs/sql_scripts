@@ -11,8 +11,8 @@ Some of the most common data validation tests involve simple row counts:
 * [T004 - RecentRowCount()](#T004)
 <br>
 
-
-### T001 - FullRowCount()<a id="TOO1"></a>
+<a id="TOO1" class="anchor" href="#T001" aria-hidden="true"></a>
+### T001 - FullRowCount()
   Verify full row count for a table or view.  For example, table X must have at least 10,000 rows.
   ```sql
   -- "RS-1 Row Counts" #1 - Verify FullRowCount() = 25 at table [countries]
