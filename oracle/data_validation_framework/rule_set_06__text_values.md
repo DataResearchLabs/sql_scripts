@@ -5,7 +5,7 @@
 
 ---
 
-Note: These validation checks are some of the most important.  Good data loading practices land data into text fields, then from there validate and transform into other data types.  Thus, these are checks you can use over and over in one form or another.
+Note: These text validation checks are important.  Good data loading practices land data into text data type fields, then from there validate and transform into other data types (numeric, date, boolean, etc.).  Thus, these are checks you will find yourself using over and over again over time.
 
 
 ## Table of Contents
@@ -36,13 +36,13 @@ Note: These validation checks are some of the most important.  Good data loading
 <br>
 
 
-<a id="t016" class="anchor" href="#t016" aria-hidden="true"> </a>
-### T016 - Not Null
-Verify date field is not null.  For example, to verify that table countries has no NULLs in field date_last_updated:
+<a id="t021" class="anchor" href="#t021" aria-hidden="true"> </a>
+### T021 - Not Null
+Verify text field is not null.  For example, to verify that table countries has no NULLs in field country_name:
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN date_last_updated IS NULL THEN 'FAIL' ELSE 'P' END AS status
+  SELECT CASE WHEN country_name IS NULL THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
 )
 WHERE status <> 'P';
