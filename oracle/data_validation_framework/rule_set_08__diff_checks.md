@@ -106,7 +106,7 @@ AS (
   SELECT CASE WHEN r.region_id IS NULL            THEN 'REJ-01: Record is missing from metadata|exp=NotMissing|act=' || m.region_id || ' is missing' 
               WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' || m.region_name || '|act=' || r.region_name 
               ELSE 'P'
- 	       END AS status
+         END AS status
  	FROM      metadata   m 
  	LEFT JOIN demo_hr.regions r ON r.region_id = m.region_id
  	ORDER BY m.region_id
