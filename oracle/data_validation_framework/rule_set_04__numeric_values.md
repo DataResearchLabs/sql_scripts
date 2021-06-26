@@ -25,6 +25,7 @@ WHERE region_id IS NULL;
 ```
 <br>
 
+
 <a id="t011" class="anchor" href="#t011" aria-hidden="true"> </a>
 ### T011 - Not Negative
 Verify numeric field is not negative.  For example, to verify that table countries has no field region_id negative values:
@@ -38,7 +39,7 @@ WHERE region_id < 0;
 
 <a id="t012" class="anchor" href="#t012" aria-hidden="true"> </a>
 ### T012 - Numeric Range
-Verify numeric field value is within a range.  For example, to verify that field employee_id is between 100 and 999 in table employees:
+Verify numeric field value is within a range.  In the example below, we verify that field employee_id is between 100 and 999 in table employees.  Note that you can run the inner query yourself to return the actual rejection code (is too low or too high) along with the actual value and the expected value...all nicely packaged for easy troubleshooting.
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
@@ -49,6 +50,34 @@ FROM (
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t013" class="anchor" href="#t013" aria-hidden="true"> </a>
+### T013 - In Value List
+Verify numeric field is **in** the list of values.  For example, to verify that table countries field region_id is always values 1, 2, 3, or 4 we use the IN() clause as shown below:
+```sql
+    SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+    FROM (
+    	SELECT CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
+    	FROM demo_hr.countries
+    )
+    WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t014" class="anchor" href="#t014" aria-hidden="true"> </a>
+### T014 - Not In Value List
+Verify numeric field is **not** in the list of values.  For example, to verify that table countries field region_id is never in values 97, 98, or 99 we use the NOT IN() clauses as shown below:
+```sql
+    SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+    FROM (
+    	SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
+    	FROM demo_hr.countries
+    )
+    WHERE status <> 'P';
 ```
 <br>
 
