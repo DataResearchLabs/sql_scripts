@@ -364,7 +364,7 @@ INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, looku
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T006' AS tst_id 
-	     , '"RS-2 Keys" #2 - Verify FKeyHasNoOrphans() at FKey-Child [region_id] in table [countries]' AS tst_descr
+	     , '"RS-2 Keys" #2 - Verify FKeyChildNotOrphans() at FKey-Child [region_id] in table [countries]' AS tst_descr
 	FROM dual
 )
 , dut -- Data Under Test 
@@ -417,7 +417,7 @@ INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, looku
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T007' AS tst_id 
-	     , '"RS-2 Keys" #3 - Verify FKeyHasChildren() at FKey-Parent [country_id] in table [countries]' AS tst_descr
+	     , '"RS-2 Keys" #3 - Verify FKeyParentHasChildren() at FKey-Parent [country_id] in table [countries]' AS tst_descr
 	FROM dual
 )
 , dut -- Data Under Test 
@@ -1055,7 +1055,7 @@ INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, looku
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T019' AS tst_id 
-	     , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has no time part (is not 12:00:00) at table [employees]' AS tst_descr
+	     , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has time part (is not 12:00:00) at table [employees]' AS tst_descr
 	FROM dual
 )
 , dut -- Data Under Test 
@@ -1935,6 +1935,7 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT CASE WHEN INSTR(last_name, '.') > 0 THEN 'REJ-01: Field last_name has a period|exp=none|act=at position ' || CAST(INSTR(last_name, '.') AS VARCHAR2(4))
+	            WHEN INSTR(last_name, '0') > 0 THEN 'REJ-02: Field last_name has a dash|exp=none|act=at position ' || CAST(INSTR(last_name, '-') AS VARCHAR2(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
@@ -2398,6 +2399,11 @@ SELECT * FROM fdtl
 ;
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
+
+
+-- -----------------------------------------------------------------------------------------------
+-- RULE SET #7: REGULAR EXPRESSIONS
+-- -----------------------------------------------------------------------------------------------
 
 -- T045 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp PhoneNumber"

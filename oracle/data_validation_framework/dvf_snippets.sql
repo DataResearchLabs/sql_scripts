@@ -106,7 +106,7 @@
 
 
 -- T006 ------------------------------------------------------------------------------------------
--- "RS-2 Keys" #2 - Verify FKeyHasNoOrphans() at FKey-Child [region_id] in table [countries]
+-- "RS-2 Keys" #2 - Verify FKeyChildNotOrphans() at FKey-Child [region_id] in table [countries]
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
@@ -119,7 +119,7 @@
 
 
 -- T007 ------------------------------------------------------------------------------------------
--- "RS-2 Keys" #3 - Verify FKeyHasChildren() at FKey-Parent [country_id] in table [countries] for select Countries
+-- "RS-2 Keys" #3 - Verify FKeyParentHasChildren() at FKey-Parent [country_id] in table [countries] for select Countries
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
@@ -139,17 +139,23 @@
 -- T008 ------------------------------------------------------------------------------------------
 -- "RS-3 Heuristics" #1 - Verify NullRateThresholds() for specific columns (eg: columnX is NULL for < 5% of the data ) in table [countries]
 
-    SELECT CASE WHEN nr_dept_nm  > 0.0000 THEN 'REJ-01: Null rate too high at department_name.  Exp=0.0000 / Act=' || CAST(nr_dept_nm AS VARCHAR2(8))
-                WHEN nr_mgr_id   > 0.6500 THEN 'REJ-02: Null rate too high at manager_id.  Exp<=0.6500 / Act=' || CAST(nr_mgr_id AS VARCHAR2(8))
-                WHEN nr_url      > 0.8000 THEN 'REJ-03: Null rate too high at url.  Exp<=0.8000 / Act=' || CAST(nr_url AS VARCHAR2(8))
-                ELSE 'P'
-           END AS status
-    FROM (
-    	SELECT CAST(SUM(CASE WHEN department_name IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_dept_nm
-             , CAST(SUM(CASE WHEN manager_id      IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_mgr_id
-             , CAST(SUM(CASE WHEN url             IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_url
-    	FROM demo_hr.departments
-    );
+    WITH dtls AS (
+        SELECT CASE WHEN nr_dept_nm  > 0.0000 THEN 'REJ-01: Null rate too high at department_name.  Exp=0.0000 / Act=' || CAST(nr_dept_nm AS VARCHAR2(8))
+                    WHEN nr_mgr_id   > 0.6500 THEN 'REJ-02: Null rate too high at manager_id.  Exp<=0.6500 / Act=' || CAST(nr_mgr_id AS VARCHAR2(8))
+                    WHEN nr_url      > 0.8000 THEN 'REJ-03: Null rate too high at url.  Exp<=0.8000 / Act=' || CAST(nr_url AS VARCHAR2(8))
+                    ELSE 'P'
+               END AS status
+        FROM (
+        	SELECT CAST(SUM(CASE WHEN department_name IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_dept_nm
+                 , CAST(SUM(CASE WHEN manager_id      IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_mgr_id
+                 , CAST(SUM(CASE WHEN url             IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_url
+        	FROM demo_hr.departments
+        )
+    )
+    
+    SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status 
+    FROM dtls 
+    WHERE status <> 'P';
 
 
 
@@ -297,7 +303,7 @@
 
 
 -- T019 ------------------------------------------------------------------------------------------
--- "RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has no time part (is not 12:00:00) at table [employees]
+-- "RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has time part (is not 12:00:00) at table [employees]
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
@@ -527,7 +533,7 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, '.') > 0 THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -657,6 +663,11 @@
     )
     WHERE status <> 'P';
 
+
+
+-- -----------------------------------------------------------------------------------------------
+-- RULE SET #7: REGULAR EXPRESSIONS
+-- -----------------------------------------------------------------------------------------------
 
 -- T045 ------------------------------------------------------------------------------------------
 -- "RS-7 RegEx" #01 - Verify RegExp("IsPhoneNumber") where phone_number matches RegEx pattern "[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}" in table [employees]

@@ -104,7 +104,7 @@
 -- T006 ------------------------------------------------------------------------------------------
     SELECT 'T006' AS tst_id
          , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-         , '"RS-2 Keys" #2 - Verify FKeyHasNoOrphans() at FKey-Child [region_id] in table [countries]' AS tst_descr   
+         , '"RS-2 Keys" #2 - Verify FKeyChildNotOrphans() at FKey-Child [region_id] in table [countries]' AS tst_descr   
     FROM (
     	SELECT DISTINCT c.region_id AS child_id, p.region_id AS parent_id
     	FROM      demo_hr.countries c 
@@ -116,7 +116,7 @@
 -- T007 ------------------------------------------------------------------------------------------
     SELECT 'T007' AS tst_id
          , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-         , '"RS-2 Keys" #3 - Verify FKeyHasChildren() at FKey-Parent [country_id] in table [countries] for select Countries' AS tst_descr   
+         , '"RS-2 Keys" #3 - Verify FKeyParentHasChildren() at FKey-Parent [country_id] in table [countries] for select Countries' AS tst_descr   
     FROM (
         SELECT DISTINCT c.country_id AS child_id, p.country_id AS parent_id
     	FROM      demo_hr.countries p 
@@ -291,7 +291,7 @@
 -- T019 ------------------------------------------------------------------------------------------
     SELECT 'T019' AS tst_id
          , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-         , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has no time part (is not 12:00:00) at table [employees]' AS tst_descr   
+         , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has time part (is not 12:00:00) at table [employees]' AS tst_descr   
     FROM (
     	SELECT CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.test_case_results
@@ -512,7 +512,7 @@
          , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
          , '"RS-6 Text" #16 - Verify No_PeriodDash_Chars() where [last_name] has periods or dashes in table [employees]' AS tst_descr   
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, '.') > 0 THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -642,6 +642,11 @@
     )
     WHERE status <> 'P';
 
+
+
+-- -----------------------------------------------------------------------------------------------
+-- RULE SET #7: REGULAR EXPRESSIONS
+-- -----------------------------------------------------------------------------------------------
 
 -- T045 ------------------------------------------------------------------------------------------
     SELECT 'T045' AS tst_id
