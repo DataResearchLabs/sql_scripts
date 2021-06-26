@@ -81,3 +81,16 @@ Verify numeric field is **not** in the list of values.  For example, to verify t
 ```
 <br>
 
+
+<a id="t015" class="anchor" href="#t015" aria-hidden="true"> </a>
+### T015 - Multi Field Compare
+Verify numeric field values in relation to one another.  For example, to verify that salary times commission_pct is always less than $10,000 in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.countries
+)
+WHERE status <> 'P';
+```
+<br>
