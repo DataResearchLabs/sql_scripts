@@ -984,7 +984,7 @@
 -- T064 ------------------------------------------------------------------------------------------
     SELECT 'T064' AS tst_id
          , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-         , '"X#3 IgnoreBadRows" - VerVerify NoNulls() at [region_id] in table [countries]; ignoring 3 known bad rows' AS tst_descr   
+         , '"X#3 IgnoreBadRows" - Verify NoNulls() at [region_id] in table [countries]; ignoring 3 known bad rows' AS tst_descr   
     FROM (
     	SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries

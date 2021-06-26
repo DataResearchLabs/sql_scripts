@@ -992,7 +992,7 @@
 	            WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'WARN:%') > 0 THEN 'WARN'
 	            ELSE 'P'
 	       END AS status
-	FROM dual;
+    FROM dual;
 
  
 
@@ -1010,7 +1010,7 @@
 
 
 -- T064 ------------------------------------------------------------------------------------------
--- "X#3 IgnoreBadRows" - VerVerify NoNulls() at [region_id] in table [countries]; ignoring 3 known bad rows
+-- "X#3 IgnoreBadRows" - Verify NoNulls() at [region_id] in table [countries]; ignoring 3 known bad rows
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (

@@ -3471,7 +3471,7 @@ INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, looku
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T064' AS tst_id 
-	     , '"X#3 IgnoreBadRows" - VerVerify NoNulls() at [region_id] in table [countries]; ignoring 3 known bad rows' AS tst_descr
+	     , '"X#3 IgnoreBadRows" - Verify NoNulls() at [region_id] in table [countries]; ignoring 3 known bad rows' AS tst_descr
 	FROM dual
 )
 , dut -- Data Under Test 
