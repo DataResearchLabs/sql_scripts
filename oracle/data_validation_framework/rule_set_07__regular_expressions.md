@@ -195,3 +195,31 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t057" class="anchor" href="#t057" aria-hidden="true"> </a>
+### T057 - RegExp("EmailAddress")
+Verify text field is a properly formatted email address.  For example, to verify that the field email_address of table employees is properly formatted:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(email_address, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t058" class="anchor" href="#t058" aria-hidden="true"> </a>
+### T058 - RegExp("IsUrl")
+Verify text field is a properly formatted URL.  For example, to verify that the field url of table departments is properly formatted with "http://" or "https://":
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(url, '(http)(s)?(:\/\/)') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.departments
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
