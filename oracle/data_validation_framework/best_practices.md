@@ -6,7 +6,7 @@
 ---
 
 ## Table of Contents
- - <a href="#t062">T062 - Use Status "WARN" and "SKIP"</a>
+ - <a href="#t062">T062 - New Status "WARN" and "SKIP"</a>
  - <a href="#t063">T063 - Limit to Recent Data</a>
  - <a href="#t064">T064 - Ignore Known Fails that Won't be Fixed</a>
  - <a href="#t065">T065 - Single Large Tablescan for Performance</a>
@@ -15,7 +15,7 @@
 
 
 <a id="t062" class="anchor" href="#t062" aria-hidden="true"> </a>
-### T062 - Use Status "WARN" and "SKIP"
+### T062 - New Status "WARN" and "SKIP"
 This best practice revolves around the Status field that all these test cases have been calculating and returning.  Up to this point, all prior data validation tests (T001 thru t061 spanning multiple markdown .md files) have yield either "P" for pass, or "FAIL".
 
 However, there is nothing stopping you from adding additional status values such as "WARN" or "SKIP" or even "BLOCK".
@@ -98,6 +98,67 @@ FROM (
   SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
   WHERE country_id NOT IN('BR','DK','IL') 
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t065" class="anchor" href="#t065" aria-hidden="true"> </a>
+### T065 - Single Large Tablescan for Performance
+In all the prior validation test cases (T001 thr T0065), the tests were granular and standalone so easier to follow as examples.  However, in reality each of those checks often involves a single slow table scan pass (except for the few times indexes are available and applicable).  Therefore, it is often better to bundle as many checks against as many fields as possible, one table per table-scan query.
+
+For example, below I've bundled validation tests from many small granular tests above into a single test here.  
+
+* The **upside** is much faster performance.  When you look at execution times in the advanced test script, this single table scan test runs all the checks in the same amount of time as any one of the granular tests.  Translation: Rolling 25 granular tests into one bigger table scan pass makes the script 25 times faster because the database does everything in one table scan pass rather than 25 equal duration but smaller sql passes.
+* The **downside** is clarity.  Since all the logic is in one giant CASE...WHEN...ELSE statement, the sequencing matters.  Translation: when the first rejection is encountered during validation of a given row, all subsequent WHEN statements are skipped.  So you only know of the highest level rejection code, but have no idea about other possible data validation errors until you fix the first one and er-run.  Sometimes this is an acceptable trade-off to improvve performance (esp. when fails are rare and the system is mature).
+
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
+              WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
+              WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' || CAST(salary * commission_pct AS VARCHAR2(15))
+              WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00'             THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' || TO_CHAR(hire_date, 'hh:nn:ss')
+              WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$')                        THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-5]+$"|act=' || zip5 
+              WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
+              WHEN email <> SUBSTR(UPPER(SUBSTR(
+    	                            first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
+              WHEN LENGTH(phone_number) NOT IN(12,18)                       THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
+              WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                       THEN 'REJ-09: Field job_id does not contain lower case characters|exp=ucase|act=' || EMAIL
+              WHEN NOT REGEXP_LIKE(SUBSTR(LAST_NAME,1), '[[:upper:]]')      THEN 'REJ-10: Field last_name after first char is all lower case|exp=lcase|act=' || LAST_NAME 
+              WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')                  THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
+              WHEN REGEXP_LIKE(last_name, '[[:digit:]]')                    THEN 'REJ-12: Field last_name does not contain numeric digits|exp=no-digits|act=' || LAST_NAME 
+              WHEN first_name LIKE '%''%'                                   THEN 'REJ-13: Field first_name does not contain single quote characters|exp=none|act=' || first_name
+              WHEN first_name LIKE '%"%'                                    THEN 'REJ-14: Field first_name does not contain quotation characters|exp=none|act=' || first_name
+              WHEN INSTR(last_name, CHR(10))  > 0                           THEN 'REJ-15: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(13))  > 0                           THEN 'REJ-16: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(9))   > 0                           THEN 'REJ-17: Field last_name has a Tab (CHR-9)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(9)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(160)) > 0                           THEN 'REJ-18: Field last_name has a Non-Breaking-Space (CHR-160)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(160)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(151)) > 0                           THEN 'REJ-19: Field last_name has a Non-Breaking-Space (CHR-151)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(151)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(11)) > 0                            THEN 'REJ-20: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(11)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(12)) > 0                            THEN 'REJ-21: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(12)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(133)) > 0                           THEN 'REJ-22: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(133)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, '.') > 0                                THEN 'REJ-23: Field last_name has a period|exp=none|act=at position ' || CAST(INSTR(last_name, '.') AS VARCHAR2(4))
+              WHEN REGEXP_LIKE(last_name, '[,/:()&#?;]')                    THEN 'REJ-24: Field last_name has a ",/:()&#?;" characters|exp=none|act=' || last_name 
+              WHEN REGEXP_LIKE(phone_number, '[^.0123456789]')              THEN 'REJ-25: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' || phone_number 
+              WHEN phone_number NOT LIKE '%.%'                              THEN 'REJ-26: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
+              WHEN phone_number NOT LIKE '___.___.____' 
+               AND phone_number NOT LIKE '011.__.____._____%'               THEN 'REJ-27: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
+              WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$')                   THEN 'REJ-28: Field zip9 will not convert to a number|exp=converts to number|act=' || zip5 
+              WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    	           REPLACE(REPLACE(REPLACE(some_date_fmt1,'0',''),'1','')
+    	           ,'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8'
+    	           ,''),'9','')  > ''                                       THEN 'REJ-29: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                     THEN 'REJ-30: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT SUBSTR(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-31: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT SUBSTR(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-32: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT SUBSTR(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-33: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              ELSE 'P'
+    	    END AS status
+  FROM demo_hr.employees
+  WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
+                   -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON)
 )
 WHERE status <> 'P';
 ```
