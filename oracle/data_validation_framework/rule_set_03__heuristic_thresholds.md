@@ -24,6 +24,33 @@ I've used this test scenario to great effect when coupled with a create-date or 
 Below, the inner query at the bottom is doing a single table scan to calculate a null rate per column by counting nulls in each column and dividing by the total table row count.  The outer query (wrapper at the top) applies the business logic; comparing the actual calcuated null rates (nr_dept_nm, nr_mgr_id, and nr_url) against the expected threshold rates (hard-coded as 0.0000, 0.6500, and 0.8000).  The returned value is a rejection code (REJ-01, REJ-02, etc.) clearly indicating which field failed the null rate check, what the actual null rate was, and what the expected null rate threshold to exceed was.
 ```sql
 WITH dtls AS (
+  SELECT CASE WHEN nr_dept_nm  > 0.0000 THEN 'REJ-01: Null rate too high at department_name.  Exp=0.0000 / Act=' || CAST(nr_dept_nm AS VARCHAR2(8))
+              WHEN nr_mgr_id   > 0.6500 THEN 'REJ-02: Null rate too high at manager_id.  Exp<=0.6500 / Act=' || CAST(nr_mgr_id AS VARCHAR2(8))
+              WHEN nr_url      > 0.8000 THEN 'REJ-03: Null rate too high at url.  Exp<=0.8000 / Act=' || CAST(nr_url AS VARCHAR2(8))
+              ELSE 'P'
+         END AS status
+  FROM (
+    SELECT CAST(SUM(CASE WHEN department_name IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_dept_nm
+         , CAST(SUM(CASE WHEN manager_id      IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_mgr_id
+         , CAST(SUM(CASE WHEN url             IS NULL THEN 1 ELSE 0 END) AS FLOAT(126)) / CAST(COUNT(*) AS FLOAT(126)) AS nr_url
+    FROM demo_hr.departments
+  )
+)
+
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status 
+FROM dtls 
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t009" class="anchor" href="#t009" aria-hidden="true"> </a>
+### T009 - Value Frequency Thresholds
+"Value Frequency Threshold" tests are fairly similar to null rates above (T008).  The difference is that we are checking the frequency (or rate) at which a column's values occur.
+
+In the example below,
+```sql
+WITH dtls AS (
   SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.28 AND 0.36 THEN 'REJ-01: Frequency occurrence of region_id=1 is outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
               WHEN region_id = 2  AND freq_rt NOT BETWEEN 0.16 AND 0.24 THEN 'REJ-02: Frequency occurrence of region_id=2 is outside threshold|exp=0.16 thru 0.24|act=' || CAST(freq_rt AS VARCHAR2(8))
               WHEN region_id = 3  AND freq_rt NOT BETWEEN 0.20 AND 0.28 THEN 'REJ-03: Frequency occurrence of region_id=3 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR2(8))
@@ -44,15 +71,4 @@ WITH dtls AS (
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status 
 FROM dtls 
 WHERE status <> 'P';
-```
-<br>
-
-
-<a id="t009" class="anchor" href="#t009" aria-hidden="true"> </a>
-### T009 - Value Frequency Thresholds
-"Value Frequency Threshold" tests are fairly similar to null rates above (T008).  The difference is that we are checking the frequency (or rate) at which a column's values occur.
-
-In the example below,
-```sql
-
 ```
