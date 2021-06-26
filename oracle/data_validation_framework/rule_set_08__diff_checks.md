@@ -21,7 +21,7 @@ This validation check monitors the schema (column names and properties) of table
 * The first common table expression (CTE) or subquery is named "expected".  It is a static snapshot of what the locaton table's schema should look like, including the ordinal position, the column name, the data type, and whether the column is nullable.  To re-factor the SQL below, this is the only section that you'd heavily edit.
 * The second CTR or subquery is named "actual".  It is a dynamic snapshot of the location table's current structure based on Oracle system tables.  It derives a compact data type with length, scale, and precision appended.  The only minor re-factoring of this CTE you'd need ni order to re-use this on your projects would be the owner and table names in the WHERE clause; everything else should remain unchanged.
 * The third CTR or subquery is named "dut", short for data under test.  This is where the business logic is applied to derive rejection codes (eg: table does not exist, or expected column is missing or has a property that changed).
-* Finally, the smiple SELECT at the bottom returns "P" for pass if there are no differences (rejections) found, or "FAIL" if there were.
+* Finally, the simple SELECT at the bottom returns "P" for pass if there are no differences (rejections) found, or "FAIL" if there were.
 </details>
  
  ```sql
@@ -75,6 +75,43 @@ AS (
   LEFT JOIN actual   a ON a.column_nm = e.column_nm
 )
 
+SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
+FROM dut WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t060" class="anchor" href="#t060" aria-hidden="true"> </a>
+### T060 - Table Data Differences (Static SQL Snapshot)
+This validation check monitors the table's data, tripping an alert (Fail) any time the real table data no longer matches the static data embedded in the SQL as a snapshot.
+
+<details><summary>More details...</summary>
+ 
+* The first common table expression (CTE) or subquery is named "metadata".  It is a static snapshot of what the region table's expected data should contains.  To re-use this for your purposes, you'd heavily change this SQL around to match the columns and values and rows of data you want to validate.
+* The second CTR or subquery is named "dut", short for data under test.  It dynamically compares the static data content (expected) above against the actual regions table data using a left join to spot missing rows, and comparing all field values (there's only one, region_name) one by one.  Any differences found will be tagged with its own rejection code (eg: REJ-02: Region Name does not match).  The expected and actual values are also listed in the inner query results.
+* Finally, the simple SELECT at the bottom returns "P" for pass if there are no differences found, or "FAIL" if there were.
+</details>
+ 
+ ```sql
+WITH metadata 
+AS (
+        SELECT 1 AS region_id, 'Europe' AS region_name FROM dual
+  UNION SELECT 2 AS region_id, 'Americas' AS region_name FROM dual
+  UNION SELECT 3 AS region_id, 'Asia' AS region_name FROM dual
+  UNION SELECT 4 AS region_id, 'Middle East and Africa' AS region_name FROM dual
+  ORDER BY region_id
+)
+, dut -- Data Under Test 
+AS (
+  SELECT CASE WHEN r.region_id IS NULL            THEN 'REJ-01: Record is missing from metadata|exp=NotMissing|act=' || m.region_id || ' is missing' 
+ 	            WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' || m.region_name || '|act=' || r.region_name 
+ 	            ELSE 'P'
+ 	       END AS status
+ 	FROM      metadata   m 
+ 	LEFT JOIN demo_hr.regions r ON r.region_id = m.region_id
+ 	ORDER BY m.region_id
+)
+    
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
 FROM dut WHERE status <> 'P';
  ```
