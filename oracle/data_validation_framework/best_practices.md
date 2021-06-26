@@ -11,7 +11,7 @@
  - <a href="#t064">T064 - Ignore Known Fails that Won't be Fixed</a>
  - <a href="#t065">T065 - Single Large Tablescan for Performance</a>
  - <a href="#t066">T066 - Use Config Tables to Parameterize</a>
- - <a href="#t067">T067 - Design Concept</a>
+ - <a href="#t067">T067 - Test Case Layout Design Consideration</a>
 <br>
 
 
@@ -211,7 +211,7 @@ WHERE status <> 'P';
 
 
 <a id="t067" class="anchor" href="#t067" aria-hidden="true"> </a>
-### T067 - Design Consideration
+### T067 - Test Case Layout Design Consideration
 This is a best practice concept, no SQL code is applicable...
 	
 Up to this point, all of the SQL data validation tests have been laid out logically, by validation test type to facilitate learning.  The record counts were grouped together in Rule Set #1, or numeric field tests were grouped in Rule Set #4.  
