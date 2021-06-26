@@ -12,6 +12,8 @@
 <br>
 
 
+Note: the SQL code in these sample validations can get long, so they are wrapped in expandable tags, just click "See the SQL code..." to see it.
+
 <a id="t059" class="anchor" href="#t059" aria-hidden="true"> </a>
 ### T059 - Table Structure (Schema) Differences
 This validation check monitors the schema (column names and properties) of table Locations, tripping an alert (Fail) any time the real table no longer matches the static copy embedded in the SQL as a snapshot.
@@ -23,7 +25,8 @@ This validation check monitors the schema (column names and properties) of table
 * The third CTR or subquery is named "dut", short for data under test.  This is where the business logic is applied to derive rejection codes (eg: table does not exist, or expected column is missing or has a property that changed).
 * Finally, the simple SELECT at the bottom returns "P" for pass if there are no differences (rejections) found, or "FAIL" if there were.
 </details>
- 
+<details><summmary>See the SQL code...</summary>
+                    
  ```sql
 WITH expected 
 AS (
@@ -78,6 +81,7 @@ AS (
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
 FROM dut WHERE status <> 'P';
  ```
+</details>
 <br>
 
 
@@ -91,8 +95,9 @@ This validation check monitors the table's data, tripping an alert (Fail) any ti
 * The second CTR or subquery is named "dut", short for data under test.  It dynamically compares the static data content (expected) above against the actual regions table data using a left join to spot missing rows, and comparing all field values (there's only one, region_name) one by one.  Any differences found will be tagged with its own rejection code (eg: REJ-02: Region Name does not match).  The expected and actual values are also listed in the inner query results.
 * Finally, the simple SELECT at the bottom returns "P" for pass if there are no differences found, or "FAIL" if there were.
 </details>
- 
- ```sql
+<details><summmary>See the SQL code...</summary>
+                    
+```sql
 WITH metadata 
 AS (
         SELECT 1 AS region_id, 'Europe' AS region_name FROM dual
@@ -115,6 +120,7 @@ AS (
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
 FROM dut WHERE status <> 'P';
  ```
+</details>
 <br>
 
 
@@ -128,6 +134,7 @@ This validation check monitors the table's data, tripping an alert (Fail) any ti
 * The second CTR or subquery is named "dut", short for data under test.  It formats the output so differences are easy to spot (a concatenated string with column names and values.
 * Finally, the simple SELECT at the bottom returns "P" for pass if there are no differences found, or "FAIL" if there were.
 </details>
+<details><summmary>See the SQL code...</summary>
  
  ```sql
 WITH non_matches
@@ -152,4 +159,5 @@ AS (
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
 FROM dut WHERE status <> 'P'
  ```
+</details>
 <br>
