@@ -45,3 +45,43 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t018" class="anchor" href="#t018" aria-hidden="true"> </a>
+### T018 - No Time Part
+Verify date field is a date only, no time part present.  For example, to verify that table employees has no time part in field hire_date (time part must be "12:00:00"):
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t019" class="anchor" href="#t019" aria-hidden="true"> </a>
+### T019 - Has Time Part
+Verify date field is a date **and** time.  For example, to verify that table employees has a time part in field hire_date (time part cannot be "12:00:00"):
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.test_case_results
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t020" class="anchor" href="#t020" aria-hidden="true"> </a>
+### T020 - Multi Field Compare
+Verify multiple date fields relative to each other.  For example, to verify that field start_date must be < field end_date in table job_history:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.job_history
+)
+WHERE status <> 'P';
+```
+<br>
