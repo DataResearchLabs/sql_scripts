@@ -8,7 +8,7 @@
 ## Table of Contents
  - <a href="#t062">T062 - Use Status "WARN" and "SKIP"</a>
  - <a href="#t063">T063 - Limit to Recent Data</a>
- - <a href="#t064">T064 - "Teach" to Ignore Bad Rows</a>
+ - <a href="#t064">T064 - Ignore Known Fails that Won't be Fixed</a>
  - <a href="#t065">T065 - Single Large Tablescan for Performance</a>
  - <a href="#t066">T066 - Use Config Tables</a>
 <br>
@@ -82,6 +82,22 @@ FROM (
   SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
   WHERE date_last_updated >= SYSDATE - 30 
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t064" class="anchor" href="#t064" aria-hidden="true"> </a>
+### T064 - Ignore Known Fails that Won't be Fixed
+There are times when developers aren't going to fix a defect for weeks/months, or the data will only be corrected on a go-forward basis.  When eitehr occurs, you want your data validation check to stop trigger a Fail alert.  Sometimes the quickest way to resolve the issue is to implement T063 above and reset the minimum test data to today's date.  Otehr times, you may want to specifically exclude known data rows going forward.  Below is such an example, where country_id BR, DK, and IL were causing fails due to some defect that won't be resolved.  So for this test scenario, those countries will be excluded from the null check going forward.  The WHERE clause at the inner query is doing all the work for this best practice.
+
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.countries
+  WHERE country_id NOT IN('BR','DK','IL') 
 )
 WHERE status <> 'P';
 ```
