@@ -332,3 +332,45 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t040" class="anchor" href="#t040" aria-hidden="true"> </a>
+### T040 - IsNumeric()
+Verify text field is numeric.  For example, use the SQL below to verify that the field zip5 in table employees is numeric.
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t041" class="anchor" href="#t041" aria-hidden="true"> </a>
+### T041 - IsDate("yyyymmdd")
+Verify text field is a date formatted as "yyyymmdd".  For example, use the SQL below to verify that the field some_date_fmt1 in table employees is date format "yyyymmdd".  
+
+Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  
+* Note in the first WHEN clause the use of multiple REPLACE() commands that take a date like '20210401" and convert all numeric digits to '' such that the actual converted test string is '' to match the expected value of ''.
+* Note in the second WHEN clause that the value is confirmed to be 8 characters in length
+* Note in the third thru fifth WHEN clauses that each date part (year, month, day) is confirmed to be within an appropriate range.  
+* Note that this simple format check is not date-aware; it will not detect leap years or months with < 31 days have the wrong values in place
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                  some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
+                  > ''                                                      THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                     THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT SUBSTR(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT SUBSTR(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              WHEN NOT SUBSTR(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+              ELSE 'P'
+ 	       END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
