@@ -59,3 +59,32 @@ FROM dual;
 <br>
 
 
+<a id="t063" class="anchor" href="#t063" aria-hidden="true"> </a>
+### T063 - Limit to Recent Data
+There are good reasons why you should consider altering the prior example tests to only use recent data (eg: past 1 or 5 or 10 days) when you go to implement these yourself.  
+
+<details><summary>More details...</sumary>
+	
+Three important reasons are:
+1. **Performance** - if the test can filter down to just a small recent subset of data and test just that rather than pulling the entire past 5 years, well that is 1,500+ times less data and should run much faster (depending on underlyng table size, indexes, physical location, etc.)
+2. **Sensitivity** - If you are running say a null rate check, or a value frequency check...obviously it will take many days of bad data for a defect to begin to impact the rate enough to eventually trigger an alert.  Much better in those scenarios to average rates across one or no more than 5 days and set the threhold to trigger off of that.
+3.  **Garabage Decay** - This is an artifiact of the imperfect world we live in.  There are times when I'd setup an alert to fire daily and notify the appropriate people to fix it.  But if they didn't get around to fixing it for 2 or 3 days, I didn't want that alarm firing over and over again, causing me to look and confirm, oh year, known issue...they'll get to it.  Instead, I setup the alert to look only at the past 24 hours and scheduled it to run daily.  It only tested new data once and reported the error once. 
+
+In the example below, the inner query is only checking for nulls against data that was last updated in the past 30 days. 
+
+P.S. - To achieve maximum performance here, find an indexed field to filter on in your WHERE clause; you want to avoid an unnecessary table scan against a giant table.  So, if you are lucky and have an appropriate create or update date field that is indexed then you are golden.  However, if not, then maybe find a primary key that is a numeric integer that increments with every new row.  Worst case you could just take the MAX() - several thousand rows and test those...or you could cross reference a date somehow to that ID field (example lookup dates in a batch table to pick the minimum Batch_ID and filter on that as a surrogate for date time that is indexed and will run fast).
+
+</details>
+	
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.countries
+  WHERE date_last_updated >= SYSDATE - 30 
+)
+WHERE status <> 'P';
+```
+<br>
+
+
