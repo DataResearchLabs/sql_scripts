@@ -212,3 +212,30 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t032" class="anchor" href="#t032" aria-hidden="true"> </a>
+### T032 - No TAB Characters
+Verify text field does not have tab (CHAR-9) characters.  For example, to verify that the field last_name has no TABs in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN INSTR(last_name, CHR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t033" class="anchor" href="#t033" aria-hidden="true"> </a>
+### T033 - No NBS Characters
+Verify text field does not have non-breaking-space (CHAR-160 or "NBS") characters.  For example, to verify that the field last_name has no NBS chars in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN INSTR(last_name, CHR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
