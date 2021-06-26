@@ -351,7 +351,7 @@ WHERE status <> 'P';
 Verify text field is a date formatted as "yyyymmdd".  For example, use the SQL below to verify that the field some_date_fmt1 in table employees is date format "yyyymmdd".  
 <details><summary>More details...</summary> 
 
- * Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  
+ * Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  Also, it allows for more specific rejection codes below.
 * Note in the first WHEN clause the use of multiple REPLACE() commands that take a date like '20210401" and convert all numeric digits to '' such that the actual converted test string is '' to match the expected value of ''.
 * Note in the second WHEN clause that the value is confirmed to be 8 characters in length
 * Note in the third thru fifth WHEN clauses that each date part (year, month, day) is confirmed to be within an appropriate range.  
@@ -380,11 +380,75 @@ WHERE status <> 'P';
 
 <a id="t042" class="anchor" href="#t042" aria-hidden="true"> </a>
 ### T042 - IsDate("mm/dd/yyyy")
-Verify text field is a date formatted as "mm/dd/yyyy".  For example, use the SQL below to verify that the field some_date_fmt1 in table employees is date format "mm/dd/yyyy".  
+Verify text field is a date formatted as "mm/dd/yyyy".  For example, use the SQL below to verify that the field some_date_fmt2 in table employees is date format "mm/dd/yyyy".  
 <details><summary>More details...</summary> 
 
- * Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  
+* Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  Also, it allows for more specific rejection codes below.
 * Note in the first WHEN clause the use of multiple REPLACE() commands that take a date like '04/01/2021" and convert all numeric digits or the slash character to '' such that the actual converted test string is '' to match the expected value of ''.
+* Note in the second WHEN clause that the value is confirmed to be 10 characters in length
+* Note in the third thru fifth WHEN clauses that each date part (year, month, day) is confirmed to be within an appropriate range.  
+* Note that this simple format check is not date-aware; it will not detect leap years or months with < 31 days have the wrong values in place
+* Note the use of rejection codes (REJ-01, etc.) at the inner query to clearly return why the validation check failed...run the inner query alone on fail to see details
+</details>
+
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                    some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
+                    > ''                                                    THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+              WHEN NOT LENGTH(TRIM(some_date_fmt2)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+              WHEN NOT SUBSTR(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+              WHEN NOT SUBSTR(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+              WHEN NOT SUBSTR(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t043" class="anchor" href="#t043" aria-hidden="true"> </a>
+### T043 - IsDate("mm-dd-yyyy")
+Verify text field is a date formatted as "mm-dd-yyyy".  For example, use the SQL below to verify that the field some_date_fmt3 in table employees is date format "mm-dd-yyyy".  
+<details><summary>More details...</summary> 
+
+* Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  Also, it allows for more specific rejection codes below.
+* Note in the first WHEN clause the use of multiple REPLACE() commands that take a date like '04-01-2021" and convert all numeric digits or the dash character to '' such that the actual converted test string is '' to match the expected value of ''.
+* Note in the second WHEN clause that the value is confirmed to be 10 characters in length
+* Note in the third thru fifth WHEN clauses that each date part (year, month, day) is confirmed to be within an appropriate range.  
+* Note that this simple format check is not date-aware; it will not detect leap years or months with < 31 days have the wrong values in place
+* Note the use of rejection codes (REJ-01, etc.) at the inner query to clearly return why the validation check failed...run the inner query alone on fail to see details
+</details>
+
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                    some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
+                    > ''                                                    THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+              WHEN NOT LENGTH(TRIM(some_date_fmt3)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+              WHEN NOT SUBSTR(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+              WHEN NOT SUBSTR(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+              WHEN NOT SUBSTR(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+              ELSE 'P'
+    	    END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t044" class="anchor" href="#t044" aria-hidden="true"> </a>
+### T044 - IsDate("yyyy-mm-dd")
+Verify text field is a date formatted as "yyyy-mm-dd".  For example, use the SQL below to verify that the field some_date_fmt4 in table employees is date format "yyyy-mm-dd".  
+<details><summary>More details...</summary> 
+
+ * Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  Also, it allows for more specific rejection codes below.
+* Note in the first WHEN clause the use of multiple REPLACE() commands that take a date like '2021-04-01" and convert all numeric digits or the dash character to '' such that the actual converted test string is '' to match the expected value of ''.
 * Note in the second WHEN clause that the value is confirmed to be 10 characters in length
 * Note in the third thru fifth WHEN clauses that each date part (year, month, day) is confirmed to be within an appropriate range.  
 * Note that this simple format check is not date-aware; it will not detect leap years or months with < 31 days have the wrong values in place
