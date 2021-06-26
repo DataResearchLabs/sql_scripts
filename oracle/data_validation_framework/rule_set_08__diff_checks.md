@@ -15,8 +15,8 @@
 <a id="t059" class="anchor" href="#t059" aria-hidden="true"> </a>
 ### T059 - Table Structure (Schema) Differences
 This validation check monitors the schema (column names and properties) of table Locations, tripping an alert (Fail) any time the real table no longer matches the static copy embedded in the SQL as a snapshot.
-
 <details><summary>Click to expand source code (it is long)</summary>
+ 
  ```sql
 WITH expected 
 AS (
