@@ -255,7 +255,7 @@ WHERE status <> 'P';
 
 
 <a id="t035" class="anchor" href="#t035" aria-hidden="true"> </a>
-### T035 - No VTFFNEL Characters
+### T035 - No VT-FF-NEL Characters
 Verify text field does not have any vertical tab (CHAR-11 / "VT"), form feed (CHAR-12 / "FF"), or next line (CHAR-133 / "NEL") characters.  For example, use the SQL below to verify that the field last_name has no VT, FF, or NEL characters in table employees.  Note that this SQL checks for all three characters, each on its own CASE...WHEN clause, and that it returns the location within a string where the bad character occurs.
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
@@ -265,6 +265,20 @@ FROM (
  	            WHEN INSTR(last_name, CHR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(133)) AS VARCHAR2(4))
  	            ELSE 'P'
  	       END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t036" class="anchor" href="#t036" aria-hidden="true"> </a>
+### T036 - No Period or Dash Characters
+Verify text field does not have an periods or dashes.  For example, to verify that the field last_name has no periods or dashes in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
