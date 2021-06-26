@@ -10,7 +10,7 @@
  - <a href="#t063">T063 - Limit to Recent Data</a>
  - <a href="#t064">T064 - Ignore Known Fails that Won't be Fixed</a>
  - <a href="#t065">T065 - Single Large Tablescan for Performance</a>
- - <a href="#t066">T066 - Use Config Tables</a>
+ - <a href="#t066">T066 - Use Config Tables to Parameterize</a>
 <br>
 
 
@@ -169,4 +169,42 @@ WHERE status <> 'P';
 </details>
 <br>
 
+
+<a id="t066" class="anchor" href="#t066" aria-hidden="true"> </a>
+### T066 - Use Config Tables to Parameterize
+There are times when you want parameterize the data validation script rather than manually change hard coded values.  In the advanced data validation script, this is implemented.
+	
+<details><summary>Example Config Table Setup...</summary>
+	
+```sql
+-- Create Config Table
+CREATE TABLE demo_hr.test_case_config ( 
+  prop_nm     VARCHAR2(99)
+, prop_val    VARCHAR2(255)
+);
+	
+-- Populate Config Table with Parameter Values
+INSERT INTO demo_hr.test_case_config VALUES('NumberDaysLookBack','10');
+```
+</details>
+
+SQL that uses looks up the value "10" days in the Config Table and uses it in the WHERE clause to filter data down.  Using the config file, you only need to change the number of days in one place, not do a risky search-and-replace of dozens or hundreds of hard-coded "10"s scattered throughout the script.
+	
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN row_count < 5 THEN 'FAIL'
+              ELSE 'P'
+         END AS status
+  FROM (
+    SELECT COUNT(*) AS row_count 
+    FROM demo_hr.countries
+    WHERE date_last_updated >= SYSDATE - (SELECT CAST(prop_val AS INT) 
+                                          FROM demo_hr.test_case_config 
+                                          WHERE prop_nm = 'NumberDaysLookBack')
+  )
+)
+WHERE status <> 'P';
+```
+<br>
 
