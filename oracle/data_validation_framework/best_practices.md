@@ -63,7 +63,7 @@ FROM dual;
 ### T063 - Limit to Recent Data
 There are good reasons why you should consider altering the prior example tests to only use recent data (eg: past 1 or 5 or 10 days) when you go to implement these yourself.  
 
-<details><summary>More details...</sumary>
+<details><summary>More details...</summary>
 	
 Three important reasons are:
 1. **Performance** - if the test can filter down to just a small recent subset of data and test just that rather than pulling the entire past 5 years, well that is 1,500+ times less data and should run much faster (depending on underlyng table size, indexes, physical location, etc.)
