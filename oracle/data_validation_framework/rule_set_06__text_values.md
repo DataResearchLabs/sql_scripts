@@ -350,11 +350,13 @@ WHERE status <> 'P';
 ### T041 - IsDate("yyyymmdd")
 Verify text field is a date formatted as "yyyymmdd".  For example, use the SQL below to verify that the field some_date_fmt1 in table employees is date format "yyyymmdd".  
 <details><summary>More details...</summary> 
-* Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  
+
+ * Although it might be more concise to use a regular expression to implement this validation check, I went ahead and used only the native and thus more universal commands LIKE, REPLACE(), LENGTH(), TRIM(), etc.  
 * Note in the first WHEN clause the use of multiple REPLACE() commands that take a date like '20210401" and convert all numeric digits to '' such that the actual converted test string is '' to match the expected value of ''.
 * Note in the second WHEN clause that the value is confirmed to be 8 characters in length
 * Note in the third thru fifth WHEN clauses that each date part (year, month, day) is confirmed to be within an appropriate range.  
 * Note that this simple format check is not date-aware; it will not detect leap years or months with < 31 days have the wrong values in place
+* Note the use of rejection codes (REJ-01, etc.) at the inner query to clearly return why the validation check failed...run the inner query alone on fail to see details
 </details>
 
 ```sql
