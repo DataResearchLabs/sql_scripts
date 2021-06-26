@@ -113,6 +113,8 @@ For example, below I've bundled validation tests from many small granular tests 
 * The **upside** is much faster performance.  When you look at execution times in the advanced test script, this single table scan test runs all the checks in the same amount of time as any one of the granular tests.  Translation: Rolling 25 granular tests into one bigger table scan pass makes the script 25 times faster because the database does everything in one table scan pass rather than 25 equal duration but smaller sql passes.
 * The **downside** is clarity.  Since all the logic is in one giant CASE...WHEN...ELSE statement, the sequencing matters.  Translation: when the first rejection is encountered during validation of a given row, all subsequent WHEN statements are skipped.  So you only know of the highest level rejection code, but have no idea about other possible data validation errors until you fix the first one and er-run.  Sometimes this is an acceptable trade-off to improvve performance (esp. when fails are rare and the system is mature).
 
+In the example below, there is an inner query that you can highlight and execute from your SQL IDE to see results at the row level with specific rejection codes encountered, if any.  The outer query is simply a wrapper that returns a single value of pass or fail depending on whether rejection codes were found in the data.
+
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
@@ -123,7 +125,7 @@ FROM (
               WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$')                        THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-5]+$"|act=' || zip5 
               WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
               WHEN email <> SUBSTR(UPPER(SUBSTR(
-    	                            first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
+                              first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
               WHEN LENGTH(phone_number) NOT IN(12,18)                       THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
               WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                       THEN 'REJ-09: Field job_id does not contain lower case characters|exp=ucase|act=' || EMAIL
               WHEN NOT REGEXP_LIKE(SUBSTR(LAST_NAME,1), '[[:upper:]]')      THEN 'REJ-10: Field last_name after first char is all lower case|exp=lcase|act=' || LAST_NAME 
