@@ -38,3 +38,31 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t046" class="anchor" href="#t046" aria-hidden="true"> </a>
+### T046 - RegExp("IsSSN")
+Verify text field is a valid social security number (SSN) format.  For example, to verify that field fake_ssn of table employees is a valid SSN format:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(fake_ssn, '^[0-9]{3}-[0-9]{2}-[0-9]{4}$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t047" class="anchor" href="#t047" aria-hidden="true"> </a>
+### T047 - RegExp("IsZip5")
+Verify text field is a valid zipcode 5 digit format.  For example, to verify that field zip5 of table employees is a valid format:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
