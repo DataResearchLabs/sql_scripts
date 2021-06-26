@@ -144,3 +144,37 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t028" class="anchor" href="#t028" aria-hidden="true"> </a>
+### T028 - Upper and Lower Case Characters
+Verify text field characters are uppercase, lowercase, or a mix.  For example, to verify that the field last_name is all lowercase **after** the first character, and that field job_id is all uppercase in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                  THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' || job_id
+              WHEN NOT REGEXP_LIKE(SUBSTR(last_name,1), '[[:upper:]]') THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' || last_name 
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t029" class="anchor" href="#t029" aria-hidden="true"> </a>
+### T029 - Alpha and Numeric Characters
+Verify text field characters are alpha, numeric, or a mix.  For example, to verify that the field employee_id is numeric only, and field last_name is slpha only in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')   THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
+              WHEN REGEXP_LIKE(last_name, '[[:digit:]]')     THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' || LAST_NAME 
+ 	            ELSE 'P'
+ 	       END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
