@@ -112,3 +112,35 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t026" class="anchor" href="#t026" aria-hidden="true"> </a>
+### T026 - Multi Field Compare
+Verify text field value is comprised of other field values.  For example, use the SQL below to verify that field email = first letter of field first_name + field last_name in table employees.  Note that there were exceptions to the rule in the data, so these were manually removed from the test in the WHERE clause.
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN email <> SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+  	WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
+  	                 -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t027" class="anchor" href="#t027" aria-hidden="true"> </a>
+### T027 - Text Length
+Verify text field value length is an exact amount or within a range.  For example, to verify that the field phone_number length is either 12 (US) or 18 (international) characters in length:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
