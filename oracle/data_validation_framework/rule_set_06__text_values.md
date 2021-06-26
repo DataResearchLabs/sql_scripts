@@ -197,7 +197,7 @@ WHERE status <> 'P';
 
 <a id="t031" class="anchor" href="#t031" aria-hidden="true"> </a>
 ### T031 - No CRLF Characters
-Verify text field does not have carriage return (CHAR-13 or "CR") or line feed (CHAR-10 or "LF") characters.  For example, to verify that the field last_name has no CRLFs in table employees:
+Verify text field does not have carriage return (CHAR-13 / "CR") or line feed (CHAR-10 / "LF") characters.  For example, to verify that the field last_name has no CRLFs in table employees:
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
@@ -228,7 +228,7 @@ WHERE status <> 'P';
 
 <a id="t033" class="anchor" href="#t033" aria-hidden="true"> </a>
 ### T033 - No NBS Characters
-Verify text field does not have non-breaking-space (CHAR-160 or "NBS") characters.  For example, to verify that the field last_name has no NBS chars in table employees:
+Verify text field does not have non-breaking-space (CHAR-160 / "NBS") characters.  For example, to verify that the field last_name has no NBS chars in table employees:
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
@@ -238,4 +238,37 @@ FROM (
 WHERE status <> 'P';
 ```
 <br>
+
+
+<a id="t034" class="anchor" href="#t034" aria-hidden="true"> </a>
+### T034 - No EmDash Characters
+Verify text field does not have an em-dash character (CHAR-151; common Microsoft Office "--" copy-paste conversion causing data load issues).  For example, to verify that the field last_name has no em-dashes in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN INSTR(last_name, CHR(151)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t035" class="anchor" href="#t035" aria-hidden="true"> </a>
+### T035 - No VTFFNEL Characters
+Verify text field does not have any vertical tab (CHAR-11 / "VT"), form feed (CHAR-12 / "FF"), or next line (CHAR-133 / "NEL") characters.  For example, use the SQL below to verify that the field last_name has no VT, FF, or NEL characters in table employees.  Note that this SQL checks for all three characters, each on its own CASE...WHEN clause, and that it returns the location within a string where the bad character occurs.
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN INSTR(last_name, CHR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(11)) AS VARCHAR2(4))
+ 	            WHEN INSTR(last_name, CHR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(12)) AS VARCHAR2(4))
+ 	            WHEN INSTR(last_name, CHR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(133)) AS VARCHAR2(4))
+ 	            ELSE 'P'
+ 	       END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
 
