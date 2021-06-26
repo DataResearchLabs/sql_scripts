@@ -150,3 +150,48 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t054" class="anchor" href="#t054" aria-hidden="true"> </a>
+### T054 - RegExp("OnlyLowerCase")
+Verify text field has only lower case characters.  For example, (not really practical, but as a demo) to verify that the 3rd and 4th characters in the field first_name of table employees are lower case:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,3,2), '^[a-z]+$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t055" class="anchor" href="#t055" aria-hidden="true"> </a>
+### T055 - RegExp("OnlyUpperCase")
+Verify text field has only upper case characters.  For example, to verify that all characters are uppercase in the field first_name of table employees:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(email,3,2), '^[A-Z]+$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t056" class="anchor" href="#t056" aria-hidden="true"> </a>
+### T056 - RegExp("TitleCase")
+Verify text field is title case format (where the first letter of every word is upper case, and the rest are lower case).  For example, to verify that the field first_name of table employees has proper casing:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN first_name NOT LIKE '% %'                   THEN 'P'  -- Only one word, so no space + first character to check for uppercase
+              WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}') THEN 'REJ-01: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
