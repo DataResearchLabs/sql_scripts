@@ -22,7 +22,9 @@ There is a lot going on in this "Null Rate Threshold" data validation query belo
 
 <details>
 <summary>Click here for more</summmary>
+```
 xxxx
+````
 </details>
  
  
