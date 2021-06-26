@@ -75,7 +75,7 @@ WHERE status <> 'P';
 
 <a id="t020" class="anchor" href="#t020" aria-hidden="true"> </a>
 ### T020 - Multi Field Compare
-Verify multiple date fields relative to each other.  For example, to verify that field start_date must be < field end_date in table job_history:
+Verify multiple date fields relative to each other.  For example, to verify that field start_date must be < field end_date in table job_history (thus if start_date is >= end_date the test case fails):
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
