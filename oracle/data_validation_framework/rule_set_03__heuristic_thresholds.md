@@ -26,7 +26,7 @@ This check is like the proverbial miner's canary in that it is a trip wire trigg
 
 There is a downside to this test scenario too however; and that is when it fires false alarms and you find yourself tinkering with the thresholds values (0.0000, 0.65000, and 0.80000 cutoffs below), raising and lowering them over and over.  If this happens,  chances are test fails are not actionable nor important and you should not waste your time applying this test scenario to that given table and field.  Be careful to only pick fields that truly matter.
 
-Below, there is an upper CTE (common table expression) name dtls at the WITH clause, and a lower wrapper that applies the business logic (if any null rate rejections found, fail the case).  Inside the dtls CTE, there is an inner query at the bottom (FROM clause) doing a single table scan to calculate a null rate per column by counting nulls in each column and dividing by the total table row count.  The SELECT CASE logic at the top applies the business logic; comparing the actual calcuated null rates (nr_dept_nm, nr_mgr_id, and nr_url) against the expected threshold rates (hard-coded as 0.0000, 0.6500, and 0.8000).  The returned value is a rejection code (REJ-01, REJ-02, etc.) clearly indicating which field failed the null rate check, what the actual null rate was, and what the expected null rate threshold to exceed was.
+Below, there is an upper CTE (common table expression) named "dtls" at the WITH clause, and a lower wrapper that applies the business logic (if any null rate rejections were found, fail the case).  Inside the dtls CTE, there is an inner query at the bottom (at the FROM clause) doing a single table scan to calculate a null rate per column by counting nulls in each column and dividing by the total table row count.  The SELECT CASE logic at the top applies the business logic; comparing the actual calcuated null rates (nr_dept_nm, nr_mgr_id, and nr_url) against the expected threshold rates (hard-coded as 0.0000, 0.6500, and 0.8000).  The returned value is a rejection code (REJ-01, REJ-02, etc.) clearly indicating which field failed the null rate check, what the actual null rate was, and what the expected null rate threshold to exceed was.  If no rejections are triggered, then status returns a "P" for pass.
 </details>
  
 ```sql
@@ -56,9 +56,9 @@ WHERE status <> 'P';
 "Value Frequency Threshold" tests are fairly similar to null rates above (T008).  The difference is that we are checking the frequency (or rate) at which a column's values occur.
 <details>
 <summary>In the example below...</summary>
-...we are checking the frequencies with which the values 1, 2, 3, and 4 occur in field region_id of table countries.   
-
- </details>
+...we are checking the frequencies with which the values 1, 2, 3, and 4 occur in field region_id of table countries.  There is an upper CTE (common table expression) named "dtls" at the WITH clause, and a lower wrapper that applies the business logic (if any value frequency rejections were found, fail the case).  Inside the dtls CTE, there is an inner query at the bottom (at the FROM clause) doing a single table scan to calculate a frequencies for each value in the GROUP BY for the column.  It the GROUP BY value count (field "freq") is divided by the total table row count (field "den") to calculate field "freq_rt".  The SELECT CASE logic at the top applies the business logic; comparing the actual value frequencies (freq_rt when region_id = 1, or =2, etc.) against the expected threshold frequencies (hard-coded as 0.28 to 0.36, 016 to 0.24 and so on).  The returned value is a rejection code (REJ-01, REJ-02, etc.) clearly indicating which field failed the value ferquency check, what the actual value frequency was, and what the expected value frequency threshold ranges were.  If no rejections are triggered, then status returns a "P" for pass.
+</details>
+ 
 ```sql
 WITH dtls AS (
   SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.28 AND 0.36 THEN 'REJ-01: Frequency occurrence of region_id=1 is outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
