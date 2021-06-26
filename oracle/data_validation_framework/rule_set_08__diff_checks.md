@@ -107,9 +107,9 @@ AS (
               WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' || m.region_name || '|act=' || r.region_name 
               ELSE 'P'
          END AS status
- 	FROM      metadata   m 
- 	LEFT JOIN demo_hr.regions r ON r.region_id = m.region_id
- 	ORDER BY m.region_id
+  FROM      metadata   m 
+  LEFT JOIN demo_hr.regions r ON r.region_id = m.region_id
+  ORDER BY m.region_id
 )
     
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
