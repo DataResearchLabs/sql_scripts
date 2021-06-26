@@ -21,12 +21,14 @@ There is a lot going on in this "Null Rate Threshold" data validation query belo
 
 <details>
 <summary>Click here for more...</summmary>
+ 
 In the example below, we are checking columns department_name, manager_id, and url in the table departments.  We want to ensure that column department_name has no NULLs, and that column manager_id is NULL less than 65% of the time and column url is NULL less than 80% of the time.  This check is like the proverbial canary in the mine in that it is a trip wire triggered when something goes awry in a data feed.  
 
 I've used this test scenario to great effect when coupled with a create-date or last-updated-date to monitor the past week's data loads for any unexpected upticks in null rates.  There is a downside to this test scenario too, and that is when it fires but then you learn it is a false alarm and the threshold just needs to be increased or decreased.  If you find yourself tinkering with the thresholds values (ilke 0.0000, 0.65000, and 0.80000 cutoffs below), then chances are that it is not important when the test Fails and you should not waste your time applying this test scenario to that given table and field.  Be careful when using this to only pick fields that truly matter.
 
 Below, the inner query at the bottom is doing a single table scan to calculate a null rate per column by counting nulls in each column and dividing by the total table row count.  The outer query (wrapper at the top) applies the business logic; comparing the actual calcuated null rates (nr_dept_nm, nr_mgr_id, and nr_url) against the expected threshold rates (hard-coded as 0.0000, 0.6500, and 0.8000).  The returned value is a rejection code (REJ-01, REJ-02, etc.) clearly indicating which field failed the null rate check, what the actual null rate was, and what the expected null rate threshold to exceed was.
- </details>
+ 
+</details>
  
 ```sql
 WITH dtls AS (
