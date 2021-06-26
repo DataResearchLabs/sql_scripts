@@ -49,3 +49,32 @@ WHERE status <> 'P';
 ```
 <br>
 
+<a id="t022" class="anchor" href="#t022" aria-hidden="true"> </a>
+### T022 - Not Null String
+Verify text field is not null string "" (but in Oracle null strings don't exist, they are converted to nulls...therefore look for a space instead and treat this test case as a place holder equivalent to other database platforms).  For example, to verify that table countries has rows where field country_name = a space:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN country_name = ' ' THEN 'FAIL' ELSE 'P'  END AS status
+  FROM demo_hr.countries
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t023" class="anchor" href="#t023" aria-hidden="true"> </a>
+### T023 - No Leading or Trailing Spaces
+Verify text field has no leading or trailing spaces.  For example, to verify that table countries, field country_name has no rows with a leading and/or trailing space:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN country_name LIKE ' %'  THEN 'REJ-01: Verify no leading space at country_name|exp=noLeadSpace|act=''' || country_name ||''''
+          				WHEN country_name LIKE '% '  THEN 'REJ-02: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' || country_name ||''''
+    	         ELSE 'P'
+    	    END AS status
+  FROM demo_hr.countries
+)
+WHERE status <> 'P';
+```
+<br>
