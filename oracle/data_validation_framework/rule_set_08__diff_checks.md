@@ -118,3 +118,38 @@ FROM dut WHERE status <> 'P';
 <br>
 
 
+<a id="t061" class="anchor" href="#t061" aria-hidden="true"> </a>
+### T061 - Table Data Differences (Dynamic Table Compare)
+This validation check monitors the table's data, tripping an alert (Fail) any time the target table data no longer matches the baseline table data.  This check requires that two tables (1-source/baseline, and 2-target) be identical structure **and** identical data.  It then does a group by and count across every field.  Anywhere the row count is 2 means the tables match, anywhere the count is a 1 means a mismatch.
+
+<details><summary>More details...</summary>
+ 
+* The first common table expression (CTE) or subquery is named "non_matches".  It is does most of the heavy lifting.  This is where the target table 'jobs' and the baseline table 'jobs_snapshot' are grouped by all fields (except the tbl_nm which must be different).  Where the COUNT(*) is less than two after grouping fields and UNION ALL to combine the two sets, that is where the differences exist.
+* The second CTR or subquery is named "dut", short for data under test.  It formats the output so differences are easy to spot (a concatenated string with column names and values.
+* Finally, the simple SELECT at the bottom returns "P" for pass if there are no differences found, or "FAIL" if there were.
+</details>
+ 
+ ```sql
+WITH non_matches
+AS (
+  SELECT MAX(tbl_nm) AS tbl_nm, job_id, job_title, min_salary, max_salary, COUNT(*) AS match_count_found
+  FROM (
+    SELECT CAST('jobs' AS VARCHAR2(15)) AS tbl_nm,          job_id, job_title, min_salary, max_salary FROM demo_hr.JOBS  
+    UNION ALL 
+    SELECT CAST('jobs_snapshot' AS VARCHAR2(15)) AS tbl_nm, job_id, job_title, min_salary, max_salary FROM demo_hr.JOBS_SNAPSHOT 
+  ) comb_sets 
+  GROUP BY job_id, job_title, min_salary, max_salary
+  HAVING COUNT(*) < 2
+)
+, dut -- Data Under Test 
+AS (
+  SELECT 'REJ-01: Mismatch Found: tbl_nm="' || tbl_nm ||'", job_id="' || job_id || '", job_title="' || job_title 
+         || '", min_salary=' || CAST(min_salary AS VARCHAR2(20)) || '", max_salary=' || CAST(max_salary AS VARCHAR2(20)) AS status
+  FROM      non_matches  
+  ORDER BY 1
+)
+
+SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
+FROM dut WHERE status <> 'P'
+ ```
+<br>
