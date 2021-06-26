@@ -30,7 +30,7 @@ WITH dtls AS (
               WHEN region_id = 4  AND freq_rt NOT BETWEEN 0.20 AND 0.28 THEN 'REJ-04: Frequency occurrence of region_id=4 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR2(8))
               ELSE 'P'
          END AS status
-FROM (
+  FROM (
     SELECT region_id, CAST(freq AS FLOAT(126)) / CAST(den AS FLOAT(126)) AS freq_rt
     FROM (
       SELECT region_id, COUNT(*) AS freq
@@ -39,7 +39,7 @@ FROM (
          GROUP BY region_id
         )
     )
-  )
+)
 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status 
 FROM dtls 
