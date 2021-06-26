@@ -98,3 +98,17 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t025" class="anchor" href="#t025" aria-hidden="true"> </a>
+### T025 - Not In Value List
+Verify text field value is **not** in the list of invalid values.  For example, to verify that field job_id of table employees is never in the list of 5 invalid values:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
