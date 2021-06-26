@@ -178,3 +178,37 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t030" class="anchor" href="#t030" aria-hidden="true"> </a>
+### T030 - No Quote Characters
+Verify text field does not have ' or " characters.  For example, to verify that the field first_name has no quotes or single quotes in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' || first_name
+              WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' || first_name
+              ELSE 'P'
+ 	       END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t031" class="anchor" href="#t031" aria-hidden="true"> </a>
+### T031 - No CRLF Characters
+Verify text field does not have carriage return (CHAR-13 or "CR") or line feed (CHAR-10 or "LF") characters.  For example, to verify that the field last_name has no CRLFs in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN INSTR(last_name, CHR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
+              WHEN INSTR(last_name, CHR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
+    	         ELSE 'P'
+ 	       END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
