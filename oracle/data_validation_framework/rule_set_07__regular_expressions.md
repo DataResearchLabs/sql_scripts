@@ -108,3 +108,45 @@ WHERE status <> 'P';
 <br>
 
 
+<a id="t051" class="anchor" href="#t051" aria-hidden="true"> </a>
+### T051 - RegExp("OnlyText")
+Verify text field numeric characters only.  For example, to verify that field zip5 of table employees is numeric digits only:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t052" class="anchor" href="#t052" aria-hidden="true"> </a>
+### T052 - RegExp("NoLeadTrailSpaces")
+Verify text field has no leading or trailing spaces.  For example, to verify that field last_name of table employees is fully trimmed:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REGEXP_LIKE(last_name, '(^\s)|(\s$)') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t053" class="anchor" href="#t053" aria-hidden="true"> </a>
+### T053 - RegExp("NoWhitespaces")
+Verify text field has no whitespace (spaces, non breaking spaces, carriage return, line feed, etc.).  For example, to verify that field job_id of table employees has no whitespace:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REGEXP_LIKE(job_id, '(\s)+') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
