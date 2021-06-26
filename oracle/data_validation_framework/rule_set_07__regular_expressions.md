@@ -54,11 +54,53 @@ WHERE status <> 'P';
 
 <a id="t047" class="anchor" href="#t047" aria-hidden="true"> </a>
 ### T047 - RegExp("IsZip5")
-Verify text field is a valid zipcode 5 digit format.  For example, to verify that field zip5 of table employees is a valid format:
+Verify text field is a valid zipcode 5-digit format.  For example, to verify that field zip5 of table employees is a valid format:
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t048" class="anchor" href="#t048" aria-hidden="true"> </a>
+### T048 - RegExp("IsZip5or9")
+Verify text field is a valid zipcode 5- or 9-digit format.  For example, to verify that field zip5or9 of table employees is a valid format:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(zip5or9, '^([[:digit:]]{5})(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t049" class="anchor" href="#t049" aria-hidden="true"> </a>
+### T049 - RegExp("IsZip9")
+Verify text field is a valid zipcode 9-digit format.  For example, to verify that field zip9 of table employees is a valid format:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(zip9, '^[[:digit:]]{5}[-/.][[:digit:]]{4}$') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+ ```
+<br>
+
+
+<a id="t050" class="anchor" href="#t050" aria-hidden="true"> </a>
+### T050 - RegExp("OnlyText")
+Verify text field is text / only contains alpha characters.  For example, to verify that field last_name of table employees is text only:
+ ```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN NOT REGEXP_LIKE(last_name, '^[a-zA-Z ]+$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
