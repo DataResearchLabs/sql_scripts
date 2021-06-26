@@ -15,7 +15,10 @@
 <a id="t059" class="anchor" href="#t059" aria-hidden="true"> </a>
 ### T059 - Table Structure (Schema) Differences
 This validation check monitors the schema (column names and properties) of table Locations, tripping an alert (Fail) any time the real table no longer matches the static copy embedded in the SQL as a snapshot.
-<details><summary>Click to expand source code (it is long)</summary>
+* The first common table expression (CTE) or subquery is named "expected".  It is a static snapshot of what the locaton table's schema should look like, including the ordinal position, the column name, the data type, and whether the column is nullable.
+* The second CTR or subquery is named "actual".  It is a dynamic snapshot of the location table's current structure based on Oracle system tables.  It derives a compact data type with length, scale, and precision appended.
+* The third CTR or subquery is named "dut", short for data under test.  This is where the business logic is applied to derive rejection codes (eg: table does not exist, or expected column is missing or has a property that changed).
+* Finally, the smiple SELECT at the bottom returns "P" for pass if there are no differences (rejections) found, or "FAIL" if there were.
  
  ```sql
 WITH expected 
@@ -71,7 +74,6 @@ AS (
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
 FROM dut WHERE status <> 'P';
  ```
-</details>
 <br>
 
 
