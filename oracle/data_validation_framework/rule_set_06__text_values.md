@@ -301,12 +301,30 @@ WHERE status <> 'P';
 
 
 <a id="t038" class="anchor" href="#t038" aria-hidden="true"> </a>
-### T038 - Only Allowed Characters
+### T038 - Only Allowed Characters In List
 Verify text field contains only allowed characters from a specific list.  For example, use the SQL below to verify that the field phone_number in table employees only has characters ".0123456789".  The REGEXP_LIKE (regular expression like) does the work.  Specifically, the []'s indicating look for these characters, and the ^ means look for any character not in this list.  So it reads: "find any phone numbers containing characters not in [.0123456789]".
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT CASE WHEN REGEXP_LIKE(phone_number, '[^.0123456789]') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t039" class="anchor" href="#t039" aria-hidden="true"> </a>
+### T039 - Like Wildcards
+Verify text field matches simple like patterns.  For example, use the SQL below to verify that the field phone_number in table employees matches either the US (###.###.####) or international format (011.##.####.#####).  The LIKE command use "%" to represent any number of any character and "\_" to represent any single character.
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN phone_number NOT LIKE '%.%'                THEN 'REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
+              WHEN phone_number NOT LIKE '___.___.____' 
+               AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
+              ELSE 'P'
+         END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
