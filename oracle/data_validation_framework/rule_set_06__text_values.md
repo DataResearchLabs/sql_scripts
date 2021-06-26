@@ -25,7 +25,7 @@ Note: These text validation checks are important.  Good data loading practices l
  - <a href="#t034">T034 - No EmDash Characters</a>
  - <a href="#t035">T035 - No VTFFNEL Characters</a>
  - <a href="#t036">T036 - No Period or Dash Characters</a>
- - <a href="#t037">T037 - No Funky Punctuation ",/:()&#?;" Characters</a>
+ - <a href="#t037">T037 - No Funky ",/:()&#?;" Characters</a>
  - <a href="#t038">T038 - Only Allowed Characters In List</a>
  - <a href="#t039">T039 - Like Wildcards</a>
  - <a href="#t040">T040 - IsNumeric()</a>
@@ -274,11 +274,39 @@ WHERE status <> 'P';
 
 <a id="t036" class="anchor" href="#t036" aria-hidden="true"> </a>
 ### T036 - No Period or Dash Characters
-Verify text field does not have an periods or dashes.  For example, to verify that the field last_name has no periods or dashes in table employees:
+Verify text field does not have any periods or dashes.  For example, to verify that the field last_name has no periods or dashes in table employees:
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t037" class="anchor" href="#t037" aria-hidden="true"> </a>
+### T037 - No Funky ",/:()&#?;" Characters
+Verify text field does not have any funky ",/:()&#?;" characters.  For example, to verify that the field last_name has commas, colons, etc. in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REGEXP_LIKE(last_name, '[,/:()&#?;]') THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
+
+
+<a id="t038" class="anchor" href="#t038" aria-hidden="true"> </a>
+### T038 - Only Allowed Characters
+Verify text field contains only allowed characters from a specific list.  For example, use the SQL below to verify that the field phone_number in table employees only has characters ".0123456789".  The REGEXP_LIKE (regular expression like) does the work.  Specifically, the []'s indicating look for these characters, and the ^ means look for any character not in this list.  So it reads: "find any phone numbers containing characters not in [.0123456789]".
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN REGEXP_LIKE(phone_number, '[^.0123456789]') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
