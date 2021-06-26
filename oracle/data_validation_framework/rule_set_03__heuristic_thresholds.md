@@ -18,12 +18,13 @@ Note: Although the terms "rate" and "frequency" are mostly synonomous, nulls are
 <a id="t008" class="anchor" href="#t008" aria-hidden="true"> </a>
 ### T008 - Null Rate Thresholds
 There is a lot going on in this "Null Rate Threshold" data validation query below.  The basic goal is to validate that a given table's columns do not have too many, or too few NULLs.  
-
+<br>
 
 <details>
-<summary>Click here for more</summmary>
+<summary>Click here for more</summary>
 ```
-xxxx
+xxxx xxxx xxxxx
+xx xxxx x
 ```
 </details>
  
