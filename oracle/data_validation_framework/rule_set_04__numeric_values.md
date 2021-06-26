@@ -58,12 +58,12 @@ WHERE status <> 'P';
 ### T013 - In Value List
 Verify numeric field is **in** the list of values.  For example, to verify that table countries field region_id is always values 1, 2, 3, or 4 we use the IN() clause as shown below:
 ```sql
-    SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-    FROM (
-    	SELECT CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
-    	FROM demo_hr.countries
-    )
-    WHERE status <> 'P';
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.countries
+)
+WHERE status <> 'P';
 ```
 <br>
 
@@ -72,12 +72,12 @@ Verify numeric field is **in** the list of values.  For example, to verify that 
 ### T014 - Not In Value List
 Verify numeric field is **not** in the list of values.  For example, to verify that table countries field region_id is never in values 97, 98, or 99 we use the NOT IN() clauses as shown below:
 ```sql
-    SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-    FROM (
-    	SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
-    	FROM demo_hr.countries
-    )
-    WHERE status <> 'P';
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.countries
+)
+WHERE status <> 'P';
 ```
 <br>
 
@@ -88,8 +88,8 @@ Verify numeric field values in relation to one another.  For example, to verify 
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.countries
+  SELECT CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
 )
 WHERE status <> 'P';
 ```
