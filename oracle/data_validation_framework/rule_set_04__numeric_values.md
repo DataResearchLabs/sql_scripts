@@ -25,4 +25,30 @@ WHERE region_id IS NULL;
 ```
 <br>
 
+<a id="t011" class="anchor" href="#t011" aria-hidden="true"> </a>
+### T011 - Not Negative
+Verify numeric field is not negative.  For example, to verify that table countries has no field region_id negative values:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.countries
+WHERE region_id < 0;
+```
+<br>
+
+
+<a id="t012" class="anchor" href="#t012" aria-hidden="true"> </a>
+### T012 - Numeric Range
+Verify numeric field value is within a range.  For example, to verify that field employee_id is between 100 and 999 in table employees:
+```sql
+SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM (
+  SELECT CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
+              WHEN employee_id > 999   THEN 'REJ-02: Verify employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
+)
+WHERE status <> 'P';
+```
+<br>
 
