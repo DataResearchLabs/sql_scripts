@@ -26,22 +26,24 @@ SELECT 'T031' AS tst_id
       , '"RS-6 Text" #11 - Verify No_CRLF_Chars() where [last_name] has no Carriage Returns (CHAR-13) or Line Feeds (CHAR-10) in table [employees]' AS tst_descr   
 FROM (
   SELECT CASE WHEN INSTR(last_name, CHR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
- 	            WHEN INSTR(last_name, CHR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
- 	            ELSE 'P'
- 	       END AS status
+ 	        WHEN INSTR(last_name, CHR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
+ 	        ELSE 'P'
+ 	   END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
 ```
-Notice the following aspects of the code:
+Notice the following aspects of the SQL code:
 1. Each data validation test case is written as one or more SQL SELECT statements.
-2. There is an inner query that returns all rows with business validation logic applied.  
-    * You can highlight and run the inner query SELECT to see all the specific details and relevant row data for failures
-4. There is an outer query that rolls all the detail rows up to a single row with pass or fail judgment.
-5. The outer query returns the following columns in that one rollup or summary row:
-    * **tst_id**: The data validation Test ID
-    * **status**: The data validation test result.  Usually "P" for pass or "FAIL".  However, you can invent your own status values too, such as "WARN", "SKIP", or "BLOCK"
-    * **tst_dscr**: The data validation test description.
+2. There is one (or more) **inner queries**
+    * These return all rows with business validation logic applied.  
+    * Highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details
+    * In the example above, the inner status field returns rejection codes detailing the ID of the rejection, the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
+3. There is one **outer query** (or wrapper)
+    * It rolls all the detail rows up to a single row with pass or fail judgment.
+    * It returns column **tst_id** - the test ID (hard-coded when write script)
+    * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
+    * It returns column **tst_dscr** - the data validation test description (hard-coded when write script)
 
 
 
