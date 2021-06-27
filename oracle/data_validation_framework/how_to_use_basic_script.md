@@ -25,30 +25,16 @@ A typical data validation test has SQL code that looks something like this: <br>
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
 
-```sql
--- T031 ------------------------------------------------------------------------------------------------------------------------------------------------------------
-SELECT 'T031' AS tst_id
-      , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-      , '"RS-6 Text" #11 - Verify No_CRLF_Chars() where [last_name] has no Carriage Returns (CHAR-13) or Line Feeds (CHAR-10) in table [employees]' AS tst_descr   
-FROM (
-  SELECT CASE WHEN INSTR(last_name, CHR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
- 	        WHEN INSTR(last_name, CHR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
- 	        ELSE 'P'
- 	   END AS status
-  FROM demo_hr.employees
-)
-WHERE status <> 'P';
-```
 Notice the following aspects of the SQL code:
 1. Each data validation test case is written as one or more SQL SELECT statements.
 
-2. There is one (or more) **inner queries**  (lines 6-10 above)
+2. There is one (or more) **inner queries**  (lines 453-459 above)
     * These return many detail rows with business validation logic applied.  
-    * The clumns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row faile
+    * The columns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row faile
     * There is also always a status field returned with a unique rejection code (eg: REJ-01 above) with the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
     * Note that you can highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details    
 
-3. There is one **outer query** (lines 1-4 and 11-12)
+3. There is one **outer query** (lines 449-452 and 461-462)
     * It rolls all the detail rows up to a single summary row with pass or fail judgment.
     * It returns column **tst_id** - the test ID (hard-coded when write script)
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
