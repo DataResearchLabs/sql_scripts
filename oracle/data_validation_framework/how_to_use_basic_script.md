@@ -5,10 +5,12 @@
 
 ### Overview
 This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in Oracle SQL Developer, returning the test id, the test status (pass or fail), and the test desription.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).
+<br>
 
 
 ### Download
 The basic validation script can be downloaded from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql).
+<br>
 
 
 ### Script Composition 
@@ -39,6 +41,10 @@ Notice the following aspects of the SQL code:
     * It returns column **tst_id** - the test ID (hard-coded when write script)
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
     * It returns column **tst_dscr** - the data validation test description (hard-coded when write script)
+
+
+### What do the Run Results Look Like?
+When you run the script in Oracle SQL Developer ([free download here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)), the following output is returned:
 
 
 
