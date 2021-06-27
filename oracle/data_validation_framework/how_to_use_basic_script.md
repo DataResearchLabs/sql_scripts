@@ -16,7 +16,7 @@ This basic data validation script runs one of each type of data validation test 
 When you run the basic script in Oracle SQL Developer, the output below is returned.  The numbered blue dots indicate...
 1. You must load the basic validation script into SQL Developer (or equivalent IDE)
 2. Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** 66 separate grids)
-3. The output is concisely laid out for all 6 data validation test cases.  The test_id (eg: T001) is column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
+3. The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/05_data_val_oracle_run_results1.png">
 <br>
 
