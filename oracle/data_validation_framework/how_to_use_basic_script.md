@@ -15,6 +15,7 @@ The basic validation script can be downloaded from [here](https://raw.githubuser
 The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 1-44 are the comment block header, containing notes and definitions
 * Lines 45-1,064 are the 66 individual example validation test cases (written as SQL SELECTs)
+<br>
 
 
 ### What does the SQL Code Behind a Typical Validation Test Case Look Like?
