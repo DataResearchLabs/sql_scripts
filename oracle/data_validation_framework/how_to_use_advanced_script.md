@@ -46,10 +46,10 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
    
 1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
 2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
+</details>
+<br>
 
-
-xxxxxxxxxxxxxxxxxxxxxxxxxxx
-### Step 4 - Review the Basic Data Validation Script
+### Step 5 - Review the Advanced "Test Cases" Script
 <details><summary>**Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary>
 
 The script currently consists of 1,064 lines of SQL code broken down as follows:
