@@ -4,7 +4,7 @@
 ---
 
 ### Overview
-This advanced data validation scripts runs the exact same 66 test cases (T001-T066) as the basic script.  
+The advanced data validation scripts runs the exact same 66 test cases (T001-T066) as the basic script.  
 However, this pair of scripts is more sophisticated for the follow reasons:
 1. Output is written to a "temp" table during the test execution phase, then returned as a single SELECT "report"
 2. There are two scripts, one to generate the "temp" tables and one to execute the test cases
@@ -13,7 +13,7 @@ However, this pair of scripts is more sophisticated for the follow reasons:
 
 ### Step 1 - Download & Install Oracle SQL Developer
 <details><summary>Expand if you want to download and install Oracle SQL Developer...</summary>
-   
+
 1. Oracle provides a powerful SQL editor named "Oracle SQL Developer" for free download and use.  
 2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)</b> and install, following the prompts.
 </details>
@@ -31,15 +31,24 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 </details>
 <br>
 
-### Step 3 - Download & Configure the Advanced Data Validation Script
-<details><summary>Expand if you need instructions on how to download and configure the basic script...</summary>
+### Step 3 - Download & Execute the Advanced "Setup" Script
+<details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary>
    
-1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql)</b>.
-2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema and data created in Step #2 above.
+1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
+2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
 3. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
+4. Execute the script and confirm the two empty tables ("test_case_results" and "test_case_config") now exist in the demo_hr schema.
 </details>
 <br>
 
+### Step 4 - Download the Advanced "Test Cases" Script
+<details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary>
+   
+1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
+2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxx
 ### Step 4 - Review the Basic Data Validation Script
 <details><summary>**Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary>
 
