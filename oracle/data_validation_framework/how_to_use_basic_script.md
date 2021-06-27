@@ -7,27 +7,32 @@
 This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in Oracle SQL Developer, returning the test id, the test status (pass or fail), and the test desription.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).
 <br><br>
 
-### Downloads
-1. The basic validation script can be downloaded from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql).
-2. Oracle SQL Developer (free) can be downloaded from [here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
+### Step 1 - Download & Install Oracle SQL Developer
+Oracle provides a powerful SQL editor named "Oracle SQL Developer" for free download and use.  If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from [here](https://www.oracle.com/tools/downloads/sqldev-downloads.html) and install.
 <br><br>
 
-### What do the Run Results Look Like?
-When you run the basic script in Oracle SQL Developer, the output below is returned.  The numbered blue dots indicate...
-1. You must load the basic validation script into SQL Developer (or equivalent IDE)
-2. Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** 66 separate grids)
-3. The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/05_data_val_oracle_run_results1.png">
-<br>
+### Step 2 - Download & Deploy the Demo Data
+If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to yuor own databases, then you will need to download and deploy the demo_hr test dataset.
+1. Download the "demo_hr" schema / table definitions from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_01_create_tables.sql).
+2. Run the script on an Oracle server and database where you have permissions (local is fine too).
+3. Download the "demo_hr" test data population script from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_02_populate_tables.sql).
+4. Run the script on the same Oracle server and database.
+5. Using Oracle SQL Developer (or equivalent SQL IDE), confirm that the tables exist and the data is populated.
+<br><br>
 
-### Script Composition 
+### Step 3 - Download & Configure the Basic Data Validation Script
+1. Download the basic validation script from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql).
+2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema and data created in Step #2 above.
+3. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
+<br><br>
+
+### Step 4 - Review the Basic Data Validation Script
 The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 1-44 are the comment block header, containing notes and definitions
 * Lines 45-1,064 are the 66 individual example validation test cases (written as SQL SELECTs)
 <br><br>
 
-
-### What does the SQL Code Behind a Typical Validation Test Case Look Like?
+<details><summary>**What does a typical validation test case look like?></summary>
 A typical data validation test has SQL code that looks something like this: <br>  
 
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_val_oracle_example_test_case_sql_code.png">
@@ -48,6 +53,18 @@ Notice the following aspects of the SQL code:
     * It returns column **tst_id** - the test ID (hard-coded when write script)
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
     * It returns column **tst_dscr** - the data validation test description (hard-coded when write script)
+</details>
+   
 <br><br>
+
+### Setp 5 - Execute the Basic Data Validation Script
+When you run the basic script in Oracle SQL Developer, the output below is returned.  The numbered blue dots indicate...
+1. You must load the basic validation script into SQL Developer (or equivalent IDE)
+2. Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** 66 separate grids)
+3. The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/05_data_val_oracle_run_results1.png">
+<br>
+
+
 
 
