@@ -1,5 +1,5 @@
 -- ===============================================================================================
--- Filename:          dvf_basic_script.sql
+-- Filename:          dvf_basic_test_cases.sql
 -- Description:       Data Validation Basic Script - Verfication Check Examples
 -- Platform:          Oracle
 -- Author:            DataResearchLabs

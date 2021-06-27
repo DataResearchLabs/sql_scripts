@@ -1,5 +1,5 @@
 -- ===============================================================================================
--- Filename:          dvf_snippets.sql
+-- Filename:          dvf_test_case_snippets.sql
 -- Description:       Data Validation Snippets - Verfication Check Examples
 -- Platform:          Oracle
 -- Author:            DataResearchLabs

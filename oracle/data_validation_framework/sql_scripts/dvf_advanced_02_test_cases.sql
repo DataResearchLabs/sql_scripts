@@ -1,5 +1,5 @@
 -- ===============================================================================================
--- Filename:          dvf_advanced_02_script.sql
+-- Filename:          dvf_advanced_02_test_cases.sql
 -- Description:       Data Validation Framework - Verfication Check Examples
 -- Platform:          Oracle
 -- Author:            DataResearchLabs
