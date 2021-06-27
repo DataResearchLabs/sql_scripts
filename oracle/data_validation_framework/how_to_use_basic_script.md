@@ -11,7 +11,7 @@ This basic data validation script runs one of each type of data validation test 
 <details><summary>Expand if you need to download and install Oracle SQL Developer...</summary>
    
 1. Oracle provides a powerful SQL editor named "Oracle SQL Developer" for free download and use.  
-2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from [here](https://www.oracle.com/tools/downloads/sqldev-downloads.html) and install.
+2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)</b> and install.
 </details>
 <br>
 
