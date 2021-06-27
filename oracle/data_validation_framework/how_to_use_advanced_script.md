@@ -34,7 +34,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 3 - Download & Execute the Advanced "Setup" Script
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
-1. Download the advnaced setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
+1. Download the advanced setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
 2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
 3. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
 4. Execute the script and confirm the two empty tables ("test_case_results" and "test_case_config") now exist in the demo_hr schema.
