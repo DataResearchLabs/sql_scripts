@@ -43,6 +43,7 @@ Notice the following aspects of the SQL code:
 <br><br>
 
 ### What do the Run Results Look Like?
+<img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/05_data_val_oracle_run_results.png">
 When you run the [basic script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql) in Oracle SQL Developer ([free download here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)), the following output is returned:
 
 
