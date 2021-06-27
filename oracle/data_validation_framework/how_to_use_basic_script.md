@@ -23,7 +23,7 @@ A typical data validation test has SQL code that looks something like this: <br>
 
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_val_oracle_example_test_case_sql_code.png">
 
-This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
+This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
 Notice the following aspects of the SQL code:
 1. Each data validation test case is written as one or more SQL SELECT statements.
