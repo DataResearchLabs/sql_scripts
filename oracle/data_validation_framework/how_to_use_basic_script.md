@@ -9,13 +9,15 @@ This basic data validation script runs one of each type of data validation test 
 
 ### Step 1 - Download & Install Oracle SQL Developer
 <details><summary>Expand if you need to download and install Oracle SQL Developer...</summary>
+   
 1. Oracle provides a powerful SQL editor named "Oracle SQL Developer" for free download and use.  
 2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from [here](https://www.oracle.com/tools/downloads/sqldev-downloads.html) and install.
 </details>
-<br><br>
+<br>
 
 ### Step 2 - Download & Deploy the Demo Data
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary>
+
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to yuor own databases, then you will need to download and deploy the demo_hr test dataset.
 1. Download the "demo_hr" schema / table definitions from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_01_create_tables.sql).
 2. Run the script on an Oracle server and database where you have permissions (local is fine too).
@@ -23,15 +25,16 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 4. Run the script on the same Oracle server and database.
 5. Using Oracle SQL Developer (or equivalent SQL IDE), confirm that the tables exist and the data is populated.
 </details>
-<br><br>
+<br>
 
 ### Step 3 - Download & Configure the Basic Data Validation Script
 <details><summary>Expand if you need instructions on how to download and configure the basic script...</summary>
+   
 1. Download the basic validation script from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql).
 2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema and data created in Step #2 above.
 3. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
 </details>
-<br><br>
+<br>
 
 ### Step 4 - Review the Basic Data Validation Script
 The script currently consists of 1,064 lines of SQL code broken down as follows:
