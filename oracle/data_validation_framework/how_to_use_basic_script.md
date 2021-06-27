@@ -36,7 +36,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <br>
 
 ### Step 4 - Review the Basic Data Validation Script
-<details><summary>Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary><br>
+<details><summary>Expand if you would like to see a review of the script layout and what a typical data validation test case looks like ...></summary><br>
 
 The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 1-44 are the comment block header, containing notes and definitions
