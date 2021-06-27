@@ -11,7 +11,7 @@ This basic data validation script runs one of each type of data validation test 
 <details><summary>Expand if you want to download and install Oracle SQL Developer...</summary>
    
 1. Oracle provides a powerful SQL editor named "Oracle SQL Developer" for free download and use.  
-2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)</b> and install.
+2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)</b> and install, following the prompts.
 </details>
 <br>
 
@@ -37,7 +37,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <br>
 
 ### Step 4 - Review the Basic Data Validation Script
-<details><summary>**Expand fi you need suggestions on what to review / look for in the script...></summary>
+<details><summary>**Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary>
 
 The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 1-44 are the comment block header, containing notes and definitions
