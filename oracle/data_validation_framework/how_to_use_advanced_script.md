@@ -5,14 +5,14 @@
 
 ### Overview
 The advanced data validation scripts runs the exact same 66 test cases (T001-T066) as the basic script.  
-However, this pair of scripts is more sophisticated for the follow reasons:
-1. Output is written to a "temp" table during the test execution phase, then returned as a single SELECT "report"
+However, this pair of scripts is more sophisticated as follows:
+1. Output is written to a "temp" table during the test execution phase, then returned as a single SELECT grid at the end
 2. There are two scripts, one to generate the "temp" tables and one to execute the test cases
 3. The output is more comprehensive than just test id, status, and description.  The output also includes detailed rejection codes, expected results, and actual results behind every fail.
 <br><br>
 
 ### Step 1 - Download & Install Oracle SQL Developer
-<details><summary>Expand if you want to download and install Oracle SQL Developer...</summary>
+<details><summary>Expand if you want to download and install Oracle SQL Developer...</summary><br>
 
 1. Oracle provides a powerful SQL editor named "Oracle SQL Developer" for free download and use.  
 2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)</b> and install, following the prompts.
@@ -20,7 +20,7 @@ However, this pair of scripts is more sophisticated for the follow reasons:
 <br>
 
 ### Step 2 - Download & Deploy the Demo Data
-<details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary>
+<details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to yuor own databases, then you will need to download and deploy the demo_hr test dataset.
 1. Download the "demo_hr" schema / table definitions from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_01_create_tables.sql)</b>.
@@ -32,9 +32,9 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <br>
 
 ### Step 3 - Download & Execute the Advanced "Setup" Script
-<details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary>
+<details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
-1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
+1. Download the advnaced setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
 2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
 3. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
 4. Execute the script and confirm the two empty tables ("test_case_results" and "test_case_config") now exist in the demo_hr schema.
