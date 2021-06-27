@@ -17,8 +17,9 @@ The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 45-1,064 are the 66 individual example validation test cases (written as SQL SELECTs)
 
 
-### What does a Typical Validation Test Case Look Like?
-A typical data validation test looks something like the SQL code below for test case T031.  This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
+### What does the SQL Code Behind a Typical Validation Test Case Look Like?
+A typical data validation test looks something like the SQL code below for test case T031.<br>  
+This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
 
 ```sql
 -- T031 ------------------------------------------------------------------------------------------------------------------------------------------------------------
