@@ -21,6 +21,7 @@ The script currently consists of 1,064 lines of SQL code broken down as follows:
 A typical data validation test looks something like the SQL code below for test case T031.  This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
 
 ```sql
+-- T031 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 SELECT 'T031' AS tst_id
       , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
       , '"RS-6 Text" #11 - Verify No_CRLF_Chars() where [last_name] has no Carriage Returns (CHAR-13) or Line Feeds (CHAR-10) in table [employees]' AS tst_descr   
@@ -35,11 +36,11 @@ WHERE status <> 'P';
 ```
 Notice the following aspects of the SQL code:
 1. Each data validation test case is written as one or more SQL SELECT statements.
-2. There is one (or more) **inner queries**
+2. There is one (or more) **inner queries**  (lines 6-10 above)
     * These return all rows with business validation logic applied.  
     * Highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details
     * In the example above, the inner status field returns rejection codes detailing the ID of the rejection, the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
-3. There is one **outer query** (or wrapper)
+3. There is one **outer query** (lines 1-4 and 11-12)
     * It rolls all the detail rows up to a single row with pass or fail judgment.
     * It returns column **tst_id** - the test ID (hard-coded when write script)
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
