@@ -36,12 +36,15 @@ WHERE status <> 'P';
 ```
 Notice the following aspects of the SQL code:
 1. Each data validation test case is written as one or more SQL SELECT statements.
+
 2. There is one (or more) **inner queries**  (lines 6-10 above)
-    * These return all rows with business validation logic applied.  
-    * Highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details
-    * In the example above, the inner status field returns rejection codes detailing the ID of the rejection, the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
+    * These return many detail rows with business validation logic applied.  
+    * The clumns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row faile
+    * There is also always a status field returned with a unique rejection code (eg: REJ-01 above) with the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
+    * Note that you can highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details    
+
 3. There is one **outer query** (lines 1-4 and 11-12)
-    * It rolls all the detail rows up to a single row with pass or fail judgment.
+    * It rolls all the detail rows up to a single summary row with pass or fail judgment.
     * It returns column **tst_id** - the test ID (hard-coded when write script)
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
     * It returns column **tst_dscr** - the data validation test description (hard-coded when write script)
