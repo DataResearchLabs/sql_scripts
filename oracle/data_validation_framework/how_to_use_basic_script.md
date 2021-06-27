@@ -30,7 +30,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 3 - Download the Basic Data Validation Script
 <details><summary>Expand if you need instructions on how to download and configure the basic script...</summary>
    
-1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql)</b>.
+1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_test_cases.sql)</b>.
 2. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
 </details>
 <br>
