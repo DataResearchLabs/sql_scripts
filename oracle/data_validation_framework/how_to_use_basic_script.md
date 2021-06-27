@@ -19,9 +19,9 @@ The script currently consists of 1,064 lines of SQL code broken down as follows:
 
 
 ### What does the SQL Code Behind a Typical Validation Test Case Look Like?
-A typical data validation test looks something like the SQL code below for test case T031.<br>  
+A typical data validation test has SQL code that looks something like this: <br>  
 
-<details><summary>Click here to see example details and discussion...</summary>
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_val_oracle_example_test_case_sql_code.png">
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
 
@@ -54,6 +54,5 @@ Notice the following aspects of the SQL code:
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
     * It returns column **tst_dscr** - the data validation test description (hard-coded when write script)
 
-</details>
 
 
