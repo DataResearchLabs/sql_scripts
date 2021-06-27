@@ -77,15 +77,18 @@ Here are the steps to execute the basic script in Oracle SQL Developer (typical 
 </details>
 <br>
 
-### Next Steps - Refactoring for Your Use
+### Next Steps - Build Your Own Validation Test Script(s)
 Yuo could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #3 and download a copy of the basic test case script that you will refactor to suit your needs.
 
-I would suggest that you open the basic script as a reference in notepad or text editor of your choice.  Then open Oracle SQL Developer with a blank new script that you are going to build out for your tests as follows:
-1. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
-2. **Select Schema**: You will have a schema (database) that is "under test".  Identify it.  List it in the comment block.  Prefix all SQL code with it going forward (below).
-2. **Table #1**:  Pick the first table for which you are going to start writing validation cases for.  Could be the first table alphabetically. Could be a highest priority table you want to begin writing validation checks against (biggest bang for the buck).  Could be the simplest table to ease in with baby steps (low-hanging fruit).  You decide.
-3. **Rule Set #1**: Start off with an appropriate "Row Count" test case that applies to the entire table.  Pick one from T001 - T004.  Change the scehma name prefix, the table name, and if appropriate the column names.  Highlight and run it in your SQL editor to validate the SQL.  Move on.
-4. **Rule Set #2**: 
-5. **Field #1**: Pick the first field for which you are going to start writing validation test cases for.  Do **not** fall into the trap that I frequently do where
+Here are my recommendations for writing your first script(s):
+1. **Reference**: I would suggest that you open the basic script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
+2. **Maind Editor**: Open Oracle SQL Developer with a blank new script that you are going to build out for your tests as follows:
+3. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
+4. **Select Schema**: You will have a schema (database) that is "under test".  Identify it.  List it in the comment block.  Prefix all SQL code with it going forward (below).
+5. **Table #1**:  Pick the first table for which you are going to start writing validation cases for.  Could be the first table alphabetically. Could be a highest priority table you want to begin writing validation checks against (biggest bang for the buck).  Could be the simplest table to ease in with baby steps (low-hanging fruit).  You decide.
+6. **Rule Set #1**: Start off with an appropriate "Row Count" test case that applies to the entire table.  Pick one from T001 - T004.  Change the scehma name prefix, the table name, and if appropriate the column names.  Highlight and run it in your SQL editor to validate the SQL.  Change the "tst_id" number to your own.  Change the tst_descr to your own.
+7. **Rule Set #2**: Next, if and only if there are missing unique key constraints or foreign key constraints, then I'd copy-paste the appropriate test cases T005-T007 into the SQL editor and make appropriate changes (schema name, table names, field names, tst_id, and tst_descr).
+8. **Rule Set #3**: Next, if and only if 
+9. **Field #1**: Pick the first field for which you are going to start writing validation test cases for.  Do **not** fall into the trap that I frequently do where
 
 
