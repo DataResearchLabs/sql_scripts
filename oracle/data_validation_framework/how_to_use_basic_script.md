@@ -7,14 +7,15 @@
 This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in Oracle SQL Developer, returning the test id, the test status (pass or fail), and the test desription.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).
 <br><br>
 
-### Download
-The basic validation script can be downloaded from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql).
+### Downloads
+1. The basic validation script can be downloaded from [here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql).
+2. Oracle SQL Developer (free) can be downloaded from [here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
 <br><br>
 
 ### What do the Run Results Look Like?
-When you run the [basic script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_script.sql) in Oracle SQL Developer ([free download here](https://www.oracle.com/tools/downloads/sqldev-downloads.html)), the output below is returned.
+When you run the basic script in Oracle SQL Developer, the output below is returned.
 
-Note the following Blue Dots below:
+The Blue Dots in the image below have the following implications:
 1. You must load the basic validation script into SQL Developer (or equivalent IDE)
 2. Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** 66 separate grids)
 3. The output is concisely laid out for all 6 data validation test cases.  The test_id (eg: T001) is column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
