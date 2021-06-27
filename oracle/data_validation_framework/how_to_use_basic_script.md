@@ -53,7 +53,7 @@ Notice the following aspects of the SQL code:
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
     * It returns column **tst_dscr** - the data validation test description (hard-coded when write script)
 </details>
-<br><br>
+<br>
 
 ### Setp 5 - Execute the Basic Data Validation Script
 Here are the steps to execute the basic script in Oracle SQL Developer (typical output show in the screenshot below).  
