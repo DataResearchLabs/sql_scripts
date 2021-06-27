@@ -17,17 +17,9 @@ The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 45-1,064 are the 66 individual example validation test cases (written as SQL SELECTs)
 
 
-### What does Validation Test Case Code Look Like?
-Each data validation test case is written as one or more SQL SELECT statements.  Typically, there is an inner query that returns all rows with business validation logic applied, and an outer query that rolls it all up to a single pass or fail judgment.
+### What does a Typiacl Validation Test Case Look Like?
+A typical data validation test looks something like the SQL code below for test case T031.  This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
 
-Each data validation test returns the following columns in that one rollup or summary row:
-* **tst_id**: The data validation Test ID
-* **status**: The data validation test result.  Usually "P" for pass or "FAIL".  However, you can invent your own status values too, such as "WARN", "SKIP", or "BLOCK"
-* **tst_dscr**: The data validation test description.
-
-For example, below is the SQL code for test case T031.  It validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column. 
-* Notice that you can highlight and run the inner query/SELECT to see all the specific details and relevant row data for failures
-* Notice that the outer (wrapper) query/SELECT rolls it all up to a single row rendering judgment: pass or fail with the three standard columns mentioned above* 
 ```sql
 SELECT 'T031' AS tst_id
       , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
@@ -41,6 +33,16 @@ FROM (
 )
 WHERE status <> 'P';
 ```
+Notice the following aspects of the code:
+1. Each data validation test case is written as one or more SQL SELECT statements.
+2. There is an inner query that returns all rows with business validation logic applied.  
+  * You can highlight and run the inner query SELECT to see all the specific details and relevant row data for failures
+4. There is an outer query that rolls all the detail rows up to a single row with pass or fail judgment.
+5. The outer query returns the following columns in that one rollup or summary row:
+  * **tst_id**: The data validation Test ID
+  * **status**: The data validation test result.  Usually "P" for pass or "FAIL".  However, you can invent your own status values too, such as "WARN", "SKIP", or "BLOCK"
+  * **tst_dscr**: The data validation test description.
+
 
 
 
