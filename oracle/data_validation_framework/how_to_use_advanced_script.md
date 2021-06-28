@@ -50,7 +50,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <br>
 
 ### Step 5 - Review the Advanced "Test Cases" Script
-<details><summary>**Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary>
+<details><summary>Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary><br>
 
 The script currently consists of 3,674 lines of SQL code (3x bigger than the basic script) and is broken down as follows:
 * Lines 1-63 are the comment block header, containing notes and definitions
@@ -64,12 +64,18 @@ A typical data validation test has SQL code that looks something like this: <br>
 
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/06_data_val_oracle_adv_test_case_ex.png">
 
-This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
+This test case (T031) validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
 Notice the following aspects of the SQL code:
-1. Each data validation test case is written as one or more SQL SELECT statements.
+1. Each data validation test case is written as multiple SQL SELECT statements.
 
-2. There is one (or more) **inner queries**  (lines 453-459 above)
+2. There are two blocks of SQL for every data validation test case: 
+    (a) Yellow lines 1674 thru 1694 that you customize for every test case
+    (b) Blue lines 1695 thr 1720 (plus line 1673) that are boilerplate and never change -- simply copy paste them over and over to automatically setup the header and detail rows  
+
+3. The
+   
+   2. There is one (or more) **inner queries**  (lines 453-459 above)
     * These return many detail rows with business validation logic applied.  
     * The columns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row faile
     * There is also always a status field returned with a unique rejection code (eg: REJ-01 above) with the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
