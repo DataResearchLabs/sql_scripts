@@ -94,10 +94,11 @@ Notice the following aspects of the SQL code above:
 
 Here are the steps to execute the advanced script in Oracle SQL Developer (typical output shown in the screenshot below).  
 1. Open Oracle SQL Developer (or equivalent SQL Editor)
-2. Blue Dot #1 - You must load the basic validation script into SQL Developer (or equivalent IDE)
-3. Blue Dot #2 - Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
-4. Blue Dot #3 - The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/05_data_val_oracle_run_results1.png">
+2. Blue Dot #1 - You must load the advanced validation script "dvf_advanced_02_test_cases.sql" into SQL Developer (or equivalent IDE) -- see Step 4 above.  Be sure to highlight all the code.
+3. Blue Dot #2 - Click the "Run Statement" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary reoprt SELECT.
+4. Blue Dot #3 - The output is beautifully laid out for all data validation test cases in a grid.  You can scroll and view the grid details, or export it out to a file using your SQL Editor.  Fields include everything, from test id, test description, and status to test case execution time, start time, rejection details, expected and actual results, and lookup SQL.
+
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/07_data_val_oracle_run_results_adv.png">
 
 </details>
 <br>
