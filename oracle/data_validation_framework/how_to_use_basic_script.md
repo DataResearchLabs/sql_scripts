@@ -79,7 +79,7 @@ Here are the steps to execute the basic script in Oracle SQL Developer (typical 
 <br>
 
 ### Next Steps - Build Your Own Validation Test Script(s)
-Yuo could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #3 and download a copy of the basic test case script that you will refactor to suit your needs.
+You could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #3 and download a copy of the basic test case script that you will refactor to suit your needs.
 
 Here are my recommendations for writing your validation script(s):
 1. **Reference**: I would suggest that you open the basic script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
