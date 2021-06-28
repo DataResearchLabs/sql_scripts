@@ -79,11 +79,11 @@ Here are the steps to execute the basic script in Oracle SQL Developer (typical 
 <br>
 
 ### Next Steps - Build Your Own Validation Test Script(s)
-You could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #3 and download a copy of the basic test case script that you will refactor to suit your needs.
+You could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #3 to download a copy of the basic test case script that you will refactor to suit your needs.
 
 Here are my recommendations for writing your validation script(s):
 1. **Reference**: I would suggest that you open the basic script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
-2. **Maind Editor**: Open Oracle SQL Developer with a blank new script that you are going to build out for your tests as follows:
+2. **Main Editor**: Open Oracle SQL Developer with a blank new script that you are going to build out for your tests as follows:
 3. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
 4. **Select Schema**: You will have a schema (database) that is "under test".  Identify it.  List it in the comment block.  Prefix all SQL code with it going forward (below).
 5. **Table #1**:  Pick the first table for which you are going to start writing validation cases for.  Could be the first table alphabetically. Could be a highest priority table you want to begin writing validation checks against (biggest bang for the buck).  Could be the simplest table to ease in with baby steps (low-hanging fruit).  You decide.
