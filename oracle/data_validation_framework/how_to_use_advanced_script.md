@@ -41,11 +41,11 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 </details>
 <br>
 
-### Step 4 - Download the Advanced "Test Cases" Script
+### Step 4 - Download and Configure the Advanced "Test Cases" Script
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary>
    
-1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
-2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
+1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_02_test_cases.sql)</b>.
+2. Make the appropriate changes to lines 70-71 to insert parameter names and values your script needs nito the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
 </details>
 <br>
 
