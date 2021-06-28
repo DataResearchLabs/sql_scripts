@@ -60,28 +60,30 @@ The script currently consists of 3,674 lines of SQL code (3x bigger than the bas
 * Lines 3,638-3,674 are used to organize and post the test case results as a "report" (splits out expected and actual values into own column, etc.)
 <br>
 
-A typical data validation test has SQL code that looks something like this: <br>  
+A typical data validation test has SQL code that looks something like this one -- T031 which checks for carriage return or line feed characters in field last_name: <br>  
 
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/06_data_val_oracle_adv_test_case_ex.png">
 
-This test case (T031) validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
-
-Notice the following aspects of the SQL code:
-1. Each data validation test case is written as multiple SQL SELECT statements.
+Notice the following aspects of the SQL code above:
+1. Each data validation test case is written as multiple SQL SELECT statements using a CTE (common table expression).  The format is WITH tbl_nm as sql, tbl_nm_2 as sql, etc.
 
 2. There are two blocks of SQL for every data validation test case: 
     (a) Yellow lines 1674 thru 1694 that you customize for every test case
     (b) Blue lines 1695 thr 1720 (plus line 1673) that are boilerplate and never change -- simply copy paste them over and over to automatically setup the header and detail rows  
 
-3. The
+3. Line 1673 sets up the entire data validation test case SQL query as an INSERT INTO the "temp" table test_case_results.
    
-   2. There is one (or more) **inner queries**  (lines 453-459 above)
-    * These return many detail rows with business validation logic applied.  
-    * The columns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row faile
-    * There is also always a status field returned with a unique rejection code (eg: REJ-01 above) with the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
-    * Note that you can highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details    
+4. Lines 1674 thru 1679 establish the first subquery "cfg".  This is where you cahnge the test case number (eg: 'T031') and the test case description (ilne 1677) when you refactor these.
+   
+5. Lines 1680 thru 1690 establish the second subquery "dut" -- the Data Under Test.  Here is where the target table and field are queried and frequently (but not always) where the rejection code logic is applied at the row level (lines 1682-1686).  Notice in this example that not only is the rejection code listed (eg: REJ-01 + details), but the expected result (none exist) and the actual result including the location within the string is returned.  This provides 100% of the information needed to resolve the error...good enough to pass diretly on to the person who will fix the data without an analyst having to manually confirm or research to dial-in the problem first.
+   
+6. Lines 1691 thru 1694 are where higher level business logic goes (especially when aggregating data or doing multiple passes on a dataset).  In this simpler example, we just filter the "dut" dataset down to only those rows that were rejected (and ignore the vast majority of rows that were "allgood".
+   
+7. 
+   
 
-3. There is one **outer query** (lines 449-452 and 461-462)
+   
+   3. There is one **outer query** (lines 449-452 and 461-462)
     * It rolls all the detail rows up to a single summary row with pass or fail judgment.
     * It returns column **tst_id** - the test ID (hard-coded when write script)
     * It returns column **status** - the test result (re-calculated with every test run).  Usually "P" for pass or "FAIL"...or add your own such as "WARN", "SKIP", or "BLOCK"
