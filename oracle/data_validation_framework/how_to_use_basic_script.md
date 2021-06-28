@@ -68,7 +68,7 @@ Notice the following aspects of the SQL code:
 ### Step 5 - Execute the Basic Data Validation Script
 <details><summary>Expand if you would like to see how to execute the basic script, step-by-step...</summary><br>
 
-Here are the steps to execute the basic script in Oracle SQL Developer (typical output show in the screenshot below).  
+Here are the steps to execute the basic script in Oracle SQL Developer (typical output shown in the screenshot below).  
 1. Open Oracle SQL Developer (or equivalent SQL Editor)
 2. Blue Dot #1 - You must load the basic validation script into SQL Developer (or equivalent IDE)
 3. Blue Dot #2 - Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
