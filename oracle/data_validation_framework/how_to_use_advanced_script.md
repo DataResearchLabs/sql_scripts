@@ -42,7 +42,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <br>
 
 ### Step 4 - Download and Configure the Advanced "Test Cases" Script
-<details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary>
+<details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
 1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_02_test_cases.sql)</b>.
 2. Make the appropriate changes to lines 70-71 to insert parameter names and values your script needs nito the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
@@ -52,13 +52,17 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 5 - Review the Advanced "Test Cases" Script
 <details><summary>**Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary>
 
-The script currently consists of 1,064 lines of SQL code broken down as follows:
-* Lines 1-44 are the comment block header, containing notes and definitions
-* Lines 45-1,064 are the 66 individual example validation test cases (written as SQL SELECTs)
+The script currently consists of 3,674 lines of SQL code (3x bigger than the basic script) and is broken down as follows:
+* Lines 1-63 are the comment block header, containing notes and definitions
+* Lines 64-75 are to populate the configuration table with parameter names and values
+* Lines 76-3,612 are the 66 individual example validation test cases (written as SQL SELECTs with a lot of boilerplate code)
+* Lines 3,613-3,637 are used to calculate the test case execution time -- very handy for tuning the data validation performance (if a test runs long, speed it up by only checking the past 1-5 days, or refactor the SQL, or combine with other tests into one large single pass table scan query).  Also, you can monitor the test case execution time over weeks and months to spot system performance issues (eg: need an archiving strategy b/c table getting too large, or need a covering index for where clause condition, etc.)
+* Lines 3,638-3,674 are used to organize and post the test case results as a "report" (splits out expected and actual values into own column, etc.)
+<br>
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_val_oracle_example_test_case_sql_code.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/06_data_val_oracle_adv_test_case_ex.png">
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
