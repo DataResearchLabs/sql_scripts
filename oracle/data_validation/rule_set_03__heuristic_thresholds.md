@@ -19,7 +19,7 @@ Note: Although the terms "rate" and "frequency" are mostly synonomous, nulls are
 ### T008 - Null Rate Thresholds
 There is a lot going on in this "Null Rate Threshold" data validation query below.  The basic goal is to validate that a given table's columns do not have too many, or too few NULLs.  
 <details>
-<summary>In the example below...</summary>
+<summary>In the example below...</summary><br>
 ...we are checking columns department_name, manager_id, and url in the table departments.  We want to ensure that column department_name has no NULLs, and that column manager_id is NULL less than 65% of the time and column url is NULL less than 80% of the time.  
  
 This check is like the proverbial miner's canary in that it is a trip wire triggered when something goes awry in a data feed.  I've used this test scenario to great effect when coupled with a create-date or last-updated-date to monitor the past week's data loads for any unexpected upticks in null rates.  
@@ -55,7 +55,7 @@ WHERE status <> 'P';
 ### T009 - Value Frequency Thresholds
 "Value Frequency Threshold" tests are fairly similar to null rates above (T008).  The difference is that we are checking the frequency (or rate) at which a column's values occur.
 <details>
-<summary>In the example below...</summary>
+<summary>In the example below...</summary><br>
 ...we are checking the frequencies with which the values 1, 2, 3, and 4 occur in field region_id of table countries.  There is an upper CTE (common table expression) named "dtls" at the WITH clause, and a lower wrapper that applies the business logic (if any value frequency rejections were found, fail the case).  Inside the dtls CTE, there is an inner query at the bottom (at the FROM clause) doing a single table scan to calculate a frequencies for each value in the GROUP BY for the column.  It the GROUP BY value count (field "freq") is divided by the total table row count (field "den") to calculate field "freq_rt".  The SELECT CASE logic at the top applies the business logic; comparing the actual value frequencies (freq_rt when region_id = 1, or =2, etc.) against the expected threshold frequencies (hard-coded as 0.28 to 0.36, 016 to 0.24 and so on).  The returned value is a rejection code (REJ-01, REJ-02, etc.) clearly indicating which field failed the value ferquency check, what the actual value frequency was, and what the expected value frequency threshold ranges were.  If no rejections are triggered, then status returns a "P" for pass.
 </details>
  
