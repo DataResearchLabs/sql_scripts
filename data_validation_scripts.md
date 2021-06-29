@@ -44,7 +44,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  3. Basic<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
 </td></tr>
 <tr><td>
   4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
