@@ -33,8 +33,8 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Rule Set 08 - Diff Checks (TODO)<br>
 * Rule Set 09 - Defect Regression (TODO)<br>
 * Best Practices (TODO)<br>
-* How to Use Basic Validation Script (TODO)<br>
-* How to Use Advanced Validation Script (TODO)<br>
+* Basic Validation Script (TODO)<br>
+* Advanced Validation Script (TODO)<br>
 </td>
  
 <td>
