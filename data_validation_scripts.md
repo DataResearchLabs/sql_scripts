@@ -24,10 +24,18 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 
 
 ## Greenplum
-* Greenplum "Data Validation - Basic Table Level Tests" (TODO)<br>
-* Greenplum "Data Validation - Advanced Table Level Tests" (TODO)<br>
-* Greenplum "Data Validation - Basic Field Level Tests" (TODO)<br>
-* Greenplum "Data Validation - Basic Field Level Tests" (TODO)<br>
+* Rule Set 01 - Row Counts (TODO)<br>
+* Rule Set 02 - Keys (TODO)<br>
+* Rule Set 03 - Heuristic Thresholds (TODO)<br>
+* Rule Set 04 - Numeric Values (TODO)<br>
+* Rule Set 05 - Date Values (TODO)<br>
+* Rule Set 06 - Text Values (TODO)<br>
+* Rule Set 07 - Regular Expressions (TODO)<br>
+* Rule Set 08 - Diff Checks (TODO)<br>
+* Rule Set 09 - Defect Regression (TODO)<br>
+* Best Practices (TODO)<br>
+* How to Use Basic Validation Script (TODO)<br>
+* How to Use Advanced Validation Script (TODO)<br>
 </td>
 <td><kbd>
   1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
