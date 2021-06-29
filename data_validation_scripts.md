@@ -167,7 +167,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <td rowspan=3 width=325>
 
 ## Oracle
-* Rule Set 01 - Row Counts<br>
+* [Rule Set 01 - Row Counts](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_01__row_counts.md)<br>
 * Rule Set 02 - Keys<br>
 * Rule Set 03 - Heuristic Thresholds<br>
 * Rule Set 04 - Numeric Values<br>
