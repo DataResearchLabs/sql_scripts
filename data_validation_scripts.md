@@ -13,6 +13,16 @@ Data validation can be used xxxxxxxxxxxxxxxxxxx.
 Because each database platform has its own unique flavor of SQL, this page is just a central landing page to redirect you to the appropriate database platform's specific pages.<br>
 <br>
 
+<table>
+
+<tr>
+<td align="center" valign="top">
+  <br>
+  <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
+</td>
+<td>
+
+
 ## Greenplum
 * [Greenplum "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
 * [Greenplum "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
