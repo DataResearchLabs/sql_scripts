@@ -19,9 +19,9 @@ This basic data validation script runs one of each type of data validation test 
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to yuor own databases, then you will need to download and deploy the demo_hr test dataset.
-1. Download the "demo_hr" schema / table definitions from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_01_create_tables.sql)</b>.
+1. Download the "demo_hr" schema / table definitions from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/demo_data/demo_hr_01_create_tables.sql)</b>.
 2. Run the script on an Oracle server and database where you have permissions (local is fine too).
-3. Download the "demo_hr" test data population script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_02_populate_tables.sql)</b>.
+3. Download the "demo_hr" test data population script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/demo_data/demo_hr_02_populate_tables.sql)</b>.
 4. Run the script on the same Oracle server and database.
 5. Using Oracle SQL Developer (or equivalent SQL IDE), confirm that the tables exist and the data is populated.
 </details>
@@ -30,7 +30,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 3 - Download the Basic Data Validation Script
 <details><summary>Expand if you need instructions on how to download and configure the basic script...</summary><br>
    
-1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_basic_test_cases.sql)</b>.
+1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/sql_scripts/dv_basic_test_cases.sql)</b>.
 2. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
 </details>
 <br>
@@ -44,7 +44,7 @@ The script currently consists of 1,064 lines of SQL code broken down as follows:
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_val_oracle_example_test_case_sql_code.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/img/01_data_val_oracle_example_test_case_sql_code.png">
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
@@ -73,7 +73,7 @@ Here are the steps to execute the basic script in Oracle SQL Developer (typical 
 2. Blue Dot #1 - You must load the basic validation script into SQL Developer (or equivalent IDE)
 3. Blue Dot #2 - Be sure to click the "Run script" button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
 4. Blue Dot #3 - The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/05_data_val_oracle_run_results1.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/02_data_val_oracle_run_results1.png">
 
 </details>
 <br>
