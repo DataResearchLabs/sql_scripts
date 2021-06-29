@@ -24,16 +24,32 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 
 
 ## Greenplum
-* [Greenplum "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/greenplum/data_dictionary/data_dict_dump.sql)<br>
-* [Greenplum "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw)<br>
+* Greenplum "Data Validation - Basic Table Level Tests" (TODO)<br>
+* Greenplum "Data Validation - Advanced Table Level Tests" (TODO)<br>
+* Greenplum "Data Validation - Basic Field Level Tests" (TODO)<br>
+* Greenplum "Data Validation - Basic Field Level Tests" (TODO)<br>
 </td>
-<td>
-<kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=0BymfeSzqkw" target="_blank">
-<img src="http://img.youtube.com/vi/0BymfeSzqkw/0.jpg" alt="Overview Video" width="200" />
-</a>
-</kbd>
-</td>
+<td><kbd>
+  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+</kbd></td>
+<td><kbd>
+  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+</kbd></td>
+<td><kbd>
+  3. Basic<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+</kbd></td>
+<td><kbd>
+  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+</kbd></td>
+<td><kbd>
+  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+</kbd></td>
+<td><kbd>
+  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+</kbd></td>
+<td><kbd>
+  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
+</kbd></td>
 </tr>
 
 
