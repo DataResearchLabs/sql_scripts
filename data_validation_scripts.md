@@ -168,9 +168,9 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 
 ## Oracle
 * [Rule Set 01 - Row Counts](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_01__row_counts.md)<br>
-* Rule Set 02 - Keys<br>
-* Rule Set 03 - Heuristic Thresholds<br>
-* Rule Set 04 - Numeric Values<br>
+* [Rule Set 02 - Keys](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_02__keys.md)<br>
+* [Rule Set 03 - Heuristic Thresholds](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_03__heuristic_thresholds.md)<br>
+* [Rule Set 04 - Numeric Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_04__numeric_values.md)<br>
 * Rule Set 05 - Date Values<br>
 * Rule Set 06 - Text Values<br>
 * Rule Set 07 - Regular Expressions<br>
