@@ -13,7 +13,7 @@ Data validation can be used xxxxxxxxxxxxxxxxxxx.
 Because each database platform has its own unique flavor of SQL, this page is just a central landing page to redirect you to the appropriate database platform's specific pages.<br>
 <br>
 
-<table width="2000px">
+<table width="4000px">
 
 <tr>
 <td align="center" valign="top">
