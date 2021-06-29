@@ -16,11 +16,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <table>
 
 <tr>
-<td align="center" valign="top">
+<td align="center" valign="top" rowspan=3>
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
-<td rowspan=2>
+<td rowspan=3>
 
 ## Greenplum
 * Rule Set 01 - Row Counts (TODO)<br>
@@ -47,16 +47,18 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   3. Basic<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
 </kbd></td>
 <td><kbd>
-  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
-</kbd></td>
 </tr>
 <tr>  
+  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+</kbd></td>
 <td><kbd>
   5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
 </kbd></td>
 <td><kbd>
   6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
 </kbd></td>
+</tr>
+<tr>  
 <td><kbd>
   7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
 </kbd></td>
