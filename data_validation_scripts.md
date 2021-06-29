@@ -152,59 +152,97 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   
   
   
-  
-  
-  
-  
-  
-  
-
-
-
 <tr>
-  <td align="center" valign="top">
+<td align="center" valign="top" rowspan=3>
   <br>
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_iconX.png" width="102px">
 </td>
-<td>
-    
-    
+<td rowspan=3 width=325>
+
 ## Oracle
-* [Oracle "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_dictionary/data_dict_dump.sql)<br>
-* [Oracle "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E)<br>
+* Rule Set 01 - Row Counts<br>
+* Rule Set 02 - Keys<br>
+* Rule Set 03 - Heuristic Thresholds<br>
+* Rule Set 04 - Numeric Values<br>
+* Rule Set 05 - Date Values<br>
+* Rule Set 06 - Text Values<br>
+* Rule Set 07 - Regular Expressions<br>
+* Rule Set 08 - Diff Checks<br>
+* Rule Set 09 - Defect Regression<br>
+* Best Practices<br>
+* Basic Validation Script<br>
+* Advanced Validation Script<br>
+</td>
+ 
+<td>
+  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-<kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=Ic5dafweq1E" target="_blank">
-<img src="http://img.youtube.com/vi/Ic5dafweq1E/0.jpg" alt="Overview Video" width="200" />
-</a>
-</kbd>
+  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
-</tr>
-
-
+<td>
+  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+</td></tr>
+<tr><td>
+  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+</td></tr>
+<tr><td>
+  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
+</td></tr>  
+    
+  
+  
 <tr>
-<td align="center" valign="top">
+<td align="center" valign="top" rowspan=3>
   <br>
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="125px">
 </td>
-<td>
-    
-    
-## PostgreSQL
-* [PostgreSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_dictionary/data_dict_dump.sql)<br>
-* [PostgreSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28)<br>
-</td>
-<td>
-<kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=ekLK46G_r28" target="_blank">
-<img src="http://img.youtube.com/vi/ekLK46G_r28/0.jpg" alt="Overview Video" width="200" />
-</a>
-</kbd>
-</td>
-</tr>
-</table>
+<td rowspan=3 width=325>
 
+## PostgreSQL
+* Rule Set 01 - Row Counts<br>
+* Rule Set 02 - Keys<br>
+* Rule Set 03 - Heuristic Thresholds<br>
+* Rule Set 04 - Numeric Values<br>
+* Rule Set 05 - Date Values<br>
+* Rule Set 06 - Text Values<br>
+* Rule Set 07 - Regular Expressions<br>
+* Rule Set 08 - Diff Checks<br>
+* Rule Set 09 - Defect Regression<br>
+* Best Practices<br>
+* Basic Validation Script<br>
+* Advanced Validation Script<br>
+</td>
+ 
+<td>
+  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+</td></tr>
+<tr><td>
+  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+</td></tr>
+<tr><td>
+  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
+</td></tr>  
+</tr>     
+</table>
 <br>
 <br>
 
