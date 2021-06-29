@@ -2,11 +2,16 @@
 [![License: CC0](https://img.shields.io/badge/License-CC0-red)](LICENSE "Creative Commons Zero License by DataResearchLabs (effectively = Public Domain")
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
 
-## What is Data Validation?
+## What is Data Validation Testing?
 <img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_validation_scripts.png" width="500px">
-"Data Validation" is simply xxxxxxxxxxxxxxxxxxxxxx.<br>
+"Data Validation Testing" ensures that the data you work with is complete and correct, that any necesary transformations are accurate without loss, that your processes can handle incorrect data, and the final data output is correct.<br>
 <br>
-Data validation can be used xxxxxxxxxxxxxxxxxxx.
+
+## How Can You Use Data Validation Testing?
+
+- **Production Checkouts**: You can use data validation testing for after prod deplosy using carefully crafted read-only SELECTs so as to not impact performance.  
+- **Dev BVT**: You could setup a lean/fast validation script that runs as a Build Verification Test every time developers check-in code...a baseline set of rules that should never be violoated.
+- **Test/Stage Regression**: You could setup a more extensive set of data validation tests and schedule them to run daily.  If it take 45 minutes to run 1,200 tests to thoroughly exercise the business logic of an entire schema, running it daily is a good trade-off.  You'll be surprised at the number of times where out-of-the-blue you catch some odd application bug based on data rules.
 
 
 ## Overview
