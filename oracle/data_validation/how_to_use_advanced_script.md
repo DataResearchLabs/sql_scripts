@@ -23,9 +23,9 @@ However, this pair of scripts is more sophisticated as follows:
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to yuor own databases, then you will need to download and deploy the demo_hr test dataset.
-1. Download the "demo_hr" schema / table definitions from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_01_create_tables.sql)</b>.
+1. Download the "demo_hr" schema / table definitions from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/demo_data/demo_hr_01_create_tables.sql)</b>.
 2. Run the script on an Oracle server and database where you have permissions (local is fine too).
-3. Download the "demo_hr" test data population script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/demo_data/demo_hr_02_populate_tables.sql)</b>.
+3. Download the "demo_hr" test data population script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/demo_data/demo_hr_02_populate_tables.sql)</b>.
 4. Run the script on the same Oracle server and database.
 5. Using Oracle SQL Developer (or equivalent SQL IDE), confirm that the tables exist and the data is populated.
 </details>
@@ -34,7 +34,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 3 - Download & Execute the Advanced "Setup" Script
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
-1. Download the advanced setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_01_setup.sql)</b>.
+1. Download the advanced setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/sql_scripts/dv_advanced_01_setup.sql)</b>.
 2. There are **no** configuration changes needed for the script, it will work out of the box against the demo_hr schema created in Step #2 above.
 3. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Oracle Server and demo_hr schema.
 4. Execute the script and confirm the two empty tables ("test_case_results" and "test_case_config") now exist in the demo_hr schema.
@@ -44,7 +44,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 4 - Download and Configure the Advanced "Test Cases" Script
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
-1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation_framework/sql_scripts/dvf_advanced_02_test_cases.sql)</b>.
+1. Download the advnaced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/sql_scripts/dv_advanced_02_test_cases.sql)</b>.
 2. Make the appropriate changes to lines 70-71 to insert parameter names and values your script needs nito the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
 </details>
 <br>
@@ -62,7 +62,7 @@ The script currently consists of 3,674 lines of SQL code (3x bigger than the bas
 
 A typical data validation test has SQL code that looks something like this one -- T031 which checks for carriage return or line feed characters in field last_name: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/06_data_val_oracle_adv_test_case_ex.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/img/03_data_val_oracle_adv_test_case_ex.png">
 
 Notice the following aspects of the SQL code above:
 1. Each data validation test case is written as multiple SQL SELECT statements using a CTE (common table expression).  The format is WITH tbl_nm as sql, tbl_nm_2 as sql, etc.
@@ -98,7 +98,7 @@ Here are the steps to execute the advanced script in Oracle SQL Developer (typic
 3. Blue Dot #2 - Click the "Run Statement" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary reoprt SELECT.
 4. Blue Dot #3 - The output is beautifully laid out for all data validation test cases in a grid.  You can scroll and view the grid details, or export it out to a file using your SQL Editor.  Fields include everything, from test id, test description, and status to test case execution time, start time, rejection details, expected and actual results, and lookup SQL.
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/07_data_val_oracle_run_results_adv.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/img//04_data_val_oracle_run_results_adv.png">
 
 </details>
 <br>
