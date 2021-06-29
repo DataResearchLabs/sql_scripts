@@ -60,31 +60,51 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td></tr>
 
 
-
 <tr>
-<td align="center" valign="top">
+<td align="center" valign="top" rowspan=3>
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
+  <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
 </td>
-<td>
-
+<td rowspan=3 width=325>
 
 ## MS SQL Server
-* [MSSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_dictionary/data_dict_dump.sql)<br>
-* [MSSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY)<br>
+* Rule Set 01 - Row Counts<br>
+* Rule Set 02 - Keys<br>
+* Rule Set 03 - Heuristic Thresholds<br>
+* Rule Set 04 - Numeric Values<br>
+* Rule Set 05 - Date Values<br>
+* Rule Set 06 - Text Values<br>
+* Rule Set 07 - Regular Expressions<br>
+* Rule Set 08 - Diff Checks<br>
+* Rule Set 09 - Defect Regression<br>
+* Best Practices<br>
+* Basic Validation Script<br>
+* Advanced Validation Script<br>
+</td>
+ 
+<td>
+  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-<kbd>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY" target="_blank">
-  <br>
-  <img src="http://img.youtube.com/vi/Y6ZUdLBOufY/0.jpg" alt="Overview Video" width="200" />
-</a>
-</kbd>
+  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
-</tr>
-
-
-
+<td>
+  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+</td></tr>
+<tr><td>
+  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+</td>
+<td>
+  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+</td></tr>
+<tr><td>
+  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
+</td></tr>
+  
+  
 <tr>
 <td align="center" valign="top">
   <br>
