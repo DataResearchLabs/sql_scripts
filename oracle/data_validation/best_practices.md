@@ -21,7 +21,7 @@ This best practice revolves around the Status field that all these test cases ha
 
 However, there is nothing stopping you from adding additional status values such as "WARN" or "SKIP" or even "BLOCK".
 
-<details><summary>More details...</summary>
+<details><summary>More details...</summary><br>
 
 * In the SQL below, the first subquery (CTE) is titled "dut", short for data under test.  This simply calculates the frequency with which region_id = 1 occurs.
 * The second subquery (CTE) is titles "bll", short for business logic layer.  This is where the magic happens.  Because CASE...WHEN logic is sequential, it is important that the highest severity checks are done first.  In this case, we check for the frequency being a FAIL because it is outside of the wide range 10% to 50%.  However, we come right back in the following WHEN statement and set the status to WARN if the frequency observed is outside of the narrower (than FAIL) range of 25% to 35%.  So as coded, a WARN is issue when the actual frequency is between 10% to 25% or 35% to 50%.  A frequency between 25% to 35% = Pass.  A frequency below 10% or above 50% = Fail.
@@ -64,7 +64,7 @@ FROM dual;
 ### T063 - Limit to Recent Data
 There are good reasons why you should consider altering the prior example tests to only use recent data (eg: past 1 or 5 or 10 days) when you go to implement these yourself.  
 
-<details><summary>More details...</summary>
+<details><summary>More details...</summary><br>
 	
 Three important reasons are:
 1. **Performance** - if the test can filter down to just a small recent subset of data and test just that rather than pulling the entire past 5 years, well that is 1,500+ times less data and should run much faster (depending on underlyng table size, indexes, physical location, etc.)
@@ -114,7 +114,7 @@ For example, below I've bundled validation tests from many small granular tests 
 * The **upside** is much faster performance.  When you look at execution times in the advanced test script, this single table scan test runs all the checks in the same amount of time as any one of the granular tests.  Translation: Rolling 25 granular tests into one bigger table scan pass makes the script 25 times faster because the database does everything in one table scan pass rather than 25 equal duration but smaller sql passes.
 * The **downside** is clarity.  Since all the logic is in one giant CASE...WHEN...ELSE statement, the sequencing matters.  Translation: when the first rejection is encountered during validation of a given row, all subsequent WHEN statements are skipped.  So you only know of the highest level rejection code, but have no idea about other possible data validation errors until you fix the first one and er-run.  Sometimes this is an acceptable trade-off to improvve performance (esp. when fails are rare and the system is mature).
 
-<details><summary>More details and the source code...</summary>
+<details><summary>More details and the source code...</summary><br>
 
 In the example below, there is an inner query that you can highlight and execute from your SQL IDE to see results at the row level with specific rejection codes encountered, if any.  The outer query is simply a wrapper that returns a single value of pass or fail depending on whether rejection codes were found in the data.
 
@@ -175,7 +175,7 @@ WHERE status <> 'P';
 ### T066 - Use Config Tables to Parameterize
 There are times when you want parameterize the data validation script rather than manually change hard coded values.  In the advanced data validation script, this is implemented.
 	
-<details><summary>Example Config Table Setup...</summary>
+<details><summary>Example Config Table Setup...</summary><br>
 	
 ```sql
 -- Create Config Table
