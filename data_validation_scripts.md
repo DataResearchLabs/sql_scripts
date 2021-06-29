@@ -37,32 +37,27 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * How to Use Advanced Validation Script (TODO)<br>
 </td>
  
-<td><kbd>
+<td>
   1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
-</kbd></td>
-<td><kbd>
+</td>
+<td>
   2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
-</kbd></td>
-<td><kbd>
+</td>
+<td>
   3. Basic<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
-</kbd></td>
-<td><kbd>
-</tr>
-<tr>  
+</td></tr>
+<tr><td>
   4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
-</kbd></td>
-<td><kbd>
+</td>
+<td>
   5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
-</kbd></td>
-<td><kbd>
+</td>
+<td>
   6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
-</kbd></td>
-</tr>
-<tr>  
-<td><kbd>
+</td></tr>
+<tr><td>
   7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
-</kbd></td>
-</tr>
+</td></tr>
 
 
 
