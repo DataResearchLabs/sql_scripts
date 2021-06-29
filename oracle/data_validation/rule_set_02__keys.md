@@ -55,6 +55,6 @@ FROM (
   FROM      demo_hr.countries p 
   LEFT JOIN demo_hr.locations c  ON p.country_id = c.country_id
   WHERE c.country_id IS NULL
-	); 
+); 
  ```
 
