@@ -20,21 +20,21 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
-<td rowspan=3 width=375>
+<td rowspan=3 width=350>
 
 ## Greenplum
-* Rule Set 01 - Row Counts (TODO)<br>
-* Rule Set 02 - Keys (TODO)<br>
-* Rule Set 03 - Heuristic Thresholds (TODO)<br>
-* Rule Set 04 - Numeric Values (TODO)<br>
-* Rule Set 05 - Date Values (TODO)<br>
-* Rule Set 06 - Text Values (TODO)<br>
-* Rule Set 07 - Regular Expressions (TODO)<br>
-* Rule Set 08 - Diff Checks (TODO)<br>
-* Rule Set 09 - Defect Regression (TODO)<br>
-* Best Practices (TODO)<br>
-* Basic Validation Script (TODO)<br>
-* Advanced Validation Script (TODO)<br>
+* Rule Set 01 - Row Counts<br>
+* Rule Set 02 - Keys<br>
+* Rule Set 03 - Heuristic Thresholds<br>
+* Rule Set 04 - Numeric Values<br>
+* Rule Set 05 - Date Values<br>
+* Rule Set 06 - Text Values<br>
+* Rule Set 07 - Regular Expressions<br>
+* Rule Set 08 - Diff Checks<br>
+* Rule Set 09 - Defect Regression<br>
+* Best Practices<br>
+* Basic Validation Script<br>
+* Advanced Validation Script<br>
 </td>
  
 <td>
