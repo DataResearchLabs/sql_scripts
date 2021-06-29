@@ -13,15 +13,14 @@ Data validation can be used xxxxxxxxxxxxxxxxxxx.
 Because each database platform has its own unique flavor of SQL, this page is just a central landing page to redirect you to the appropriate database platform's specific pages.<br>
 <br>
 
-<table width="4000px">
+<table>
 
 <tr>
 <td align="center" valign="top">
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
-<td>
-
+<td style="min-width:500px">
 
 ## Greenplum
 * Rule Set 01 - Row Counts (TODO)<br>
