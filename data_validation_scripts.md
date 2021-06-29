@@ -20,7 +20,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
-<td style="min-width:500px">
+<td style="min-width:1500px">
 
 ## Greenplum
 * Rule Set 01 - Row Counts (TODO)<br>
