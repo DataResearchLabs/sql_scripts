@@ -171,14 +171,14 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * [Rule Set 02 - Keys](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_02__keys.md)<br>
 * [Rule Set 03 - Heuristic Thresholds](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_03__heuristic_thresholds.md)<br>
 * [Rule Set 04 - Numeric Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_04__numeric_values.md)<br>
-* Rule Set 05 - Date Values<br>
-* Rule Set 06 - Text Values<br>
-* Rule Set 07 - Regular Expressions<br>
-* Rule Set 08 - Diff Checks<br>
-* Rule Set 09 - Defect Regression<br>
-* Best Practices<br>
-* Basic Validation Script<br>
-* Advanced Validation Script<br>
+* [Rule Set 05 - Date Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_05__date_values.md)<br>
+* [Rule Set 06 - Text Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_06__text_values.md)<br>
+* [Rule Set 07 - Regular Expressions](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_07__regular_expressions.md)<br>
+* [Rule Set 08 - Diff Checks](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_08__diff_checks.md)<br>
+* [Rule Set 09 - Defect Regression](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/rule_set_09__defect_regression.md)<br>
+* [Best Practices](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/best_practices.md)<br>
+* [Basic Validation Script](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/how_to_use_basic_script.md)<br>
+* [Advanced Validation Script](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/how_to_use_advanced_script.md)<br>
 </td>
  
 <td>
