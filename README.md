@@ -12,10 +12,10 @@ The Data Dictionary script and tutorials enable you to easily document an existi
 <br>
 
 
+## [Data Validation Scripts](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
+
 <img align="right" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/04_data_validation_scripts.png" width="300px">
 
-
-## [Data Validation Scripts](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
 The Data Validation Framework scripts and tutorials enable you to easily standup a battery of automated data validation tests in your environment.  Use the DVF for prod checkouts, or test and stage regression tests, or dev unit tests, or automated data validation after each data load.  There are nine rule sets depicting 66 sample test cases to demonstrate how to test for row counts, keys, heuristic thresholds, numeric/date/text values, regular expressions, and data or schema diffs.  The basic data validation script demonstrations executes all 66 sample validation tests putting out one line of text with the test id, status, and test description -- a nice simple way to organize your tests.  The advanced data validation scripts execute the same 66 sample validation tests, but pushes output to a table and adds in the execution time in seconds, as well supporting detail rows on fails with the rejection code + reason, the expected value, the actual value, and the SQL to lookup the rejected row so you can copy-paste-execute-and-troubleshoot.<br>
 <br>
 <br>
