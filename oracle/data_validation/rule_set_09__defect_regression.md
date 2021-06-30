@@ -1,9 +1,10 @@
-Rule Set #9 - Defect Regression
+### Data Validation Examples - Oracle
 [![License: CC0](https://img.shields.io/badge/License-CC0-red)](LICENSE "Creative Commons Zero License by DataResearchLabs (effectively = Public Domain")
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
-## [Data Validation Examples - Oracle](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
+#### [Return to Data Validation Home Page](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
+<br>
 
----
+Rule Set #9 - Defect Regression
 
 ## Summary
 Where possible, it is a good idea to cover known defects with a test case.  This enables automated regression testing for free.  Yuo can simply run this script to quickly re-check whether a defect has been re-introduced.
