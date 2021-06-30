@@ -9,7 +9,7 @@
 ## Table of Contents
  - <a href="#t059">T059 - Table Structure (Schema) Differences</a>
  - <a href="#t060">T060 - Table Data Differences (Static SQL Snapshot)</a>
- - <a href="#t061">T061 - Table Data Diffeernces (Dynamic Table Compare)</a>
+ - <a href="#t061">T061 - Table Data Differences (Dynamic Table Compare)</a>
 <br>
 
 
