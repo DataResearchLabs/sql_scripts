@@ -1,7 +1,7 @@
-### Data Validation Examples
-# Rule Set #2 - Keys (Foreign & Unique)
+### Data Validation Examples - Oracle
 [![License: CC0](https://img.shields.io/badge/License-CC0-red)](LICENSE "Creative Commons Zero License by DataResearchLabs (effectively = Public Domain")
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
+# Rule Set #2 - Keys (Foreign & Unique)
 #### [Data Validation Home Page](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
 <br>
 
