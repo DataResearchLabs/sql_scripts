@@ -61,7 +61,7 @@ AS (
   FROM       all_tab_columns  atc
   INNER JOIN all_col_comments dcc ON atc.owner = dcc.owner AND atc.table_name = dcc.table_name AND atc.column_name = dcc.column_name
   INNER JOIN all_tab_comments t   ON t.OWNER = atc.owner   AND t.TABLE_NAME = atc.table_name
-  WHERE atc.owner = 'HR'
+  WHERE atc.owner = 'DEMO_HR'
     AND atc.table_name = 'LOCATIONS'
 )
 , dut -- Data Under Test 
