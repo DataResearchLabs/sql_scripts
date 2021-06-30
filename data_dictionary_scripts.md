@@ -122,7 +122,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <tr>
   <td align="center" valign="top">
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="105px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="95px">
 </td>
 <td>
     
