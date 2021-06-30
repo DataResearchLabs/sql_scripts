@@ -1,8 +1,10 @@
-# How to Use the Basic Data Validation Script in Oracle
+### Data Validation Examples - Oracle
 [![License: CC0](https://img.shields.io/badge/License-CC0-red)](LICENSE "Creative Commons Zero License by DataResearchLabs (effectively = Public Domain")
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
-## [Data Validation Examples - Oracle](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
----
+#### [Return to Data Validation Home Page](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
+<br>
+
+# How to Use the Basic Data Validation Script in Oracle
 
 ### Overview
 This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in Oracle SQL Developer, returning the test id, the test status (pass or fail), and the test description.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).
