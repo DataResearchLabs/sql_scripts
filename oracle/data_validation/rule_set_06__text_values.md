@@ -1,9 +1,10 @@
-# Rule Set #6 - Text Values
+### Data Validation Examples - Oracle
 [![License: CC0](https://img.shields.io/badge/License-CC0-red)](LICENSE "Creative Commons Zero License by DataResearchLabs (effectively = Public Domain")
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
-## [Data Validation Examples - Oracle](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
+#### [Return to Data Validation Home Page](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
+<br>
 
----
+# Rule Set #6 - Text Values
 
 Note: These text validation checks are important.  Good data loading practices land data into text data type fields, then from there validate and transform into other data types (numeric, date, boolean, etc.).  Thus, these are checks you will find yourself using over and over again over time.
 
