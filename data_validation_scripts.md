@@ -222,9 +222,9 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <tr>
 <td align="center" valign="top" rowspan=3>
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="125px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="140px">
 </td>
-<td rowspan=3 width=325>
+<td rowspan=3>
 
 ## PostgreSQL
 * Rule Set 01 - Row Counts<br>
