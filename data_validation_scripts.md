@@ -196,7 +196,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td>
 <td width=200>
-  3. Numeric & Date Field Test Tutorials<br>(TODO)
+  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
   4. Text Field Test Tutorials<br>(TODO)
