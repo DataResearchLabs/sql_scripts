@@ -12,7 +12,7 @@
  - <a href="#t018">T018 - No Time Part</a>
  - <a href="#t019">T019 - Has Time Part</a>
  - <a href="#t020">T020 - Multi Field Compare</a>
- - <a href="#bonus">Bonus Tip - Comparing Date Overlaps - Event #1 Start-End  vs  Event #2 Start-End</a>
+ - <a href="#bonus">Bonus Tip - Date Overlaps where Table#1 Start-End join on overlap with Table#2 Start-End</a>
 <br>
 
 
@@ -90,10 +90,26 @@ WHERE status <> 'P';
 
 
 <a id="bonus" class="anchor" href="#bonus" aria-hidden="true"> </a>
-### Bonus Tip: Comparing Date Overlaps - Event #1 Start-End  vs  Event #2 Start-End
+### Bonus Tip - Date Overlaps where Table#1 Start-End join on overlap with Table#2 Start-End
 So this is a fantastic tip I learned from a co-worker in healthcare back in 2011 (was it Jennifer C.?  or Matt G.?  or Jonathon P.? I can't remember).
+
+
 The **problem** is that you are trying to join two tables with logic where the table1.start_dt/end_dt's overlap with the table2.start_dt/end_dt.
+
+
 The **solution** is to join where `table1.start_dt < table2.end_dt AND table1.end_dt > table2.start_dt.`
+
+Here is why:
+
+'''
+Scenario #1 - No overlap, Table #1 is completely before Table #2 (T#1.End is NOT > T#2.St)
+T#1.St ---------- T#1.End 
+                          T#2.St ----------- T#2.End
+
+
+
+
+```
 
 
 <br>
