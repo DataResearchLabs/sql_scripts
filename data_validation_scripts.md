@@ -189,7 +189,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td>
 <td>
-  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=j4Rh2IcZhig" target="_blank">
+  <img src="http://img.youtube.com/vi/j4Rh2IcZhig/0.jpg" alt="Overview Video" width="200" />
+  </a>
+  </kbd>
 </td>
 <td>
   3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
