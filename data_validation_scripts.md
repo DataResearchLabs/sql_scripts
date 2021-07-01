@@ -23,7 +23,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <table>
 
 <tr>
-<td align="center" valign="top" rowspan=3  width=140>
+<td align="center" valign="top" rowspan=3  width=120>
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
