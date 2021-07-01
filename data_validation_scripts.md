@@ -50,7 +50,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <td width=200>
   2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
 </td>
-<td>
+<td width=200>
   3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
