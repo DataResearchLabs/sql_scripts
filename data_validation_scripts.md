@@ -160,7 +160,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   
   
 <tr>
-<td align="center" valign="top" rowspan=3>
+<td align="center" valign="top" rowspan=3 width=120>
   <br>
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="95px">
 </td>
