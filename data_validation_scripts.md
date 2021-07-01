@@ -209,10 +209,10 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
 </tr><tr>
 <td>
-  7. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
 </td>
 <td>
-  8. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
+  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
 </td>
 <td></td>  
 </tr>  
