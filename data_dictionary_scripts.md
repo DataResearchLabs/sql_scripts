@@ -122,7 +122,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <tr>
   <td align="center" valign="top">
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="95px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="90px">
 </td>
 <td>
     
@@ -144,7 +144,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <tr>
 <td align="center" valign="top">
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="125px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon1.png" width="125px">
 </td>
 <td>
     
