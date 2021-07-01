@@ -23,7 +23,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <table>
 
 <tr>
-<td align="center" valign="top" rowspan=3>
+<td align="center" valign="top" rowspan=3  width=140>
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
@@ -44,13 +44,13 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Advanced Validation Script<br>
 </td>
  
-<td>
+<td width=200>
   1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
-<td>
+<td width=200>
   2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
 </td>
-<td>
+<td width=200>
   3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
 </td></tr>
 <tr><td>
@@ -160,7 +160,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   
   
 <tr>
-<td align="center" valign="top" rowspan=3 width=120>
+<td align="center" valign="top" rowspan=3>
   <br>
   <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="95px">
 </td>
@@ -181,21 +181,21 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * [Advanced Validation Script](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/how_to_use_advanced_script.md)<br>
 </td>
  
-<td width=200>
+<td>
   <kbd>
   <a href="http://www.youtube.com/watch?feature=player_embedded&v=paoEJaGirqg" target="_blank">
   <img src="http://img.youtube.com/vi/paoEJaGirqg/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
 </td>
-<td width=200>
+<td>
   <kbd>
   <a href="http://www.youtube.com/watch?feature=player_embedded&v=j4Rh2IcZhig" target="_blank">
   <img src="http://img.youtube.com/vi/j4Rh2IcZhig/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
 </td>
-<td width=200>
+<td>
   3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
