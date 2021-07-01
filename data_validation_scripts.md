@@ -96,10 +96,10 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Count<br>& Key Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
+  2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
 </td>
 <td>
   3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
@@ -148,10 +148,10 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Count<br>& Key Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
+  2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
 </td>
 <td>
   3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
@@ -260,10 +260,10 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Count<br>& Key Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
+  2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
 </td>
 <td>
   3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
