@@ -105,22 +105,27 @@ Here is why:
 Scenario #1 = "Discard - No Overlap" Table #1 is completely before Table #2 (T#1.End is NOT > T#2.St)
 T#1.St ---------- T#1.End 
                           T#2.St ----------- T#2.End
+                          
 
 Scenario #2 = "Include - T1 Ends at T2 Start" Table #1 ends exactly where Table #2 starts (T#1.End = T#2.St  AND  T#1.St < T#2.End)
 T#1.St ---------- T#1.End 
                   T#2.St ----------- T#2.End
+                  
 
 Scenario #3 = "Include - T1 Ends Midway T2 Span" Table #1 nicely overlaps Table #2 (T#1.End > T#2.St  AND  T#1.St < T#2.End)
 T#1.St ------------------- T#1.End 
                   T#2.St ----------- T#2.End
+                  
 
 Scenario #4 = "Include - T1 Starts Midway T2 Span" Table #1 nicely overlaps Table #2 (T#1.End > T#2.St  AND  T#1.St < T#2.End)
                            T#1.St ------------------- T#1.End 
                   T#2.St ----------- T#2.End
+                  
 
 Scenario #5 = "Include - T1 Starts at T2 End" Table #1 start exactly at Table #2 End (T#1.End > T#2.St  AND  T#1.St = T#2.End)
                                      T#1.St ------------------- T#1.End 
                   T#2.St ----------- T#2.End
+                  
 
 Scenario #6 = "Discard - No Overlap" Table #1 is completely after Table #2 (T#1.St is NOT < T#2.End)
                                                       T#1.St ---------- T#1.End 
