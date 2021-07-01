@@ -144,7 +144,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 <tr>
 <td align="center" valign="top">
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon1.png" width="105px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon1.png" width="115px">
 </td>
 <td>
     
