@@ -12,7 +12,7 @@
  - <a href="#t018">T018 - No Time Part</a>
  - <a href="#t019">T019 - Has Time Part</a>
  - <a href="#t020">T020 - Multi Field Compare</a>
- - <a href="#bonus">Bonus Tip - Date Overlaps where Table#1 Start-End join on overlap with Table#2 Start-End</a>
+ - <a href="#bonus">Bonus Tip - Joining Tables with 2 Pairs of Start-End Date Overlaps</a>
 <br>
 
 
@@ -90,7 +90,7 @@ WHERE status <> 'P';
 
 
 <a id="bonus" class="anchor" href="#bonus" aria-hidden="true"> </a>
-### Bonus Tip - Date Overlaps where Table#1 Start-End join on overlap with Table#2 Start-End
+### Bonus Tip - Joining Tables with 2 Pairs of Start-End Date Overlaps
 So this is a fantastic tip I learned from a co-worker in healthcare back in 2011 (was it Jennifer C.?  or Matt G.?  or Jonathon P.? I can't remember).
 
 
