@@ -222,7 +222,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <tr>
 <td align="center" valign="top" rowspan=3>
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="180px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons1/pgsql_icon.png" width="115px">
 </td>
 <td rowspan=3>
 
