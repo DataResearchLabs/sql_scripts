@@ -101,7 +101,7 @@ The **solution** is to join where `table1.start_dt < table2.end_dt AND table1.en
 
 Here is why:
 
-'''
+```
 Scenario #1 - No overlap, Table #1 is completely before Table #2 (T#1.End is NOT > T#2.St)
 T#1.St ---------- T#1.End 
                           T#2.St ----------- T#2.End
