@@ -205,7 +205,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   5. Regular Expression Test Tutorials<br>(TODO)
 </td>
 <td>
-  6. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
 </td>
 </tr><tr>
 <td>
