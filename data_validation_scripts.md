@@ -184,14 +184,14 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <td>
   <kbd>
   <a href="http://www.youtube.com/watch?feature=player_embedded&v=paoEJaGirqg" target="_blank">
-  <img src="http://img.youtube.com/vi/paoEJaGirqg/0.jpg" alt="Overview Video" width="200" />
+  <img src="http://img.youtube.com/vi/paoEJaGirqg/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
 </td>
 <td>
   <kbd>
   <a href="http://www.youtube.com/watch?feature=player_embedded&v=j4Rh2IcZhig" target="_blank">
-  <img src="http://img.youtube.com/vi/j4Rh2IcZhig/0.jpg" alt="Overview Video" width="200" />
+  <img src="http://img.youtube.com/vi/j4Rh2IcZhig/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
 </td>
