@@ -181,21 +181,21 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * [Advanced Validation Script](https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/how_to_use_advanced_script.md)<br>
 </td>
  
-<td>
+<td width=200>
   <kbd>
   <a href="http://www.youtube.com/watch?feature=player_embedded&v=paoEJaGirqg" target="_blank">
   <img src="http://img.youtube.com/vi/paoEJaGirqg/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
 </td>
-<td>
+<td width=200>
   <kbd>
   <a href="http://www.youtube.com/watch?feature=player_embedded&v=j4Rh2IcZhig" target="_blank">
   <img src="http://img.youtube.com/vi/j4Rh2IcZhig/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
 </td>
-<td>
+<td width=200>
   3. Numeric & Date Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
