@@ -45,26 +45,32 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td width=200>
-  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td width=200>
-  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
-</td>
-<td width=200>
-  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
-</td></tr>
-<tr><td>
-  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
-</td>
-<td>
-  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
-  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
-</td></tr>
+  4. Text Field Test Tutorials<br>(TODO)
+</td>
+<td>
+  5. Regular Expression Test Tutorials<br>(TODO)
+</td>
+<td>
+  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+</td>
+</tr><tr>
+<td>
+  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
+</td>
+<td>
+  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
+</td>
+<td></td>  
+</tr>  
 
 
 <tr>
@@ -90,26 +96,32 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
-  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+  4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+  5. Regular Expression Test Tutorials<br>(TODO)
 </td>
 <td>
-  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
-</td></tr>
-<tr><td>
-  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
-</td></tr>
+  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+</td>
+</tr><tr>
+<td>
+  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
+</td>
+<td>
+  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
+</td>
+<td></td>  
+</tr>  
   
 
   
@@ -136,26 +148,32 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
-  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+  4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+  5. Regular Expression Test Tutorials<br>(TODO)
 </td>
 <td>
-  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
-</td></tr>
-<tr><td>
-  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
-</td></tr>  
+  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+</td>
+</tr><tr>
+<td>
+  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
+</td>
+<td>
+  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
+</td>
+<td></td>  
+</tr>  
   
   
   
@@ -216,7 +234,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
 <td></td>  
 </tr>  
-    
+
   
   
 <tr>
@@ -242,27 +260,33 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Basic<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  1. Row Counts<br>& Keys<br>Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  2. Advanced<br>Table Level<br>Tests<br>Tutorial<br>(TODO)
+  2. Heuristic Thresholds<br>Table Schema <br>& Data Tests<br>Tutorial<br>(TODO)
 </td>
 <td>
-  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
-  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+  4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+  5. Regular Expression Test Tutorials<br>(TODO)
 </td>
 <td>
-  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
-</td></tr>
-<tr><td>
-  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
-</td></tr>  
-</tr>     
+  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+</td>
+</tr><tr>
+<td>
+  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
+</td>
+<td>
+  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
+</td>
+<td></td>  
+</tr>  
+  
 </table>
 <br>
 <br>
