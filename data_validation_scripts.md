@@ -196,20 +196,26 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td>
 <td>
-  3. Basic<br>Field Level Tests<br>Tutorial<br>(TODO)
+  3. Numeric & Date Field Test Tutorials<br>(TODO)
 </td></tr>
 <tr><td>
-  4. Advanced<br>Field Level<br>Tests<br>Tutorial<br>(TODO)
+  4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+  5. Regular Expression Test Tutorials<br>(TODO)
 </td>
 <td>
-  6. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
-</td></tr>
-<tr><td>
-  7. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
-</td></tr>  
+  6. Best Practices<br>for<br>Tests<br>Tutorial<br>(TODO)
+</td>
+</tr><tr>
+<td>
+  7. How to<br>Use<br>Basic<br>Validation<br>Script<br>(TODO)
+</td>
+<td>
+  8. How to<br>Use<br>Advanced<br>Validation<br>Script<br>(TODO)
+</td>
+<td></td>  
+</tr>  
     
   
   
