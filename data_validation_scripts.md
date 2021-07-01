@@ -116,7 +116,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <tr>
 <td align="center" valign="top" rowspan=3>
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="105px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mysql_icon.png" width="115px">
 </td>
 <td rowspan=3 width=325>
 
@@ -162,7 +162,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <tr>
 <td align="center" valign="top" rowspan=3>
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="95px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/oracle_icon.png" width="90px">
 </td>
 <td rowspan=3 width=325>
 
@@ -222,7 +222,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <tr>
 <td align="center" valign="top" rowspan=3>
   <br>
-  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="140px">
+  <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/pgsql_icon.png" width="180px">
 </td>
 <td rowspan=3>
 
