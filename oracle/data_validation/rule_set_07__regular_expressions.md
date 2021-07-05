@@ -110,7 +110,7 @@ WHERE status <> 'P';
 
 
 <a id="t051" class="anchor" href="#t051" aria-hidden="true"> </a>
-### T051 - RegExp("OnlyText")
+### T051 - RegExp("OnlyNumeric")
 Verify text field numeric characters only.  For example, to verify that field zip5 of table employees is numeric digits only:
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
