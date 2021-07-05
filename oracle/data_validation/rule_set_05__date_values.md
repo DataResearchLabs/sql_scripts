@@ -22,7 +22,8 @@ Verify date field is not null.  For example, to verify that table countries has 
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN date_last_updated IS NULL THEN 'FAIL' ELSE 'P' END AS status
+  SELECT date_last_updated
+       , CASE WHEN date_last_updated IS NULL THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
 )
 WHERE status <> 'P';
@@ -36,7 +37,8 @@ Verify date field is within specified range.  For example, you can run the sql b
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN date_last_updated > SYSDATE                             THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' || CAST(SYSDATE AS VARCHAR2(20)) || '|act=' || CAST(date_last_updated AS VARCHAR2(20))
+  SELECT date_last_updated
+       , CASE WHEN date_last_updated > SYSDATE                             THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' || CAST(SYSDATE AS VARCHAR2(20)) || '|act=' || CAST(date_last_updated AS VARCHAR2(20))
               WHEN date_last_updated < TO_DATE('01/01/2021', 'mm/dd/yyyy') THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' || CAST(date_last_updated AS VARCHAR2(20))
               ELSE 'P'
          END AS status
@@ -53,7 +55,8 @@ Verify date field is a date only, no time part present.  For example, to verify 
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
+  SELECT hire_date
+       , CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -67,7 +70,8 @@ Verify date field is a date **and** time.  For example, to verify that table emp
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
+  SELECT start_tm
+       , CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.test_case_results
 )
 WHERE status <> 'P';
@@ -81,7 +85,8 @@ Verify multiple date fields relative to each other.  For example, to verify that
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
+  SELECT start_date, end_date
+       , CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.job_history
 )
 WHERE status <> 'P';
