@@ -31,7 +31,8 @@ Verify text field is a phone number format.  For example, to verify that field p
  SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
  FROM (
    -- NOTE: Use RegEx pattern "^\+(\d+\s?)+$" for international phone numbers
-  SELECT CASE WHEN NOT REGEXP_LIKE(phone_number, '[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT phone_number
+       , CASE WHEN NOT REGEXP_LIKE(phone_number, '[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -45,7 +46,8 @@ Verify text field is a valid social security number (SSN) format.  For example, 
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(fake_ssn, '^[0-9]{3}-[0-9]{2}-[0-9]{4}$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT fake_ssn
+       , CASE WHEN NOT REGEXP_LIKE(fake_ssn, '^[0-9]{3}-[0-9]{2}-[0-9]{4}$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -59,7 +61,8 @@ Verify text field is a valid zipcode 5-digit format.  For example, to verify tha
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT zip5
+       , CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -73,7 +76,8 @@ Verify text field is a valid zipcode 5- or 9-digit format.  For example, to veri
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(zip5or9, '^([[:digit:]]{5})(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT zip5or9
+       , CASE WHEN NOT REGEXP_LIKE(zip5or9, '^([[:digit:]]{5})(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -87,7 +91,8 @@ Verify text field is a valid zipcode 9-digit format.  For example, to verify tha
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(zip9, '^[[:digit:]]{5}[-/.][[:digit:]]{4}$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT zip9
+       , CASE WHEN NOT REGEXP_LIKE(zip9, '^[[:digit:]]{5}[-/.][[:digit:]]{4}$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -101,7 +106,8 @@ Verify text field is text / only contains alpha characters.  For example, to ver
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(last_name, '^[a-zA-Z ]+$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT last_name
+       , CASE WHEN NOT REGEXP_LIKE(last_name, '^[a-zA-Z ]+$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -115,7 +121,8 @@ Verify text field numeric characters only.  For example, to verify that field zi
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT zip5
+       , CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -129,7 +136,8 @@ Verify text field has no leading or trailing spaces.  For example, to verify tha
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN REGEXP_LIKE(last_name, '(^\s)|(\s$)') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT last_name
+       , CASE WHEN REGEXP_LIKE(last_name, '(^\s)|(\s$)') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -143,7 +151,8 @@ Verify text field has no whitespace (spaces, non breaking spaces, carriage retur
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN REGEXP_LIKE(job_id, '(\s)+') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT job_id
+       , CASE WHEN REGEXP_LIKE(job_id, '(\s)+') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -157,7 +166,8 @@ Verify text field has only lower case characters.  For example, (not really prac
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,3,2), '^[a-z]+$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT first_name
+       , CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,3,2), '^[a-z]+$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -171,7 +181,8 @@ Verify text field has only upper case characters.  For example, to verify that a
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(email,3,2), '^[A-Z]+$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT email
+       , CASE WHEN NOT REGEXP_LIKE(SUBSTR(email,3,2), '^[A-Z]+$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -185,7 +196,8 @@ Verify text field is title case format (where the first letter of every word is 
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN first_name NOT LIKE '% %'                   THEN 'P'  -- Only one word, so no space + first character to check for uppercase
+  SELECT first_name
+       , CASE WHEN first_name NOT LIKE '% %'                   THEN 'P'  -- Only one word, so no space + first character to check for uppercase
               WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}') THEN 'REJ-01: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
               ELSE 'P'
          END AS status
@@ -202,7 +214,8 @@ Verify text field is a properly formatted email address.  For example, to verify
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(email_address, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT email_address
+       , CASE WHEN NOT REGEXP_LIKE(email_address, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
@@ -216,7 +229,8 @@ Verify text field is a properly formatted URL.  For example, to verify that the 
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN NOT REGEXP_LIKE(url, '(http)(s)?(:\/\/)') THEN 'FAIL' ELSE 'P' END AS status
+  SELECT url
+       , CASE WHEN NOT REGEXP_LIKE(url, '(http)(s)?(:\/\/)') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.departments
 )
 WHERE status <> 'P';
