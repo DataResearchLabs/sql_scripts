@@ -44,7 +44,8 @@ Verify numeric field value is within a range.  In the example below, we verify t
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
+  SELECT employee_id
+       , CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
               WHEN employee_id > 999   THEN 'REJ-02: Verify employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
               ELSE 'P'
          END AS status
@@ -61,7 +62,8 @@ Verify numeric field is **in** the list of values.  For example, to verify that 
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
+  SELECT region_id
+       , CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
 )
 WHERE status <> 'P';
@@ -75,7 +77,8 @@ Verify numeric field is **not** in the list of values.  For example, to verify t
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
+  SELECT region_id
+       , CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
 )
 WHERE status <> 'P';
@@ -89,7 +92,8 @@ Verify numeric field values in relation to one another.  For example, to verify 
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
+  SELECT salary, commission_pct
+       , CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
