@@ -45,12 +45,14 @@ AS (
 )
 , bll -- business logic layer: apply heuristics...what constitutes a pass or a fail?
 AS (
-  SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.10 AND 0.50 then 'FAIL: Frequency occurrence of region_id=1 is FAR outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
+  SELECT region_id, freq_rt
+       , CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.10 AND 0.50 then 'FAIL: Frequency occurrence of region_id=1 is FAR outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
               WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.25 AND 0.35 then 'WARN: Frequency occurrence of region_id=1 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR2(8))
               ELSE 'P'
     	    END AS status
   FROM dut
 )
+-- SELECT * FROM bll;
 	
 SELECT CASE WHEN (SELECT COUNT(*) FROM bll) = 0 THEN 'SKIP'
             WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'FAIL:%') > 0 THEN 'FAIL'
@@ -82,7 +84,8 @@ P.S. - To achieve maximum performance here, find an indexed field to filter on i
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+  SELECT region_id, date_last_updated
+       , CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
   WHERE date_last_updated >= SYSDATE - 30 
 )
@@ -98,7 +101,8 @@ There are times when developers aren't going to fix a defect for weeks/months, o
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+  SELECT region_id, country_id
+       , CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.countries
   WHERE country_id NOT IN('BR','DK','IL') 
 )
@@ -123,7 +127,8 @@ In the example below, there is an inner query that you can highlight and execute
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
+  SELECT employee_id, salary, commission_pct, hire_date, zip5, job_id, email, first_name, last_name, phone_number, some_date_fmt1 
+       , CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
               WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
               WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' || CAST(salary * commission_pct AS VARCHAR2(15))
               WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00'             THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' || TO_CHAR(hire_date, 'hh:nn:ss')
