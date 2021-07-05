@@ -77,7 +77,7 @@ Verify text field is a valid zipcode 5- or 9-digit format.  For example, to veri
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT zip5or9
-       , CASE WHEN NOT REGEXP_LIKE(zip5or9, '^([[:digit:]]{5})(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
+       , CASE WHEN NOT REGEXP_LIKE(zip5or9, '^[[:digit:]]{5}(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
   FROM demo_hr.employees
 )
 WHERE status <> 'P';
