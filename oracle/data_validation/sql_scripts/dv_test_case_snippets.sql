@@ -82,7 +82,7 @@
 	FROM (
         SELECT COUNT(*) AS row_count 
         FROM demo_hr.countries
-        WHERE date_last_updated >= SYSDATE - 10
+        WHERE date_last_updated >= SYSDATE - 100
 	);
 
 
@@ -98,8 +98,8 @@
     FROM (
         SELECT country_name             -- UKey fields 
     	     , COUNT(*) AS match_count 
-    	FROM demo_hr.countries          -- UKey fields 
-    	GROUP BY country_name 
+    	FROM demo_hr.countries           
+    	GROUP BY country_name           -- UKey fields
     	HAVING COUNT(*) > 1
     );
 
@@ -163,7 +163,8 @@
 -- "RS-3 Heuristics" #2 - Verify ValueFrequencyThresholds()" for [region_id] values (eg: value=1 for 28% to 36% of rows) in table [countries]
 
     WITH dtls AS (
-        SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.28 AND 0.36 THEN 'REJ-01: Frequency occurrence of region_id=1 is outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
+        SELECT region_id, freq_rt
+             , CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.28 AND 0.36 THEN 'REJ-01: Frequency occurrence of region_id=1 is outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
                     WHEN region_id = 2  AND freq_rt NOT BETWEEN 0.16 AND 0.24 THEN 'REJ-02: Frequency occurrence of region_id=2 is outside threshold|exp=0.16 thru 0.24|act=' || CAST(freq_rt AS VARCHAR2(8))
                     WHEN region_id = 3  AND freq_rt NOT BETWEEN 0.20 AND 0.28 THEN 'REJ-03: Frequency occurrence of region_id=3 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR2(8))
                     WHEN region_id = 4  AND freq_rt NOT BETWEEN 0.20 AND 0.28 THEN 'REJ-04: Frequency occurrence of region_id=4 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR2(8))
@@ -213,7 +214,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
+    	SELECT employee_id
+             , CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
     	            WHEN employee_id > 999   THEN 'REJ-02: Verify employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
     	            ELSE 'P'
     	       END AS status
@@ -228,7 +230,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT region_id
+             , CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries
     )
     WHERE status <> 'P';
@@ -240,7 +243,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT region_id
+             , CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries
     )
     WHERE status <> 'P';
@@ -252,7 +256,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-        SELECT CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
+        SELECT salary, commission_pct
+             , CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -268,7 +273,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN date_last_updated IS NULL THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT date_last_updated
+             , CASE WHEN date_last_updated IS NULL THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries
     )
     WHERE status <> 'P';
@@ -280,7 +286,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN date_last_updated > SYSDATE                             THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' || CAST(SYSDATE AS VARCHAR2(20)) || '|act=' || CAST(date_last_updated AS VARCHAR2(20))
+    	SELECT date_last_updated
+             , CASE WHEN date_last_updated > SYSDATE                             THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' || CAST(SYSDATE AS VARCHAR2(20)) || '|act=' || CAST(date_last_updated AS VARCHAR2(20))
     	            WHEN date_last_updated < TO_DATE('01/01/2021', 'mm/dd/yyyy') THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' || CAST(date_last_updated AS VARCHAR2(20))
     	            ELSE 'P'
     	       END AS status
@@ -295,7 +302,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-        SELECT CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
+        SELECT hire_date
+             , CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
         FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -307,7 +315,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT start_tm
+             , CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.test_case_results
     )
     WHERE status <> 'P';
@@ -318,7 +327,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-        SELECT CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
+        SELECT start_date, end_date
+             , CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.job_history
     )
     WHERE status <> 'P';
@@ -334,7 +344,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN country_name IS NULL THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT country_name
+             , CASE WHEN country_name IS NULL THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries
     )
     WHERE status <> 'P';
@@ -346,7 +357,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN country_name = ' ' THEN 'FAIL' ELSE 'P'  END AS status
+    	SELECT country_name
+             , CASE WHEN country_name = ' ' THEN 'FAIL' ELSE 'P'  END AS status
     	FROM demo_hr.countries
     )
     WHERE status <> 'P';
@@ -358,7 +370,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN country_name LIKE ' %'  THEN 'REJ-01: Verify no leading space at country_name|exp=noLeadSpace|act=''' || country_name ||''''
+    	SELECT country_name
+             , CASE WHEN country_name LIKE ' %'  THEN 'REJ-01: Verify no leading space at country_name|exp=noLeadSpace|act=''' || country_name ||''''
     				WHEN country_name LIKE '% '  THEN 'REJ-02: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' || country_name ||''''
     	            ELSE 'P'
     	       END AS status
@@ -373,7 +386,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN job_id NOT IN('ST_MAN','ST_CLERK','SH_CLERK','SA_REP','SA_MAN','PU_CLERK','PR_REP','MK_REP','MK_MAN','IT_PROG'
+    	SELECT job_id
+             , CASE WHEN job_id NOT IN('ST_MAN','ST_CLERK','SH_CLERK','SA_REP','SA_MAN','PU_CLERK','PR_REP','MK_REP','MK_MAN','IT_PROG'
                                       ,'HR_REP','FI_MGR','FI_ACCOUNT','AD_VP','AD_PRES','AD_ASST','AC_MGR','AC_ACCOUNT','PU_MAN')
                     THEN 'FAIL'
     	            ELSE 'P'
@@ -389,7 +403,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
+    	SELECT job_id
+             , CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -400,7 +415,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN email <> SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT email, first_name, last_name
+             , CASE WHEN email <> SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     	WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
     	                 -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
@@ -414,7 +430,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
+    	SELECT phone_number
+             , CASE WHEN LENGTH(phone_number) NOT IN(112,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=112,18|act=' || LENGTH(phone_number)
     	            ELSE 'P'
     	       END AS status
     	FROM demo_hr.employees
@@ -428,7 +445,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                  THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' || job_id
+    	SELECT job_id, last_name
+             , CASE WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                  THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' || job_id
     	            WHEN NOT REGEXP_LIKE(SUBSTR(last_name,1), '[[:upper:]]') THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' || last_name 
     	            ELSE 'P'
     	       END AS status
@@ -443,7 +461,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')   THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
+    	SELECT employee_id, last_name
+             , CASE WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')   THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
                     WHEN REGEXP_LIKE(last_name, '[[:digit:]]')     THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' || LAST_NAME 
     	            ELSE 'P'
     	       END AS status
@@ -457,7 +476,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' || first_name
+    	SELECT first_name
+             , CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' || first_name
                     WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' || first_name
                     ELSE 'P'
     	       END AS status
@@ -471,7 +491,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-        SELECT CASE WHEN INSTR(last_name, CHR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
+        SELECT last_name
+             , CASE WHEN INSTR(last_name, CHR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
     	            WHEN INSTR(last_name, CHR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
     	            ELSE 'P'
     	       END AS status
@@ -485,7 +506,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, CHR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN INSTR(last_name, CHR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -496,7 +518,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, CHR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN INSTR(last_name, CHR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -507,7 +530,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, CHR(151)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN INSTR(last_name, CHR(151)) > 0 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -518,7 +542,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, CHR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(11)) AS VARCHAR2(4))
+    	SELECT last_name
+             , CASE WHEN INSTR(last_name, CHR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(11)) AS VARCHAR2(4))
     	            WHEN INSTR(last_name, CHR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(12)) AS VARCHAR2(4))
     	            WHEN INSTR(last_name, CHR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(133)) AS VARCHAR2(4))
     	            ELSE 'P'
@@ -533,7 +558,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -544,7 +570,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REGEXP_LIKE(last_name, '[,/:()&#?;]') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN REGEXP_LIKE(last_name, '[,/:()&#?;]') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -555,7 +582,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REGEXP_LIKE(phone_number, '[^.0123456789]') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT phone_number
+             , CASE WHEN REGEXP_LIKE(phone_number, '[^.0123456789]') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -567,7 +595,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN phone_number NOT LIKE '%.%'                THEN 'REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
+    	SELECT phone_number
+             , CASE WHEN phone_number NOT LIKE '%.%'                THEN 'REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
                     WHEN phone_number NOT LIKE '___.___.____' 
                      AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
     	            ELSE 'P'
@@ -582,7 +611,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT zip5
+             , CASE WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -593,7 +623,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    	SELECT some_date_fmt1
+             , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                         some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
                         > ''                                                      THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
                     WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                     THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
@@ -612,7 +643,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    	SELECT some_date_fmt2
+             , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                          some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
                          > ''                                                    THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
                    WHEN NOT LENGTH(TRIM(some_date_fmt2)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
@@ -631,7 +663,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    	SELECT some_date_fmt3
+             , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                          some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
                          > ''                                                    THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
                    WHEN NOT LENGTH(TRIM(some_date_fmt3)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
@@ -650,7 +683,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    	SELECT some_date_fmt4
+             , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                         some_date_fmt4,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
                         > ''                                                     THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
                    WHEN NOT LENGTH(TRIM(some_date_fmt4)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
@@ -675,7 +709,8 @@
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
         -- NOTE: Use RegEx pattern "^\+(\d+\s?)+$" for international phone numbers
-        SELECT CASE WHEN NOT REGEXP_LIKE(phone_number, '[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}') THEN 'FAIL' ELSE 'P' END AS status
+        SELECT phone_number
+             , CASE WHEN NOT REGEXP_LIKE(phone_number, '[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -686,7 +721,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(fake_ssn, '^[0-9]{3}-[0-9]{2}-[0-9]{4}$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT fake_ssn
+             , CASE WHEN NOT REGEXP_LIKE(fake_ssn, '^[0-9]{3}-[0-9]{2}-[0-9]{4}$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -697,18 +733,20 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT zip5
+             , CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
 
 
 -- T048 ------------------------------------------------------------------------------------------
--- "RS-7 RegEx" #04 - Verify RegExp("IsZip5or9") where [zip5or9] matches RegEx pattern "^([[:digit:]]{5})(-[[:digit:]]{4})?$" in table [employees]
+-- "RS-7 RegEx" #04 - Verify RegExp("IsZip5or9") where [zip5or9] matches RegEx pattern "^[[:digit:]]{5}(-[[:digit:]]{4})?$" in table [employees]
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(zip5or9, '^([[:digit:]]{5})(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT zip5or9
+             , CASE WHEN NOT REGEXP_LIKE(zip5or9, '^[[:digit:]]{5}(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -719,7 +757,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(zip9, '^[[:digit:]]{5}[-/.][[:digit:]]{4}$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT zip9
+             , CASE WHEN NOT REGEXP_LIKE(zip9, '^[[:digit:]]{5}[-/.][[:digit:]]{4}$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -730,18 +769,20 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(last_name, '^[a-zA-Z ]+$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN NOT REGEXP_LIKE(last_name, '^[a-zA-Z ]+$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
 
 
 -- T051 ------------------------------------------------------------------------------------------
--- "RS-7 RegEx" #07 - Verify RegExp("OnlyNumeric") where [zip5] matches RegEx pattern "^[0-5]+$" in table [employees]
+-- "RS-7 RegEx" #07 - Verify RegExp("OnlyNumeric") where [zip5] matches RegEx pattern "^[0-9]+$" in table [employees]
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT zip5
+             , CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]+$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -752,7 +793,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REGEXP_LIKE(last_name, '(^\s)|(\s$)') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT last_name
+             , CASE WHEN REGEXP_LIKE(last_name, '(^\s)|(\s$)') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -763,7 +805,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN REGEXP_LIKE(job_id, '(\s)+') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT job_id
+             , CASE WHEN REGEXP_LIKE(job_id, '(\s)+') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -774,7 +817,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,3,2), '^[a-z]+$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT first_name
+             , CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,3,2), '^[a-z]+$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -785,7 +829,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(email,3,2), '^[A-Z]+$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT email
+             , CASE WHEN NOT REGEXP_LIKE(SUBSTR(email,3,2), '^[A-Z]+$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -796,8 +841,10 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN first_name NOT LIKE '% %'                   THEN 'P'  -- Only one word, so no space + first character to check for uppercase
-    	            WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}') THEN 'REJ-01: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
+    	SELECT first_name, SUBSTR(first_name,1,1) AS first_letter
+             , CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,1,1), '([A-Z])') THEN 'REJ-01: Field first_name first character not upper case|exp=Like"[A-Z]"|act=' || first_name 
+                    WHEN first_name NOT LIKE '% %'                          THEN 'P'  -- Only one word, so no space + first character to check for uppercase
+                    WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}')        THEN 'REJ-02: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
     	            ELSE 'P'
     	       END AS status
     	FROM demo_hr.employees
@@ -810,7 +857,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(email_address, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT email_address
+             , CASE WHEN NOT REGEXP_LIKE(email_address, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.employees
     )
     WHERE status <> 'P';
@@ -822,7 +870,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN NOT REGEXP_LIKE(url, '(http)(s)?(:\/\/)') THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT url
+             , CASE WHEN NOT REGEXP_LIKE(url, '(http)(s)?(:\/\/)') THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.departments
     )
     WHERE status <> 'P';
@@ -871,7 +920,7 @@
     	FROM       all_tab_columns  atc
     	INNER JOIN all_col_comments dcc ON atc.owner = dcc.owner AND atc.table_name = dcc.table_name AND atc.column_name = dcc.column_name
     	INNER JOIN all_tab_comments t   ON t.OWNER = atc.owner   AND t.TABLE_NAME = atc.table_name
-    	WHERE atc.owner = 'HR'
+    	WHERE atc.owner = 'DEMO_HR'
     	  AND atc.table_name = 'LOCATIONS'
     )
     , dut -- Data Under Test 
@@ -946,7 +995,7 @@
 
     SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
     FROM dut WHERE status <> 'P'
-
+;
 
 
 
@@ -980,13 +1029,15 @@
     )
     , bll -- business logic layer: apply heuristics...what constitutes a pass or a fail?
     AS (
-    	SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.10 AND 0.50 then 'FAIL: Frequency occurrence of region_id=1 is FAR outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
+    	SELECT region_id, freq_rt
+             , CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.10 AND 0.50 then 'FAIL: Frequency occurrence of region_id=1 is FAR outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR2(8))
                     WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.25 AND 0.35 then 'WARN: Frequency occurrence of region_id=1 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR2(8))
                     ELSE 'P'
     	       END AS status
     	FROM dut
     )
-	
+	-- SELECT * FROM bll;
+    
     SELECT CASE WHEN (SELECT COUNT(*) FROM bll) = 0 THEN 'SKIP'
 	            WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'FAIL:%') > 0 THEN 'FAIL'
 	            WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'WARN:%') > 0 THEN 'WARN'
@@ -1001,7 +1052,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT region_id, date_last_updated
+             , CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries
     	WHERE date_last_updated >= SYSDATE - 30 
     )
@@ -1014,7 +1066,8 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-    	SELECT CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+    	SELECT region_id, country_id
+             , CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr.countries
     	WHERE country_id NOT IN('BR','DK','IL') 
     )
@@ -1027,17 +1080,18 @@
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-        SELECT CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
+        SELECT employee_id, salary, commission_pct, hire_date, zip5, job_id, email, first_name, last_name, phone_number, some_date_fmt1
+             , CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR2(10))
     	            WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
     	            WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' || CAST(salary * commission_pct AS VARCHAR2(15))
     				WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00'             THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' || TO_CHAR(hire_date, 'hh:nn:ss')
-                    WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$')                        THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-5]+$"|act=' || zip5 
+                    WHEN NOT REGEXP_LIKE(zip5, '^[0-9]+$')                        THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-9]+$"|act=' || zip5 
     	            WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
     	            WHEN email <> SUBSTR(UPPER(SUBSTR(
     	                            first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
     	            WHEN LENGTH(phone_number) NOT IN(12,18)                       THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
     	            WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                       THEN 'REJ-09: Field job_id does not contain lower case characters|exp=ucase|act=' || EMAIL
-    	            WHEN NOT REGEXP_LIKE(SUBSTR(LAST_NAME,1), '[[:upper:]]')      THEN 'REJ-10: Field last_name after first char is all lower case|exp=lcase|act=' || LAST_NAME 
+    	            WHEN NOT REGEXP_LIKE(SUBSTR(last_name,1), '[[:upper:]]')      THEN 'REJ-10: Field last_name after first char is all lower case|exp=lcase|act=' || LAST_NAME 
     	            WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')                  THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
                     WHEN REGEXP_LIKE(last_name, '[[:digit:]]')                    THEN 'REJ-12: Field last_name does not contain numeric digits|exp=no-digits|act=' || LAST_NAME 
     	            WHEN first_name LIKE '%''%'                                   THEN 'REJ-13: Field first_name does not contain single quote characters|exp=none|act=' || first_name

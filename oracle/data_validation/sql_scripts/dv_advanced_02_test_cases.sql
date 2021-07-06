@@ -2565,12 +2565,12 @@ INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, looku
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T048' AS tst_id 
-	     , '"RS-7 RegEx" #04 - Verify RegExp("IsZip5or9") where [zip5or9] matches RegEx pattern "^([[:digit:]]{5})(-[[:digit:]]{4})?$" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #04 - Verify RegExp("IsZip5or9") where [zip5or9] matches RegEx pattern "^[[:digit:]]{5}(-[[:digit:]]{4})?$" in table [employees]' AS tst_descr
 	FROM dual
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN NOT REGEXP_LIKE(zip5or9, '^([[:digit:]]{5})(-[[:digit:]]{4})?$') THEN 'REJ-01: Field zip5or9 failed RegExpression check|exp=Like"^([[:digit:]]{5})(-[[:digit:]]{4})?$"|act=' || zip5or9 
+	SELECT CASE WHEN NOT REGEXP_LIKE(zip5or9, '^[[:digit:]]{5}(-[[:digit:]]{4})?$') THEN 'REJ-01: Field zip5or9 failed RegExpression check|exp=Like"^([[:digit:]]{5})(-[[:digit:]]{4})?$"|act=' || zip5or9 
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'SELECT employee_id, zip5or9 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
@@ -2715,12 +2715,12 @@ INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, looku
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T051' AS tst_id 
-	     , '"RS-7 RegEx" #07 - Verify RegExp("OnlyNumeric") where [zip5] matches RegEx pattern "^[0-5]+$" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #07 - Verify RegExp("OnlyNumeric") where [zip5] matches RegEx pattern "^[0-9]+$" in table [employees]' AS tst_descr
 	FROM dual
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$') THEN 'REJ-01: Field zip5 failed RegExpression check|exp=Like"^[0-5]+$"|act=' || zip5 
+	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]+$') THEN 'REJ-01: Field zip5 failed RegExpression check|exp=Like"^[0-9]+$"|act=' || zip5 
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'SELECT employee_id, zip5 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
@@ -2971,8 +2971,9 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN first_name NOT LIKE '% %' THEN 'allgood'  -- Only one word, so no space + first character to check for uppercase
-	            WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}') THEN 'REJ-01: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
+	SELECT CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,1,1), '([A-Z])') THEN 'REJ-01: Field first_name first character not upper case|exp=Like"[A-Z]"|act=' || first_name 
+                    WHEN first_name NOT LIKE '% %'                          THEN 'allgood'  -- Only one word, so no space + first character to check for uppercase
+	            WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}')        THEN 'REJ-02: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'SELECT employee_id, zip9 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
@@ -3166,7 +3167,7 @@ AS (
 	FROM       all_tab_columns  atc
 	INNER JOIN all_col_comments dcc ON atc.owner = dcc.owner AND atc.table_name = dcc.table_name AND atc.column_name = dcc.column_name
 	INNER JOIN all_tab_comments t   ON t.OWNER = atc.owner   AND t.TABLE_NAME = atc.table_name
-	WHERE atc.owner = 'HR'
+	WHERE atc.owner = 'DEMO_HR'
 	  AND atc.table_name = 'LOCATIONS'
 )
 , dut -- Data Under Test 
@@ -3533,7 +3534,7 @@ AS (
 	            WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR2(10))
 	            WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' || CAST(salary * commission_pct AS VARCHAR2(15))
 				WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00'             THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' || TO_CHAR(hire_date, 'hh:nn:ss')
-                WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$')                        THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-5]+$"|act=' || zip5 
+                WHEN NOT REGEXP_LIKE(zip5, '^[0-9]+$')                        THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-9]+$"|act=' || zip5 
 	            WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
 	            WHEN email <> SUBSTR(UPPER(SUBSTR(
 	                            first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
