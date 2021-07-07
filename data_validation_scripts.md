@@ -221,13 +221,25 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td></tr>
 <tr><td>
-  4. Text Field Test Tutorials<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=62wtTY0D-z0" target="_blank">
+  <img src="http://img.youtube.com/vi/62wtTY0D-z0/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 <td>
-  5. Regular Expression Test Tutorials<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=G1UskEv7jSs" target="_blank">
+  <img src="http://img.youtube.com/vi/G1UskEv7jSs/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 <td>
-  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=BctndgrH330" target="_blank">
+  <img src="http://img.youtube.com/vi/BctndgrH330/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 </tr><tr>
 <td>
