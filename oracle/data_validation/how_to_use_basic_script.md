@@ -43,7 +43,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 
 The script currently consists of 1,064 lines of SQL code broken down as follows:
 * Lines 1-44 are the comment block header, containing notes and definitions
-* Lines 45-1,064 are the 66 individual example validation test cases (written as SQL SELECTs)
+* Lines 45-1,120 are the 66 individual example validation test cases (written as SQL SELECTs)
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
