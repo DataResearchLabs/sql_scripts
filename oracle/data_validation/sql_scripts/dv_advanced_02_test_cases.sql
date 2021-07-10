@@ -3607,6 +3607,61 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+-- T066 ------------------------------------------------------------------------------------------
+-- EXAMPLE: Reference configuration settings from a temporary lookup table
+
+INSERT INTO demo_hr.test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
+WITH cfg -- Config Variables 
+AS (
+	SELECT 'T066' AS tst_id 
+	     , '"X#5 ConfigTbl" - Reference configuration settings from a temporary lookup table' AS tst_descr
+	FROM dual
+)
+, dut -- Data Under Test 
+AS (
+    SELECT CASE WHEN row_count < 5 THEN 'FAIL'
+                    ELSE 'allgood'
+               END AS rej_dtls
+        FROM (
+            SELECT COUNT(*) AS row_count 
+            FROM demo_hr.countries
+            WHERE date_last_updated >= SYSDATE - (SELECT CAST(prop_val AS INT) 
+                                                  FROM demo_hr.test_case_config 
+                                                  WHERE prop_nm = 'NumberDaysLookBack')
+    )
+)
+, bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
+AS (
+	SELECT * FROM dut WHERE rej_dtls <> 'allgood'
+)
+-- >>>>>>>>>>>>>> Begin Boilerplate code
+, hdr -- Header Row, always exists regardless whether fails exist or not 
+AS (
+	SELECT cfg.tst_id
+	     , cfg.tst_descr
+	     , (SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END FROM bll WHERE rej_dtls <> 'allgood') AS status
+	     , '(Header)' AS rej_dtls 
+	     , ' ' AS lookup_sql
+	FROM cfg
+)
+, fdtl -- Fail Detail Rows, empty if a Pass 
+AS (
+	SELECT cfg.tst_id
+	     , cfg.tst_descr
+	     , 'FAIL' AS status
+	     , bll.rej_dtls
+	     , ' ' AS lookup_sql
+	FROM cfg, bll
+	WHERE bll.rej_dtls <> 'allgood'
+	  AND ROWNUM < (SELECT CAST(prop_val AS SMALLINT) FROM demo_hr.test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
+)
+SELECT * FROM hdr
+UNION
+SELECT * FROM fdtl
+;
+-- End Boilerplate code <<<<<<<<<<<<<< 
+
+
 
 
 
