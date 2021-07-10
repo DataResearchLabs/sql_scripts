@@ -76,7 +76,7 @@ Notice the following aspects of the SQL code above:
 
 3. Line 1673 sets up the entire data validation test case SQL query as an INSERT INTO the "temp" table test_case_results.
    
-4. Lines 1674-1679 establish the first subquery "cfg".  This is where you cahnge the test case number (eg: 'T031') and the test case description (ilne 1677) when you refactor these.
+4. Lines 1674-1679 establish the first subquery "cfg".  This is where you change the test case number (eg: 'T031') and the test case description (line 1677) when you refactor these.
    
 5. Lines 1680-1690 establish the second subquery "dut" -- the Data Under Test.  Here is where the target table and field are queried and frequently (but not always) where the rejection code logic is applied at the row level (lines 1682-1686).  Notice in this example that not only is the rejection code listed (eg: REJ-01 + details), but the expected result (none exist) and the actual result including the location within the string is returned.  This provides 100% of the information needed to resolve the error...good enough to pass diretly on to the person who will fix the data without an analyst having to manually confirm or research to dial-in the problem first.
    
