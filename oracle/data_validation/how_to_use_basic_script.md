@@ -56,7 +56,7 @@ Notice the following aspects of the SQL code:
 
 2. There is one (or more) **inner queries**  (lines 453-459 above)
     * These return many detail rows with business validation logic applied.  
-    * The columns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row faile
+    * The columns returned vary by validation test case, but typically have a primary key or unique key value returned so you can easily identify which row failed
     * There is also always a status field returned with a unique rejection code (eg: REJ-01 above) with the expected result (no CR or LFs), and the actual result including the position of the bad character in the source field.
     * Note that you can highlight and run just the inner query SELECT(s) to see all relevant rows with specific failure details    
 
