@@ -2976,7 +2976,7 @@ AS (
 	            WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}')        THEN 'REJ-02: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, zip9 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
+	     , 'SELECT employee_id, first_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
 	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
