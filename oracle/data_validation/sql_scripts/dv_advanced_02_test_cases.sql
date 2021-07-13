@@ -3279,7 +3279,7 @@ SELECT * FROM fdtl
 
 
 -- T061 ------------------------------------------------------------------------------------------
--- EXAMPLE: How to "Verify Static Ref Table Contents for [regions]"
+-- EXAMPLE: How to "Verify Matching Ref Table Contents for [jobs] vs [jobs_snapshot]"
 
 -- CREATE TABLE demo_hr.jobs_snapshot AS SELECT * FROM demo_hr.jobs
 
