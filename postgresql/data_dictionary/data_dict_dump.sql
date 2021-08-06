@@ -43,7 +43,7 @@ AS (
 	       WHEN tut.data_type IN('date','time')           THEN CONCAT('(3)')
 	       WHEN tut.data_type = 'datetime'                THEN CONCAT('(8)')
 	       WHEN tut.data_type = 'timestamp'               THEN CONCAT('(4)')
-	       WHEN tut.data_type LIKE '%int%'                THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ')')
+	       WHEN tut.data_type in('bigint','integer','smallint') THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ')')
 	       WHEN tut.data_type = 'decimal'                 THEN CONCAT('(', CAST(tut.NUMERIC_PRECISION AS varchar(10)), ',', CAST(tut.NUMERIC_SCALE AS varchar(10)), ')')
 	       WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN CONCAT('(', CAST(tut.CHARACTER_MAXIMUM_LENGTH AS varchar(10)), ')')
 		   WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN CONCAT('(', CAST(tut.DATETIME_PRECISION AS varchar(10)), ')')
