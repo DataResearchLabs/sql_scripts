@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------------------
 -- Platform:          PostgreSQL Server
 -- Author:            DataResearchLabs
--- GitHub:            https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md
+-- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskURPrZpH0Zkzfa1OQjNfj2Gg
 ----------------------------------------------------------------------------------
 WITH vars
@@ -46,7 +46,7 @@ AS (
 AS (
   SELECT ft.SchemaName, ft.table_name AS TableName, 'Column' AS ObjectType, tut.column_name AS ObjectName 
   , '2' AS PropertyName
-  , CONCAT(tut.data_type
+  , CONCAT(COALESCE(tut.data_type, 'unknown')
     , CASE WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL 
 		     OR tut.NUMERIC_PRECISION IS NOT NULL
 		     OR tut.NUMERIC_SCALE IS NOT NULL THEN '(' 
@@ -106,6 +106,7 @@ AS (
   , CASE WHEN cons.constraint_type = 'PRIMARY KEY' THEN 'PKey'
          WHEN cons.constraint_type = 'UNIQUE' THEN 'UKey'
          WHEN cons.constraint_type = 'FOREIGN KEY' THEN 'FKey'
+	     ELSE 'X'
     END AS ObjectType
   , cons.constraint_name AS ObjectName
   , 'FieldList' AS PropertyName 
