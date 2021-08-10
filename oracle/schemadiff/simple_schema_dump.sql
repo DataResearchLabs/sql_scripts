@@ -35,7 +35,10 @@ AS (
 AS (
   SELECT t.owner  AS SchemaName
   , t.table_name  AS TableName
-  , '(' || CASE WHEN t.table_type = 'TABLE' THEN 'Table' WHEN t.table_type = 'VIEW' THEN 'View' ELSE 'UK' END || ')' AS ObjectType
+  , '(' || CASE WHEN t.table_type = 'TABLE' THEN 'Table' 
+                WHEN t.table_type = 'VIEW'  THEN 'View' 
+                ELSE 'UK' 
+            END || ')' AS ObjectType
   , t.table_name  AS ObjectName
   , '(Exists)' AS PropertyName 
   , ' ' AS PropertyValue
@@ -46,7 +49,7 @@ AS (
 AS (
   SELECT tut.owner AS SchemaName, tut.table_name AS TableName, 'Column' AS ObjectType, tut.column_name AS ObjectName 
   , '2' AS PropertyName
-  , tut.data_type || '(' 
+  , COALESCE(tut.data_type, 'UNKNOWN') || '(' 
     || CASE WHEN tut.data_length    IS NOT NULL THEN        CAST(tut.data_length AS VARCHAR2(10)) ELSE '' END 
     || CASE WHEN tut.data_precision IS NOT NULL THEN ',' || CAST(tut.data_precision AS VARCHAR2(10)) ELSE '' END
     || CASE WHEN tut.data_scale     IS NOT NULL THEN ',' || CAST(tut.data_scale AS VARCHAR2(10)) ELSE '' END
