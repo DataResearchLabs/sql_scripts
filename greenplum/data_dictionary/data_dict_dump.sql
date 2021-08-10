@@ -43,7 +43,7 @@ AS (
 	         WHEN tut.data_type IN('date','time')           THEN '(3)'
 	         WHEN tut.data_type = 'datetime'                THEN '(8)'
   	       WHEN tut.data_type = 'timestamp'               THEN '(4)'
-	         WHEN tut.data_type LIKE '%int%'                THEN '(' || tut.NUMERIC_PRECISION || ')'
+	         WHEN tut.data_type in('bigint','int8','integer','int','int4','smallint','int2')  THEN '(' || tut.NUMERIC_PRECISION || ')'
 	         WHEN tut.data_type = 'decimal'                 THEN '(' || tut.NUMERIC_PRECISION || ',' || tut.NUMERIC_SCALE || ')'
 	         WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN '(' || tut.CHARACTER_MAXIMUM_LENGTH || ')'
            WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN '(' || tut.DATETIME_PRECISION || ')'
