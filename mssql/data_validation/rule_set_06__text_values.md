@@ -112,7 +112,7 @@ FROM (
   SELECT job_id
        , CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
   FROM demo_hr.employees
-)
+) t
 WHERE status <> 'P';
 ```
 <br>
