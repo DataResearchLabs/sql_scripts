@@ -38,12 +38,12 @@ Verify date field is within specified range.  For example, you can run the sql b
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT date_last_updated
-       , CASE WHEN date_last_updated > SYSDATE                             THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' || CAST(SYSDATE AS VARCHAR2(20)) || '|act=' || CAST(date_last_updated AS VARCHAR2(20))
-              WHEN date_last_updated < TO_DATE('01/01/2021', 'mm/dd/yyyy') THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' || CAST(date_last_updated AS VARCHAR2(20))
-              ELSE 'P'
-         END AS status
-  FROM demo_hr.countries
-)
+  , CASE WHEN date_last_updated > GETDATE()    THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' + CAST(GETDATE() AS VARCHAR(20)) + '|act=' + CAST(date_last_updated AS VARCHAR(20))
+    	    WHEN date_last_updated < '01/01/2021' THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' + CAST(date_last_updated AS VARCHAR(20))
+    	    ELSE 'P'
+    END AS status
+  FROM demo_hr..countries
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -56,9 +56,9 @@ Verify date field is a date only, no time part present.  For example, to verify 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT hire_date
-       , CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CONVERT(VARCHAR(8), hire_date, 108) <> '00:00:00' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -70,10 +70,10 @@ Verify date field is a date **and** time.  For example, to verify that table emp
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
-  SELECT start_tm
-       , CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.test_case_results
-)
+  SELECT date_last_updated
+  , CASE WHEN CONVERT(VARCHAR(8), date_last_updated, 108) = '00:00:00' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..countries
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -86,9 +86,9 @@ Verify multiple date fields relative to each other.  For example, to verify that
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT start_date, end_date
-       , CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.job_history
-)
+  , CASE WHEN start_date >= end_date THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..job_history
+) t
 WHERE status <> 'P';
 ```
 <br>
