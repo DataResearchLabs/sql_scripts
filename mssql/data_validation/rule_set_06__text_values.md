@@ -159,12 +159,13 @@ Verify text field characters are uppercase, lowercase, or a mix.  For example, t
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT job_id, last_name
-       , CASE WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                  THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' || job_id
-              WHEN NOT REGEXP_LIKE(SUBSTR(last_name,1), '[[:upper:]]') THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' || last_name 
-              ELSE 'P'
-         END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN job_id COLLATE SQL_Latin1_General_CP1_CS_AS <> UPPER(job_id)                 THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' + job_id
+         WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) 
+              <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255))  THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
+    	    ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -177,12 +178,12 @@ Verify text field characters are alpha, numeric, or a mix.  For example, to veri
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT employee_id, last_name
-       , CASE WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')   THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
-              WHEN REGEXP_LIKE(last_name, '[[:digit:]]')     THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' || LAST_NAME 
- 	            ELSE 'P'
- 	       END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN employee_id LIKE '%[A-Za-z]%' THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
+         WHEN last_name LIKE '%[0-9]%'      THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' + LAST_NAME 
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -195,12 +196,12 @@ Verify text field does not have ' or " characters.  For example, to verify that 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT first_name
-       , CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' || first_name
-              WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' || first_name
-              ELSE 'P'
- 	       END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' + first_name
+         WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' + first_name
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -213,12 +214,14 @@ Verify text field does not have carriage return (CHAR-13 / "CR") or line feed (C
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN INSTR(last_name, CHR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(10)) AS VARCHAR2(4))
-              WHEN INSTR(last_name, CHR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(13)) AS VARCHAR2(4))
-    	         ELSE 'P'
- 	       END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CHARINDEX(last_name, CHAR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' 
+		                     + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
+    	    WHEN CHARINDEX(last_name, CHAR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' 
+					                  + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -231,9 +234,9 @@ Verify text field does not have tab (CHAR-9) characters.  For example, to verify
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN INSTR(last_name, CHR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CHARINDEX(last_name, CHAR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -246,9 +249,9 @@ Verify text field does not have non-breaking-space (CHAR-160 / "NBS") characters
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN INSTR(last_name, CHR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CHARINDEX(last_name, CHAR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -261,9 +264,9 @@ Verify text field does not have an em-dash character (CHAR-151; common Microsoft
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN INSTR(last_name, CHR(151)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CHARINDEX(last_name, CHAR(151)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -276,13 +279,13 @@ Verify text field does not have any vertical tab (CHAR-11 / "VT"), form feed (CH
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN INSTR(last_name, CHR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(11)) AS VARCHAR2(4))
- 	            WHEN INSTR(last_name, CHR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(12)) AS VARCHAR2(4))
- 	            WHEN INSTR(last_name, CHR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(INSTR(last_name, CHR(133)) AS VARCHAR2(4))
- 	            ELSE 'P'
- 	       END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CHARINDEX(last_name, CHAR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
+         WHEN CHARINDEX(last_name, CHAR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
+         WHEN CHARINDEX(last_name, CHAR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -295,9 +298,9 @@ Verify text field does not have any periods or dashes.  For example, to verify t
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN INSTR(last_name, '.') > 0 OR INSTR(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN CHARINDEX(last_name, '.') > 0 OR CHARINDEX(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -310,9 +313,9 @@ Verify text field does not have any funky ",/:()&#?;" characters.  For example, 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN REGEXP_LIKE(last_name, '[,/:()&#?;]') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN last_name LIKE '%[,/:()&#?;]%' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -320,14 +323,14 @@ WHERE status <> 'P';
 
 <a id="t038" class="anchor" href="#t038" aria-hidden="true"> </a>
 ### T038 - Only Allowed Characters In List
-Verify text field contains only allowed characters from a specific list.  For example, use the SQL below to verify that the field phone_number in table employees only has characters ".0123456789".  The REGEXP_LIKE (regular expression like) does the work.  Specifically, the []'s indicating look for these characters, and the ^ means look for any character not in this list.  So it reads: "find any phone numbers containing characters not in [.0123456789]".
+Verify text field contains only allowed characters from a specific list.  For example, use the SQL below to verify that the field phone_number in table employees only has characters ".0123456789".  The LIKE expression does the work.  Specifically, the []'s indicating look for these characters, and the ^ means look for any character not in this list.  So it reads: "find any phone numbers containing characters not in [.0123456789]".
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT phone_number
-       , CASE WHEN REGEXP_LIKE(phone_number, '[^.0123456789]') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN phone_number LIKE '%[^.0123456789]%' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -345,8 +348,8 @@ FROM (
                AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
               ELSE 'P'
          END AS status
-  FROM demo_hr.employees
-)
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -359,9 +362,9 @@ Verify text field is numeric.  For example, use the SQL below to verify that the
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT zip5
-       , CASE WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN zip5 LIKE '%[^0-9]%' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -384,17 +387,17 @@ Verify text field is a date formatted as "yyyymmdd".  For example, use the SQL b
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT some_date_fmt1
-       , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-                  some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
-                  > ''                                                      THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
-              WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                     THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
-              WHEN NOT SUBSTR(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
-              WHEN NOT SUBSTR(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
-              WHEN NOT SUBSTR(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
-              ELSE 'P'
- 	       END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+              some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
+              > ''                                                        THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+         WHEN NOT LEN(TRIM(some_date_fmt1)) = 8                           THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+         WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+         WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+         WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -417,17 +420,17 @@ Verify text field is a date formatted as "mm/dd/yyyy".  For example, use the SQL
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT some_date_fmt2
-       , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-                    some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
-                    > ''                                                    THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
-              WHEN NOT LENGTH(TRIM(some_date_fmt2)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
-              WHEN NOT SUBSTR(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
-              WHEN NOT SUBSTR(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
-              WHEN NOT SUBSTR(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
-              ELSE 'P'
-         END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+              some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
+              > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
+         WHEN NOT LEN(TRIM(some_date_fmt2)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
+         WHEN NOT SUBSTRING(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
+         WHEN NOT SUBSTRING(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
+         WHEN NOT SUBSTRING(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -450,17 +453,17 @@ Verify text field is a date formatted as "mm-dd-yyyy".  For example, use the SQL
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT some_date_fmt3
-       , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-                    some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
-                    > ''                                                    THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
-              WHEN NOT LENGTH(TRIM(some_date_fmt3)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
-              WHEN NOT SUBSTR(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
-              WHEN NOT SUBSTR(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
-              WHEN NOT SUBSTR(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
-              ELSE 'P'
-    	    END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+              some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
+              > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
+         WHEN NOT LEN(TRIM(some_date_fmt3)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
+         WHEN NOT SUBSTRING(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
+         WHEN NOT SUBSTRING(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
+         WHEN NOT SUBSTRING(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
@@ -483,17 +486,17 @@ Verify text field is a date formatted as "yyyy-mm-dd".  For example, use the SQL
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT some_date_fmt4
-       , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-                   some_date_fmt4,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
-                   > ''                                                     THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
-              WHEN NOT LENGTH(TRIM(some_date_fmt4)) = 10                    THEN 'REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
-              WHEN NOT SUBSTR(some_date_fmt4,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
-              WHEN NOT SUBSTR(some_date_fmt4,6,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
-              WHEN NOT SUBSTR(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
-              ELSE 'P'
-    	    END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+              some_date_fmt4,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
+              > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
+         WHEN NOT LEN(TRIM(some_date_fmt4)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
+         WHEN NOT SUBSTRING(some_date_fmt4,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
+         WHEN NOT SUBSTRING(some_date_fmt4,6,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
+         WHEN NOT SUBSTRING(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
 ```
 <br>
