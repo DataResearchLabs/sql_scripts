@@ -31,7 +31,7 @@ AS (
 	  END AS OBJ_TYP
 	, atc.column_id   AS ORD_POS
 	, atc.column_name AS COLUMN_NM 
-	, (atc.data_type ||
+	, (COALESCE(atc.data_type, 'UNKNOWN') ||
 	    decode(atc.data_type,
 	      'NUMBER',
 	         decode(atc.data_precision, null, '',
@@ -70,6 +70,7 @@ AS (
 	  , CASE WHEN cons.constraint_type = 'P' THEN 'PK'
 	         WHEN cons.constraint_type = 'U' THEN 'UK'
 	         WHEN cons.constraint_type = 'R' THEN 'FK'
+             ELSE 'X'
 	    END                AS IS_KEY
 	  FROM all_constraints cons 
 	    INNER JOIN all_cons_columns cols ON cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner 
