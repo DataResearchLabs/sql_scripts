@@ -46,12 +46,12 @@ AS (
     END                                                        AS obj_typ
   , RIGHT('000' + CAST(tut.ORDINAL_POSITION AS VARCHAR(3)), 3) AS ord_pos
   , tut.column_name                                            AS column_nm
-  , tut.data_type + 
+  , COALESCE(tut.data_type, 'unknown') + 
     CASE WHEN tut.data_type IN('varchar','nvarchar')    THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
 	     WHEN tut.data_type IN('char','nchar')          THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
 	     WHEN tut.data_type ='date'                     THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
 	     WHEN tut.data_type ='datetime'                 THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
-	     WHEN tut.data_type LIKE '%int%'                THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10))  + ')'
+	     WHEN tut.data_type in('bigint','int','smallint', 'tinyint') THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10))  + ')'
 	     WHEN tut.data_type = 'uniqueidentifier'        THEN '(16)'
 	     WHEN tut.data_type = 'money'                   THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ')'
 	     WHEN tut.data_type = 'decimal'                 THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
@@ -100,6 +100,7 @@ AS (
     , CASE WHEN cons.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN 'PK'
            WHEN cons.CONSTRAINT_TYPE = 'UNIQUE'      THEN 'UK'
            WHEN cons.CONSTRAINT_TYPE = 'FOREIGN KEY' THEN 'FK'
+		   ELSE 'X'
       END AS key_typ
     FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS      cons 
     INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu 
