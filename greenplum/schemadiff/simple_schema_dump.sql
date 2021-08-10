@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------------------
 -- Platform:          Greenplum Server
 -- Author:            DataResearchLabs
--- GitHub:            https://github.com/DataResearchLabs/sql_scripts/blob/main/schemadiff_scripts.md
+-- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/playlist?list=PLVHoUDdbskUSWcPnDztPhXOnQT1R-rg0t
 ----------------------------------------------------------------------------------
 WITH vars
@@ -48,7 +48,7 @@ AS (
   , 'Column' :: CHARACTER VARYING(15) AS ObjectType
   , tut.column_name AS ObjectName 
   , '2' :: CHARACTER VARYING(10) AS PropertyName
-  , tut.data_type
+  , COALESCE(tut.data_type, 'unknown')
     || CASE WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL 
 		          OR tut.NUMERIC_PRECISION IS NOT NULL
 		          OR tut.NUMERIC_SCALE IS NOT NULL THEN '(' 
