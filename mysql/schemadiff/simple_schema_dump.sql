@@ -49,7 +49,7 @@ AS (
 AS (
   SELECT ft.SchemaName, ft.table_name AS TableName, 'Column' AS ObjectType, tut.column_name AS ObjectName 
   , '2' AS PropertyName
-  , CONCAT(tut.data_type
+  , CONCAT(COALESCE(tut.data_type, 'unknown')
     , '(' 
     , CASE WHEN tut.CHARACTER_MAXIMUM_LENGTH  IS NOT NULL THEN CAST(tut.CHARACTER_MAXIMUM_LENGTH AS CHAR(10)) ELSE '' END 
     , CASE WHEN tut.DATA_TYPE IN('date','datetime','timestamp') THEN CAST(tut.DATETIME_PRECISION AS CHAR(10))
@@ -98,6 +98,7 @@ AS (
   , CASE WHEN cons.constraint_type = 'PRIMARY KEY' THEN 'PKey'
          WHEN cons.constraint_type = 'UNIQUE' THEN 'UKey'
          WHEN cons.constraint_type = 'FOREIGN KEY' THEN 'FKey'
+         ELSE 'X'
     END AS ObjectType
   , cons.constraint_name AS ObjectName
   , 'FieldList' AS PropertyName 
