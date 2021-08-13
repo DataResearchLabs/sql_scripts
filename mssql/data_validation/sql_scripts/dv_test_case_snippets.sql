@@ -1,7 +1,7 @@
 -- ===============================================================================================
 -- Filename:          dv_test_case_snippets.sql
 -- Description:       Data Validation Snippets - Verification Check Examples
--- Platform:          Oracle
+-- Platform:          SQL Server
 -- Author:            DataResearchLabs
 -- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/channel/UCQciXv3xaBykeUFc04GxSXA
