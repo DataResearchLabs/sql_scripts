@@ -29,56 +29,61 @@ This validation check monitors the schema (column names and properties) of table
  ```sql
 WITH expected 
 AS (
-        SELECT 1 AS ord_pos, 'LOCATION_ID'    AS column_nm, 'NUMBER(4)'    AS data_typ, 'NOT NULL' AS nullable FROM dual
-  UNION SELECT 2 AS ord_pos, 'STREET_ADDRESS' AS column_nm, 'VARCHAR2(40)' AS data_typ, 'NULL' AS nullable FROM dual
-  UNION SELECT 3 AS ord_pos, 'POSTAL_CODE'    AS column_nm, 'VARCHAR2(12)' AS data_typ, 'NULL' AS nullable FROM dual
-  UNION SELECT 4 AS ord_pos, 'CITY'           AS column_nm, 'VARCHAR2(30)' AS data_typ, 'NOT NULL' AS nullable FROM dual
-  UNION SELECT 5 AS ord_pos, 'STATE_PROVINCE' AS column_nm, 'VARCHAR2(25)' AS data_typ, 'NULL' AS nullable FROM dual
-  UNION SELECT 6 AS ord_pos, 'COUNTRY_ID'     AS column_nm, 'CHAR(2)'      AS data_typ, 'NULL' AS nullable FROM dual
-  ORDER BY ord_pos
+	       SELECT 1 AS ord_pos, 'LOCATION_ID'    AS column_nm, 'NUMERIC(4,0)' AS data_typ, 'NOT NULL' AS nullable
+  UNION SELECT 2 AS ord_pos, 'STREET_ADDRESS' AS column_nm, 'VARCHAR(40)'  AS data_typ, 'NULL'     AS nullable
+	 UNION SELECT 3 AS ord_pos, 'POSTAL_CODE'    AS column_nm, 'VARCHAR(12)'  AS data_typ, 'NULL'     AS nullable
+	 UNION SELECT 4 AS ord_pos, 'CITY'           AS column_nm, 'VARCHAR(30)'  AS data_typ, 'NOT NULL' AS nullable
+	 UNION SELECT 5 AS ord_pos, 'STATE_PROVINCE' AS column_nm, 'VARCHAR(25)'  AS data_typ, 'NULL'     AS nullable
+	 UNION SELECT 6 AS ord_pos, 'COUNTRY_ID'     AS column_nm, 'CHAR(2)'      AS data_typ, 'NULL'     AS nullable
 )
 , actual
 AS (
   SELECT
-    atc.column_id   AS ord_pos
-  , atc.column_name AS column_nm 
-  , (atc.data_type ||
-     decode(atc.data_type,
-    	 'NUMBER',
-    	   decode(atc.data_precision, null, '',
-    	     '(' || to_char(atc.data_precision) || decode(atc.data_scale,null,'',0,'',',' || to_char(atc.data_scale) )
-    	         || ')' ),
-    	 'FLOAT', '(' || to_char(atc.data_precision) || ')',
-    	 'VARCHAR2', '(' || to_char(atc.data_length) || ')',
-    	 'NVARCHAR2', '(' || to_char(atc.data_length) || ')',
-    	 'VARCHAR', '(' || to_char(atc.data_length) || ')',
-    	 'CHAR', '(' || to_char(atc.data_length) || ')',
-    	 'RAW', '(' || to_char(atc.data_length) || ')',
-    	 'MLSLABEL',decode(atc.data_length,null,'',0,'','(' || to_char(atc.data_length) || ')'),
-    	 '')
-    )                 AS data_typ
-  , CASE WHEN atc.nullable = 'Y' THEN 'NULL' ELSE 'NOT NULL' END AS nullable
-  FROM       all_tab_columns  atc
-  INNER JOIN all_col_comments dcc ON atc.owner = dcc.owner AND atc.table_name = dcc.table_name AND atc.column_name = dcc.column_name
-  INNER JOIN all_tab_comments t   ON t.OWNER = atc.owner   AND t.TABLE_NAME = atc.table_name
-  WHERE atc.owner = 'DEMO_HR'
-    AND atc.table_name = 'LOCATIONS'
+	   RIGHT('000' + CAST(tut.ORDINAL_POSITION AS VARCHAR(3)), 3) AS ord_pos
+	 , tut.column_name                                            AS column_nm
+	 , tut.data_type + 
+      CASE WHEN tut.data_type IN('varchar','nvarchar')    THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type IN('char','nchar')          THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type ='date'                     THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type ='datetime'                 THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type LIKE '%int%'                THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10))  + ')'
+           WHEN tut.data_type = 'uniqueidentifier'        THEN '(16)'
+	          WHEN tut.data_type = 'money'                   THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type = 'decimal'                 THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
+           WHEN tut.data_type = 'numeric'                 THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type = 'varbinary'               THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
+	          WHEN tut.data_type = 'xml'                     THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
+           WHEN tut.data_type IN('char','nchar')          THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
+	          WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
+		         WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
+	          WHEN tut.NUMERIC_PRECISION IS NOT NULL
+      		    AND tut.NUMERIC_SCALE     IS NULL             THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ')'
+	          WHEN tut.NUMERIC_PRECISION IS NOT NULL
+		          AND tut.NUMERIC_SCALE     IS NOT NULL         THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
+    		     ELSE ''
+       END AS data_typ
+  , CASE WHEN tut.IS_NULLABLE = 'YES' THEN 'NULL' ELSE 'NOT NULL' END AS nullable
+	 FROM       INFORMATION_SCHEMA.COLUMNS  tut
+	 WHERE tut.TABLE_CATALOG  = 'DEMO_HR'
+    AND tut.table_name = 'LOCATIONS'
 )
 , dut -- Data Under Test 
 AS (
   SELECT CASE WHEN (SELECT COUNT(*) FROM actual) = 0 THEN 'REJ-01: Table [locations] does not exist (may be case sensistive name)|exp=exists|act=notExist' 
-              WHEN a.column_nm IS NULL               THEN 'REJ-01: Expected column is missing from actual schema (may be case sensitive name)|exp=' || e.column_nm || '|act=IsMissing' 
-              WHEN a.ord_pos <> e.ord_pos            THEN 'REJ-02: Ordinal Positions at field ' || e.column_nm || ' do not match|exp=' || CAST(e.ord_pos AS VARCHAR2(3)) || '|act=' || CAST(a.ord_pos AS VARCHAR2(3))
-              WHEN a.data_typ <> e.data_typ          THEN 'REJ-03: Data Types at field ' || e.column_nm || ' do not match|exp=' || e.data_typ || '|act=' || a.data_typ 
-              WHEN a.nullable <> e.nullable          THEN 'REJ-04: Nullable settings at field ' || e.column_nm || ' do not match|exp=' || e.nullable || '|act=' || a.nullable 
-              ELSE 'P'
-         END AS status
-  FROM      expected e 
+	             WHEN a.column_nm IS NULL               THEN 'REJ-01: Expected column is missing from actual schema (may be case sensitive name)|exp=' + e.column_nm + '|act=IsMissing' 
+	             WHEN a.ord_pos <> e.ord_pos            THEN 'REJ-02: Ordinal Positions at field ' + e.column_nm + ' do not match|exp=' + CAST(e.ord_pos AS VARCHAR(3)) + '|act=' + CAST(a.ord_pos AS VARCHAR(3))
+	             WHEN a.data_typ <> e.data_typ          THEN 'REJ-03: Data Types at field ' + e.column_nm + ' do not match|exp=' + e.data_typ + '|act=' + a.data_typ 
+	             WHEN a.nullable <> e.nullable          THEN 'REJ-04: Nullable settings at field ' + e.column_nm + ' do not match|exp=' + e.nullable + '|act=' + a.nullable 
+	             ELSE 'P'
+	        END AS rej_dtls
+  , 'N/A - Go browse to table structure from tree grid in UI' AS lookup_sql
+	 FROM      expected e 
   LEFT JOIN actual   a ON a.column_nm = e.column_nm
 )
 
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
-FROM dut WHERE status <> 'P';
+, '"RS-8 Diffs" #1 - Verify TableStructure("BySQL") by comparing snapshot in SQL code vs actual schema/structure for table [locations]' AS tst_descr   
+FROM dut WHERE rej_dtls <> 'P';
  ```
 </details>
 <br>
@@ -105,15 +110,15 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-  SELECT CASE WHEN r.region_id IS NULL            THEN 'REJ-01: Record is missing from metadata|exp=NotMissing|act=' || m.region_id || ' is missing' 
-              WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' || m.region_name || '|act=' || r.region_name 
+  SELECT CASE WHEN r.region_id IS NULL            THEN 'REJ-01: Record is missing from metadata|exp=NotMissing|act=' + m.region_id + ' is missing' 
+              WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' + m.region_name + '|act=' + r.region_name 
               ELSE 'P'
          END AS status
   FROM      metadata   m 
-  LEFT JOIN demo_hr.regions r ON r.region_id = m.region_id
+  LEFT JOIN demo_hr..regions r ON r.region_id = m.region_id
   ORDER BY m.region_id
 )
-    
+
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
 FROM dut WHERE status <> 'P';
  ```
@@ -136,19 +141,18 @@ WITH non_matches
 AS (
   SELECT MAX(tbl_nm) AS tbl_nm, job_id, job_title, min_salary, max_salary, COUNT(*) AS match_count_found
   FROM (
-    SELECT CAST('jobs' AS VARCHAR2(15)) AS tbl_nm,          job_id, job_title, min_salary, max_salary FROM demo_hr.JOBS  
+    SELECT CAST('jobs' AS VARCHAR(15)) AS tbl_nm,          job_id, job_title, min_salary, max_salary FROM demo_hr..jobs  
     UNION ALL 
-    SELECT CAST('jobs_snapshot' AS VARCHAR2(15)) AS tbl_nm, job_id, job_title, min_salary, max_salary FROM demo_hr.JOBS_SNAPSHOT 
+    SELECT CAST('jobs_snapshot' AS VARCHAR(15)) AS tbl_nm, job_id, job_title, min_salary, max_salary FROM demo_hr..jobs_snapshot 
   ) comb_sets 
   GROUP BY job_id, job_title, min_salary, max_salary
   HAVING COUNT(*) < 2
 )
 , dut -- Data Under Test 
 AS (
-  SELECT 'REJ-01: Mismatch Found: tbl_nm="' || tbl_nm ||'", job_id="' || job_id || '", job_title="' || job_title 
-         || '", min_salary=' || CAST(min_salary AS VARCHAR2(20)) || '", max_salary=' || CAST(max_salary AS VARCHAR2(20)) AS status
+  SELECT 'REJ-01: Mismatch Found: tbl_nm="' + tbl_nm +'", job_id="' + job_id + '", job_title="' + job_title 
+  	    + '", min_salary=' + CAST(min_salary AS VARCHAR(20)) + '", max_salary=' + CAST(max_salary AS VARCHAR(20)) AS status
   FROM      non_matches  
-  ORDER BY 1
 )
 
 SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
