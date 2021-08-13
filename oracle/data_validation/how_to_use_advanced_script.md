@@ -25,7 +25,7 @@ However, this pair of scripts is more sophisticated as follows:
 ### Step 2 - Download & Deploy the Demo Data
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
-If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to yuor own databases, then you will need to download and deploy the demo_hr test dataset.
+If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to your own databases, then you will need to download and deploy the demo_hr test dataset.
 1. Download the "demo_hr" schema / table definitions from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/demo_data/demo_hr_01_create_tables.sql)</b>.
 2. Run the script on an Oracle server and database where you have permissions (local is fine too).
 3. Download the "demo_hr" test data population script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/oracle/data_validation/demo_data/demo_hr_02_populate_tables.sql)</b>.
