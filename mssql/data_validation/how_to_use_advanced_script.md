@@ -63,33 +63,33 @@ Notice the following aspects of the SQL code above:
 1. Each data validation test case is written as multiple SQL SELECT statements using a CTE (common table expression).  The format is WITH tbl_nm as sql, tbl_nm_2 as sql, etc.
 
 2. There are two blocks of SQL for every data validation test case: 
-    (a) Yellow lines 1674 thru 1694 that you customize for every test case
-    (b) Blue lines 1695 thr 1720 (plus line 1673) that are boilerplate and never change -- simply copy paste them over and over to automatically setup the header and detail rows  
+    (a) Yellow lines 1656 thru 1675 that you customize for every test case
+    (b) Blue lines 1676 thr 1701 (plus line 1702) that are boilerplate and never change -- simply copy paste them over and over to automatically setup the header and detail rows  
 
-3. Line 1673 sets up the entire data validation test case SQL query as an INSERT INTO the "temp" table test_case_results.
+3. Line 1697 sets up the entire data validation test case SQL query as an INSERT INTO the "temp" table test_case_results.
    
-4. Lines 1674-1679 establish the first subquery "cfg".  This is where you change the test case number (eg: 'T031') and the test case description (line 1677) when you refactor these.
+4. Lines 1656-1660 establish the first subquery "cfg".  This is where you change the test case number (eg: 'T031') and the test case description (line 1659) when you refactor these.
    
-5. Lines 1680-1690 establish the second subquery "dut" -- the Data Under Test.  Here is where the target table and field are queried and frequently (but not always) where the rejection code logic is applied at the row level (lines 1682-1686).  Notice in this example that not only is the rejection code listed (eg: REJ-01 + details), but the expected result (none exist) and the actual result including the location within the string is returned.  This provides 100% of the information needed to resolve the error...good enough to pass diretly on to the person who will fix the data without an analyst having to manually confirm or research to dial-in the problem first.
+5. Lines 1661-1671 establish the second subquery "dut" -- the Data Under Test.  Here is where the target table and field are queried and frequently (but not always) where the rejection code logic is applied at the row level (lines 1663-1666).  Notice in this example that not only is the rejection code listed (eg: REJ-01 + details), but the expected result (none exist) and the actual result including the location within the string is returned.  This provides 100% of the information needed to resolve the error...good enough to pass diretly on to the person who will fix the data without an analyst having to manually confirm or research to dial-in the problem first.
    
-6. Lines 1691-1694 are where higher level business logic goes (especially when aggregating data or doing multiple passes on a dataset).  In this simpler example, we just filter the "dut" dataset down to only those rows that were rejected (and ignore the vast majority of rows that were "allgood".
+6. Lines 1672-1675 are where higher level business logic goes (especially when aggregating data or doing multiple passes on a dataset).  In this simpler example, we just filter the "dut" dataset down to only those rows that were rejected (and ignore the vast majority of rows that were "allgood").
    
-7. Lines 1695-1704 are the start of the boilerplate code (copy-paste / never change).  This "hdr" sub query is used to ensure that every test case always has a header row in the test results table, regardless of whether there are error details or not.  The test ID, test description, and test status are all written to this one row per test case.
+7. Lines 1676-1685 are the start of the boilerplate code (copy-paste / never change).  This "hdr" sub query is used to ensure that every test case always has a header row in the test results table, regardless of whether there are error details or not.  The test ID, test description, and test status are all written to this one row per test case.
    
-8. Lines 1705-1715 are the second boilerplace subquery named "fdtl" -- short for fail details.  Only failed test cases will have rows in this subquery.  It contains the same test ID, test description and status (fail) as the header record (so they sort together in output).  However, these records also tack on additional valuable columns to the right: rej_dtls nad lookup_sql.  Both column names indicate what they are for:
+8. Lines 1686-1696 are the second boilerplace subquery named "fdtl" -- short for fail details.  Only failed test cases will have rows in this subquery.  It contains the same test ID, test description and status (fail) as the header record (so they sort together in output).  However, these records also tack on additional valuable columns to the right: rej_dtls nad lookup_sql.  Both column names indicate what they are for:
     (a) Rejection details (REJ-ID, rejection description, expected vs. actual values, etc.), and 
     (b) Lookup sql that you can copy-paste-execute to return the exact source row that failed with all its values (you specify as done in line 1688 abovve)
    
-9. Finally, lines 1716-1720 are the final boilerplate subquery that ties it all together (last subquery in a CTE has no name).  This simple little query unions the "hdr" row with all "fdtl" rows, if any.  The INSERT INTO at line 1673 picks these all up and write them out to our temp table "test_case_results".
+9. Finally, lines 1697-1702 are the final boilerplate subquery that ties it all together (last subquery in a CTE has no name).  This simple little query unions the "hdr" row with all "fdtl" rows, if any.  The INSERT INTO at line 1673 picks these all up and write them out to our temp table "test_case_results".
 </details>
 <br>
 
-### Setp 6 - Execute the Advanced Data Validation Script
+### Setp 5 - Execute the Advanced Data Validation Script
 <details><summary>Expand if you would like to see how to execute the advanced script, step-by-step...</summary><br>
 
 Here are the steps to execute the advanced script in Oracle SQL Developer (typical output shown in the screenshot below).  
-1. Open Oracle SQL Developer (or equivalent SQL Editor)
-2. Blue Dot #1 - You must load the advanced validation script "dvf_advanced_02_test_cases.sql" into SQL Developer (or equivalent IDE) -- see Step 4 above.  Be sure to highlight all the code.
+1. Open SQL Server Management Studio (or equivalent SQL Editor)
+2. Blue Dot #1 - You must load the advanced validation script "dv_advanced_test_cases.sql" into SQL Developer (or equivalent IDE) -- see Step 4 above.  
 3. Blue Dot #2 - Click the "Run Statement" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary reoprt SELECT.
 4. Blue Dot #3 - The output is beautifully laid out for all data validation test cases in a grid.  You can scroll and view the grid details, or export it out to a file using your SQL Editor.  Fields include everything, from test id, test description, and status to test case execution time, start time, rejection details, expected and actual results, and lookup SQL.
 
