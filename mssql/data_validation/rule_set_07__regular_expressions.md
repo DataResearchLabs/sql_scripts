@@ -137,9 +137,9 @@ Verify text field has no leading or trailing spaces.  For example, to verify tha
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN REGEXP_LIKE(last_name, '(^\s)|(\s$)') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN last_name LIKE ' %' OR last_name LIKE '% ' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -152,9 +152,13 @@ Verify text field has no whitespace (spaces, non breaking spaces, carriage retur
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT job_id
-       , CASE WHEN REGEXP_LIKE(job_id, '(\s)+') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN job_id LIKE '% %'
+                OR job_id LIKE '%' + CHAR(13) + '%'
+                OR job_id LIKE '%' + CHAR(10) + '%' 
+                OR job_id LIKE '%' + CHAR(9) + '%'
+                OR job_id LIKE '%' + CHAR(160) + '%' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -167,9 +171,10 @@ Verify text field has only lower case characters.  For example, (not really prac
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT first_name
-       , CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,3,2), '^[a-z]+$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN SUBSTRING(first_name COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2) <> LOWER(SUBSTRING(first_name COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2))  
+	      THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -182,9 +187,10 @@ Verify text field has only upper case characters.  For example, to verify that a
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT email
-       , CASE WHEN NOT REGEXP_LIKE(SUBSTR(email,3,2), '^[A-Z]+$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN SUBSTRING(email COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2) <> UPPER(SUBSTRING(email COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2)) 
+              THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -196,14 +202,16 @@ Verify text field is title case format (where the first letter of every word is 
  ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
- 	SELECT first_name, SUBSTR(first_name,1,1) AS first_letter
-       , CASE WHEN NOT REGEXP_LIKE(SUBSTR(first_name,1,1), '([A-Z])') THEN 'REJ-01: Field first_name first character not upper case|exp=Like"[A-Z]"|act=' || first_name 
-              WHEN first_name NOT LIKE '% %'                          THEN 'P'  -- Only one word, so no space + first character to check for uppercase
-              WHEN NOT REGEXP_LIKE(first_name, '(\s[A-Z]){1}')        THEN 'REJ-02: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
-              ELSE 'P'
-         END AS status
-  FROM demo_hr.employees
-)
+  SELECT first_name, SUBSTRING(first_name,1,1) AS first_letter
+  , CASE WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS NOT LIKE '[A-Z]%'       THEN 'REJ-01: Field first_name first character not uppercase|exp=Like"[A-Z]%"|act=' + first_name 
+         WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '[A-Z]%[^a-z]%'    THEN 'REJ-02: Field first_name characters in first word after first character not lowercase|exp=all lower case"|act=' + first_name
+         WHEN first_name NOT LIKE '% %'                                               THEN 'P'  -- Only one word, so no space + first character to check for uppercase
+         WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '% [^A-Z]%'        THEN 'REJ-03: Field first_name first character after space is not uppercase|exp=IsUCASE|act=' + first_name 
+         WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '% [A-Z][^a-z]%'   THEN 'REJ-04: Field first_name characters after space + one letter are not lowercase|exp=IsUCASE|act=' + first_name 
+         ELSE 'P'
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -216,9 +224,20 @@ Verify text field is a properly formatted email address.  For example, to verify
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT email_address
-       , CASE WHEN NOT REGEXP_LIKE(email_address, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+  , CASE WHEN email_address IS NULL                                     THEN 'REJ-01: Field email_address is NULL'
+         WHEN email_address = ''                                        THEN 'REJ-02: Field email_address is blank'
+         WHEN email_address LIKE '%["(),:;<>\]%'                        THEN 'REJ-03: Field email_address contains bad characters ["(),:;<>\]'
+         WHEN SUBSTRING(email_address, CHARINDEX('@', email_address), len(email_address)) LIKE '%[!#$%&*+/=?^`_{|]%'
+              THEN 'REJ-04: Field email_address company name after @ contains bad characters [!#$%&*+/=?^`_{|]'
+         WHEN LEFT(email_address,1) LIKE '[-_.+]'                       THEN 'REJ-05: Field email_address should not start with [-_.+] characters'
+         WHEN RIGHT(email_address,1) LIKE '[-_.+]'                      THEN 'REJ-06: Field email_address should not end with [-_.+] characters'
+         WHEN email_address LIKE '%[%' OR email_address LIKE '%]%'      THEN 'REJ-07: Field email_address should not contain [ or ] characters'
+         WHEN email_address LIKE '%@%@%'                                THEN 'REJ-08: Field email_address should not contain more than one @ character'
+         WHEN email_address LIKE '[_]%@[_]%@[_]%'                       THEN 'REJ-09: Field email_address should not have leading underscores at any segment (gmail blocks)'
+         ELSE 'P' 
+    END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -231,9 +250,14 @@ Verify text field is a properly formatted URL.  For example, to verify that the 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT url
-       , CASE WHEN NOT REGEXP_LIKE(url, '(http)(s)?(:\/\/)') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.departments
-)
+  , CASE WHEN url NOT LIKE'http://%' 
+          AND url NOT LIKE'https://%'                                  THEN 'REJ-01: Field url is missing "http://" and "https://"|exp=Like"http(s)://"|act=' + url 
+         WHEN url NOT LIKE '%[A-Z0-9][.][A-Z0-9]%[A-Z0-9]%'            THEN 'REJ-02: Field is not alphanumeric + "." + alphanumeric + "/" + alphanumeric|exp=aaaa.aaa|act=' + url 
+       --WHEN url NOT LIKE '%[A-Z0-9][.][A-Z0-9]%[A-Z0-9][/][A-Z0-9]%' THEN 'REJ-03: Field is not alphanumeric + "." + alphanumeric + "/" + alphanumeric|exp=aaaa.aaa/aaa|act=' + url 
+         ELSE'P' 
+    END AS status
+  FROM demo_hr..departments
+) t
 WHERE status <> 'P';
  ```
 <br>
