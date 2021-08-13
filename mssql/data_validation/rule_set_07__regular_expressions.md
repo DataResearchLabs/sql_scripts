@@ -30,11 +30,10 @@ Verify text field is a phone number format.  For example, to verify that field p
  ```sql
  SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
  FROM (
-   -- NOTE: Use RegEx pattern "^\+(\d+\s?)+$" for international phone numbers
-  SELECT phone_number
-       , CASE WHEN NOT REGEXP_LIKE(phone_number, '[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+    SELECT phone_number
+         , CASE WHEN phone_number NOT LIKE '[0-9][0-9][0-9][-. ][0-9][0-9][0-9][-. ][0-9][0-9][0-9][0-9]' THEN 'FAIL' ELSE 'P' END AS status
+    FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -47,9 +46,9 @@ Verify text field is a valid social security number (SSN) format.  For example, 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT fake_ssn
-       , CASE WHEN NOT REGEXP_LIKE(fake_ssn, '^[0-9]{3}-[0-9]{2}-[0-9]{4}$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN fake_ssn NOT LIKE '[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -62,9 +61,9 @@ Verify text field is a valid zipcode 5-digit format.  For example, to verify tha
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT zip5
-       , CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-9]{5}$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN zip5 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -77,9 +76,10 @@ Verify text field is a valid zipcode 5- or 9-digit format.  For example, to veri
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT zip5or9
-       , CASE WHEN NOT REGEXP_LIKE(zip5or9, '^[[:digit:]]{5}(-[[:digit:]]{4})?$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN zip5or9 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]'
+	              AND zip5or9 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -92,9 +92,9 @@ Verify text field is a valid zipcode 9-digit format.  For example, to verify tha
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT zip9
-       , CASE WHEN NOT REGEXP_LIKE(zip9, '^[[:digit:]]{5}[-/.][[:digit:]]{4}$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN zip9 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -107,9 +107,9 @@ Verify text field is text / only contains alpha characters.  For example, to ver
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-       , CASE WHEN NOT REGEXP_LIKE(last_name, '^[a-zA-Z ]+$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN last_name LIKE '%[^a-zA-Z ]%' THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
@@ -122,9 +122,9 @@ Verify text field numeric characters only.  For example, to verify that field zi
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT zip5
-       , CASE WHEN NOT REGEXP_LIKE(zip5, '^[0-5]+$') THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-)
+       , CASE WHEN zip5 LIKE '%[^0-9.]%' THEN 'FAIL' ELSE 'P' END AS status
+ 	FROM demo_hr..employees
+) t
 WHERE status <> 'P';
  ```
 <br>
