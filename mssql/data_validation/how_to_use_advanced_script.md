@@ -57,7 +57,7 @@ The script currently consists of 3,701 lines of SQL code (3x bigger than the bas
 
 A typical data validation test has SQL code that looks something like this one -- T031 which checks for carriage return or line feed characters in field last_name: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/img/03_data_val_oracle_adv_test_case_ex.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/img/03_data_val_mssql_adv_test_case_ex.png">
 
 Notice the following aspects of the SQL code above:
 1. Each data validation test case is written as multiple SQL SELECT statements using a CTE (common table expression).  The format is WITH tbl_nm as sql, tbl_nm_2 as sql, etc.
@@ -93,7 +93,7 @@ Here are the steps to execute the advanced script in Oracle SQL Developer (typic
 3. Blue Dot #2 - Click the "Run Statement" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary reoprt SELECT.
 4. Blue Dot #3 - The output is beautifully laid out for all data validation test cases in a grid.  You can scroll and view the grid details, or export it out to a file using your SQL Editor.  Fields include everything, from test id, test description, and status to test case execution time, start time, rejection details, expected and actual results, and lookup SQL.
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/oracle/data_validation/img//04_data_val_oracle_run_results_adv.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/img/04_data_val_mssql_run_results_adv.png">
 
 </details>
 <br>
