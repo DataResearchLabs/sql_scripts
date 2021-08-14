@@ -2,7 +2,7 @@
 [![License: CC0](https://img.shields.io/badge/License-CC0-red)](LICENSE "Creative Commons Zero License by DataResearchLabs (effectively = Public Domain")
 [![YouTube](https://img.shields.io/badge/YouTube-DataResearchLabs-brightgreen)](http://www.DataResearchLabs.com)
 #### [Return to Data Validation Home Page](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
-<br>
+
 
 # Rule Set #1 - Row Counts
 
@@ -11,7 +11,6 @@
  - <a href="#t002">T002 - "Partial" Row Count</a>
  - <a href="#t003">T003 - "Relative" Row Count</a>
  - <a href="#t004">T004 - "Recent" Row Count</a>
-<br>
 
 
 <a id="t001" class="anchor" href="#t001" aria-hidden="true"> </a>
