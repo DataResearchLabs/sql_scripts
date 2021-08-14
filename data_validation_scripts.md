@@ -271,14 +271,6 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 ## Greenplum
 * Use the Postgresql scripts and video tutorials above<br>
 </td>
- 
-<td width=600>
-  <br>
-  <br>
-
-  
-  * Use the Postgresql Video Tutorials above<br>
-</td>
 </tr>
   
 </table>
