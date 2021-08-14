@@ -272,13 +272,10 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Use the Postgresql Scripts above<br>
 </td>
  
-<td width=400>
+<td colspan="3" width=400>
 * Use the Postgresql Video Tutorials above<br>
 </td>
-<td width=100>
-</td>
-<td width=100>
-</td></tr>
+</tr>
   
 </table>
 <br>
