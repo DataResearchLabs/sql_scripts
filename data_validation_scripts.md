@@ -273,8 +273,10 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td colspan="3" width=600>
-  
+  <br>
+  <br>
 
+  
   * Use the Postgresql Video Tutorials above<br>
 </td>
 </tr>
