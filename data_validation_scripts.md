@@ -29,50 +29,6 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
 <td rowspan=3 width=325>
 
-## Greenplum
-* Rule Set 01 - Row Counts<br>
-* Rule Set 02 - Keys<br>
-* Rule Set 03 - Heuristic Thresholds<br>
-* Rule Set 04 - Numeric Values<br>
-* Rule Set 05 - Date Values<br>
-* Rule Set 06 - Text Values<br>
-* Rule Set 07 - Regular Expressions<br>
-* Rule Set 08 - Diff Checks<br>
-* Rule Set 09 - Defect Regression<br>
-* Best Practices<br>
-* Basic Validation Script<br>
-* Advanced Validation Script<br>
-</td>
- 
-<td width=200>
-  1. Row Count<br>& Key Tests<br>Tutorial<br>(TODO)
-</td>
-<td width=200>
-  2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
-</td>
-<td width=200>
-  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
-</td></tr>
-<tr><td>
-  4. Text Field Test Tutorials<br>(TODO)
-</td>
-<td>
-  5. Regular Expression Test Tutorials<br>(TODO)
-</td>
-<td>
-  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
-</td>
-</tr><tr>
-<td>
-  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
-</td>
-<td>
-  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
-</td>
-<td></td>  
-</tr>  
-
-
 <tr>
 <td align="center" valign="top" rowspan=3>
   <br>
@@ -310,6 +266,33 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
 <td></td>  
 </tr>  
+
+
+## Greenplum
+* Use the Postgresql Scripts above<br>
+</td>
+ 
+<td width=200>
+  * Use the Postgresql Video Tutorials above<br>
+</td>
+<td width=200>
+</td>
+<td width=200>
+</td></tr>
+<tr><td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr><tr>
+<td>
+</td>
+<td>
+</td>
+<td></td>  
+</tr>  
+
   
 </table>
 <br>
