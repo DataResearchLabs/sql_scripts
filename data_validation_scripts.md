@@ -266,13 +266,13 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
 </td>
-<td rowspan=3 width=325>
+<td colspan="4" >
 
 ## Greenplum
-* Use the Postgresql Scripts above<br>
+* Use the Postgresql scripts and video tutorials above<br>
 </td>
  
-<td colspan="3" width=600>
+<td width=600>
   <br>
   <br>
 
