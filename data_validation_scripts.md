@@ -23,13 +23,6 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <table>
 
 <tr>
-<td align="center" valign="top" rowspan=3  width=150>
-  <br>
-  <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
-</td>
-<td rowspan=3 width=325>
-
-<tr>
 <td align="center" valign="top" rowspan=3>
   <br>
   <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/mssql_icon.png" width="96px">
@@ -267,6 +260,13 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <td></td>  
 </tr>  
 
+
+<tr>
+<td align="center" valign="top" rowspan=3  width=150>
+  <br>
+  <img align="enter" src="https://github.com/DataResearchLabs/sql_scripts/blob/main/img/db_icons/gp_icon.png" width="96px">
+</td>
+<td rowspan=3 width=325>
 
 ## Greenplum
 * Use the Postgresql Scripts above<br>
