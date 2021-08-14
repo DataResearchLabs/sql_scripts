@@ -272,27 +272,13 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Use the Postgresql Scripts above<br>
 </td>
  
-<td width=200>
-  * Use the Postgresql Video Tutorials above<br>
+<td width=400>
+* Use the Postgresql Video Tutorials above<br>
 </td>
-<td width=200>
+<td width=100>
 </td>
-<td width=200>
+<td width=100>
 </td></tr>
-<tr><td>
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr><tr>
-<td>
-</td>
-<td>
-</td>
-<td></td>  
-</tr>  
-
   
 </table>
 <br>
