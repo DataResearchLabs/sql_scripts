@@ -10,7 +10,6 @@
  - <a href="#t008">T008 - Null Rate Thresholds</a>
  - <a href="#t009">T009 - Value Frequency Thresholds</a>
 
-
 Note: Although the terms "rate" and "frequency" are mostly synonomous, nulls are usually referred to as "rates" and values as "frequencies".  Don't know why, but following the convention I've heard over and over.
 <br>
 
