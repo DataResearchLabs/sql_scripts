@@ -716,7 +716,6 @@ USE demo_hr
 
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
-        -- NOTE: Use RegEx pattern "^\+(\d+\s?)+$" for international phone numbers
         SELECT phone_number
              , CASE WHEN phone_number NOT LIKE '[0-9][0-9][0-9][-. ][0-9][0-9][0-9][-. ][0-9][0-9][0-9][0-9]' THEN 'FAIL' ELSE 'P' END AS status
     	FROM demo_hr..employees
@@ -986,10 +985,10 @@ USE demo_hr
 
     WITH metadata 
     AS (
-    	      SELECT 1 AS region_id, 'Europe' AS region_name FROM dual
-    	UNION SELECT 2 AS region_id, 'Americas' AS region_name FROM dual
-    	UNION SELECT 3 AS region_id, 'Asia' AS region_name FROM dual
-    	UNION SELECT 4 AS region_id, 'Middle East and Africa' AS region_name FROM dual
+    	      SELECT 1 AS region_id, 'Europe' AS region_name 
+    	UNION SELECT 2 AS region_id, 'Americas' AS region_name
+    	UNION SELECT 3 AS region_id, 'Asia' AS region_name 
+    	UNION SELECT 4 AS region_id, 'Middle East and Africa' AS region_name
     	ORDER BY region_id
     )
     , dut -- Data Under Test 
