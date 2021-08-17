@@ -989,7 +989,7 @@ USE demo_hr
     	UNION SELECT 2 AS region_id, 'Americas' AS region_name
     	UNION SELECT 3 AS region_id, 'Asia' AS region_name 
     	UNION SELECT 4 AS region_id, 'Middle East and Africa' AS region_name
-    	ORDER BY region_id
+    	--ORDER BY region_id
     )
     , dut -- Data Under Test 
     AS (
@@ -999,7 +999,7 @@ USE demo_hr
     	       END AS status
     	FROM      metadata   m 
     	LEFT JOIN demo_hr..regions r ON r.region_id = m.region_id
-    	ORDER BY m.region_id
+    	--ORDER BY m.region_id
     )
     
     SELECT CASE WHEN COUNT(*) = 0 THEN 'P' ELSE 'FAIL' END status
