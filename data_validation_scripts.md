@@ -36,7 +36,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * [Rule Set 04 - Numeric Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_04__numeric_values.md)<br>
 * [Rule Set 05 - Date Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_05__date_values.md)<br>
 * [Rule Set 06 - Text Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_06__text_values.md)<br>
-* [Rule Set 07 - Regular Expressions](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_07__regular_expressions.md)<br>
+* [Rule Set 07 - Reg Expr's](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_07__regular_expressions.md)<br>
 * [Rule Set 08 - Diff Checks](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_08__diff_checks.md)<br>
 * [Rule Set 09 - Defect Regression](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/rule_set_09__defect_regression.md)<br>
 * [Best Practices](https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/best_practices.md)<br>
@@ -57,7 +57,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Regular Expression Test Tutorials<br>(TODO)
+  5. Reg Expr Test Tutorials<br>(TODO)
 </td>
 <td>
   6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
@@ -88,7 +88,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Rule Set 04 - Numeric Values<br>
 * Rule Set 05 - Date Values<br>
 * Rule Set 06 - Text Values<br>
-* Rule Set 07 - Regular Expressions<br>
+* Rule Set 07 - Reg Expr's<br>
 * Rule Set 08 - Diff Checks<br>
 * Rule Set 09 - Defect Regression<br>
 * Best Practices<br>
@@ -109,7 +109,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Regular Expression Test Tutorials<br>(TODO)
+  5. Reg Expr Test Tutorials<br>(TODO)
 </td>
 <td>
   6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
@@ -245,7 +245,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   4. Text Field Test Tutorials<br>(TODO)
 </td>
 <td>
-  5. Regular Expression Test Tutorials<br>(TODO)
+  5. Reg Expr Test Tutorials<br>(TODO)
 </td>
 <td>
   6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
