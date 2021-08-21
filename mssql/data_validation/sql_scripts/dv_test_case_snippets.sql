@@ -883,7 +883,7 @@ USE demo_hr
 			    	WHEN RIGHT(email_address,1) LIKE '[-_.+]'                      THEN 'REJ-06: Field email_address should not end with [-_.+] characters'
 				    WHEN email_address LIKE '%[%' OR email_address LIKE '%]%'      THEN 'REJ-07: Field email_address should not contain [ or ] characters'
 			    	WHEN email_address LIKE '%@%@%'                                THEN 'REJ-08: Field email_address should not contain more than one @ character'
-			    	WHEN email_address LIKE '[_]%@[_]%@[_]%'                       THEN 'REJ-09: Field email_address should not have leading underscores at any segment (gmail blocks)'
+			    	WHEN email_address LIKE '[_]%@[_]%.[_]%'                       THEN 'REJ-09: Field email_address should not have leading underscores at any segment (gmail blocks)'
 			    	ELSE 'P' 
 	           END AS status
     	FROM demo_hr..employees
