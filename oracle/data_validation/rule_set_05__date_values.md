@@ -102,39 +102,38 @@ So this is a fantastic tip I learned from a co-worker in healthcare back in 2011
 The **problem** is that you are trying to join two tables with logic where the table1.start_dt/end_dt's overlap with the table2.start_dt/end_dt.
 
 
-The **solution** is to join where `table1.start_dt <= table2.end_dt AND table1.end_dt >= table2.start_dt.`
+The **solution** is to **join on `table1.start_dt <= table2.end_dt AND table1.end_dt >= table2.start_dt`**.
 
 Here is why:
 
 ```
-Scenario #1 = "Discard - No Overlap" Table #1 is completely before Table #2 (T#1.End is NOT > T#2.St)
-T#1.St ---------- T#1.End 
-                          T#2.St ----------- T#2.End
+Scenario #1 = "Discard - No Overlap" Dt#1 is completely before Dt#2 (Dt#1.End is NOT > Dt#2.Start)
+Dt#1:  |Start ----------- End|
+Dt#2:                            |Start ----------- End|
                           
 
-Scenario #2 = "Include - T1 Ends at T2 Start" Table #1 ends exactly where Table #2 starts (T#1.End = T#2.St  AND  T#1.St < T#2.End)
-T#1.St ---------- T#1.End 
-                  T#2.St ----------- T#2.End
+Scenario #2 = "Include - Dt#1 End = Dt#2 Start" Date #1 ends exactly where Date #2 starts (Dt#1.End = Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
+Dt#1:      |Start ----------- End|
+Dt#2:                            |Start ----------- End|
+
+
+Scenario #3 = "Include - Dt#1 Ends Midway Dt#2 Span" Date #1 nicely overlaps Date #2 (Dt#1.End > Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
+Dt#1:                |Start ----------- End|
+Dt#2:                            |Start ----------- End|                  
+
+Scenario #4 = "Include - Dt#1 Starts Midway Dt#2 Span" Date #1 nicely overlaps Date #2 (Dt#1.End > Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
+Dt#1:                                     |Start ----------- End|
+Dt#2:                            |Start ----------- End|                  
                   
 
-Scenario #3 = "Include - T1 Ends Midway T2 Span" Table #1 nicely overlaps Table #2 (T#1.End > T#2.St  AND  T#1.St < T#2.End)
-T#1.St ------------------- T#1.End 
-                  T#2.St ----------- T#2.End
+Scenario #5 = "Include - Dt#1 Starts at Dt#2 End" Date #1 start exactly at Date #2 End (Dt#1.End > Dt#2.St  AND  Dt#1.St = Dt#2.End)
+Dt#1:                                                  |Start ----------- End|
+Dt#2:                            |Start ----------- End|                  
                   
 
-Scenario #4 = "Include - T1 Starts Midway T2 Span" Table #1 nicely overlaps Table #2 (T#1.End > T#2.St  AND  T#1.St < T#2.End)
-                           T#1.St ------------------- T#1.End 
-                  T#2.St ----------- T#2.End
-                  
-
-Scenario #5 = "Include - T1 Starts at T2 End" Table #1 start exactly at Table #2 End (T#1.End > T#2.St  AND  T#1.St = T#2.End)
-                                     T#1.St ------------------- T#1.End 
-                  T#2.St ----------- T#2.End
-                  
-
-Scenario #6 = "Discard - No Overlap" Table #1 is completely after Table #2 (T#1.St is NOT < T#2.End)
-                                                      T#1.St ---------- T#1.End 
-                          T#2.St ----------- T#2.End
+Scenario #6 = "Discard - No Overlap" Date #1 is entirely after Date #2 (Dt#1.Start is NOT < Dt#2.End)
+Dt#1:                                                       |Start ----------- End|
+Dt#2:                            |Start ----------- End|                  
 
 ```
 
