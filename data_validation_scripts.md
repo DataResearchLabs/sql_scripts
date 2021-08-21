@@ -73,7 +73,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td>
 <td>
-  5. Reg Expr Test Tutorials<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=owheYxwTC80" target="_blank">
+  <img src="http://img.youtube.com/vi/owheYxwTC80/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 <td>
   6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
