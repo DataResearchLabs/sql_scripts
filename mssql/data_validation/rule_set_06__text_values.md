@@ -58,7 +58,7 @@ Verify text field is not null string "" (but in Oracle null strings don't exist,
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT country_name
-       , CASE WHEN country_name = ' ' THEN 'FAIL' ELSE 'P'  END AS status
+       , CASE WHEN country_name = '' THEN 'FAIL' ELSE 'P'  END AS status
   FROM demo_hr..countries
 ) t
 WHERE status <> 'P';
