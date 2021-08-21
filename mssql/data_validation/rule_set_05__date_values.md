@@ -121,6 +121,7 @@ Scenario #3 = "Include - Dt#1 Ends Midway Dt#2 Span" Date #1 nicely overlaps Dat
 Dt#1:                |Start ----------- End|
 Dt#2:                            |Start ----------- End|                  
 
+
 Scenario #4 = "Include - Dt#1 Starts Midway Dt#2 Span" Date #1 nicely overlaps Date #2 (Dt#1.End > Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
 Dt#1:                                     |Start ----------- End|
 Dt#2:                            |Start ----------- End|                  
