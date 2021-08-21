@@ -45,7 +45,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 </td>
  
 <td>
-  1. Row Count<br>& Key Tests<br>Tutorial<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=M6SkiWLVo8I" target="_blank">
+  <img src="http://img.youtube.com/vi/M6SkiWLVo8I/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 <td>
   2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
