@@ -102,7 +102,7 @@ So this is a fantastic tip I learned from a co-worker in healthcare back in 2011
 The **problem** is that you are trying to join two tables with logic where the table1.start_dt/end_dt's overlap with the table2.start_dt/end_dt.
 
 
-The **solution** is to join where `table1.start_dt <= table2.end_dt AND table1.end_dt >= table2.start_dt.`
+The **solution** is to **join on `table1.start_dt <= table2.end_dt AND table1.end_dt >= table2.start_dt`**.
 
 Here is why:
 
