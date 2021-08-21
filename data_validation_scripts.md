@@ -66,7 +66,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td></tr>
 <tr><td>
-  4. Text Field Test Tutorials<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=zQpu1EGuZZk" target="_blank">
+  <img src="http://img.youtube.com/vi/zQpu1EGuZZk/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 <td>
   5. Reg Expr Test Tutorials<br>(TODO)
