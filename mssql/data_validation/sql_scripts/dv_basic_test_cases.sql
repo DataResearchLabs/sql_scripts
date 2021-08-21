@@ -346,7 +346,7 @@ USE demo_hr
          , '"RS-6 Text" #02 - Verify NoNullStrings() where space (Oracle does not support "" nullstring) in [country_name] at table [countries]' AS tst_descr   
     FROM (
     	SELECT country_name
-             , CASE WHEN country_name = ' ' THEN 'FAIL' ELSE 'P'  END AS status
+             , CASE WHEN country_name = '' THEN 'FAIL' ELSE 'P'  END AS status
     	FROM demo_hr..countries
     ) t
     WHERE status <> 'P';

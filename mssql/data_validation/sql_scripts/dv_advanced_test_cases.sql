@@ -1207,7 +1207,7 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN country_name = ' '  THEN 'REJ: No null strings (spaces) allowed at field country_name|exp=NoNullStrings|act=NullString'
+	SELECT CASE WHEN country_name = ''  THEN 'REJ: No null strings (spaces) allowed at field country_name|exp=NoNullStrings|act=NullString'
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
