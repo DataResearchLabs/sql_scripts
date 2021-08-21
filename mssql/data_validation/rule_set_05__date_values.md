@@ -39,8 +39,8 @@ SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT date_last_updated
   , CASE WHEN date_last_updated > GETDATE()    THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' + CAST(GETDATE() AS VARCHAR(20)) + '|act=' + CAST(date_last_updated AS VARCHAR(20))
-    	    WHEN date_last_updated < '01/01/2021' THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' + CAST(date_last_updated AS VARCHAR(20))
-    	    ELSE 'P'
+         WHEN date_last_updated < '01/01/2021' THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' + CAST(date_last_updated AS VARCHAR(20))
+         ELSE 'P'
     END AS status
   FROM demo_hr..countries
 ) t
