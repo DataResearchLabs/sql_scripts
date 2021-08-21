@@ -59,7 +59,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td>
 <td>
-  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=_cGX5Se344Y" target="_blank">
+  <img src="http://img.youtube.com/vi/_cGX5Se344Y/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td></tr>
 <tr><td>
   4. Text Field Test Tutorials<br>(TODO)
