@@ -107,34 +107,34 @@ The **solution** is to **join on `table1.start_dt <= table2.end_dt AND table1.en
 Here is why:
 
 ```
-Scenario #1 = "Discard - No Overlap" Dt#1 is completely before Dt#2 (Dt#1.End is NOT > Dt#2.Start)
-Dt#1:  |Start ----------- End|
-Dt#2:                            |Start ----------- End|
+Scenario #1 = "Discard - No Overlap" Table #1 date range is completely before Table #2's (Dt#1.End is NOT > Dt#2.Start)
+Table#1:  |Start ----------- End|
+Table#2:                            |Start ----------- End|
                           
 
-Scenario #2 = "Include - Dt#1 End = Dt#2 Start" Date #1 ends exactly where Date #2 starts (Dt#1.End = Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
-Dt#1:      |Start ----------- End|
-Dt#2:                            |Start ----------- End|
+Scenario #2 = "Include - Table #1 End = Table#2 Start" Table #1 date range ends exactly where Table #2's starts (Tbl#1.End = Tbl#2.Start  AND  Tbl#1.Start < Tbl#2.End)
+Table#1:      |Start ----------- End|
+Table#2:                            |Start ----------- End|
 
 
-Scenario #3 = "Include - Dt#1 Ends Midway Dt#2 Span" Date #1 nicely overlaps Date #2 (Dt#1.End > Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
-Dt#1:                |Start ----------- End|
-Dt#2:                            |Start ----------- End|                  
+Scenario #3 = "Include - Table #1 Ends Midway Table #2 Span" Table #1 date range nicely overlaps Table #2's (Tbl#1.End > Tbl#2.Start  AND  Tbl#1.Start < Tbl#2.End)
+Table#1:                |Start ----------- End|
+Table#2:                            |Start ----------- End|                  
 
 
-Scenario #4 = "Include - Dt#1 Starts Midway Dt#2 Span" Date #1 nicely overlaps Date #2 (Dt#1.End > Dt#2.Start  AND  Dt#1.Start < Dt#2.End)
-Dt#1:                                     |Start ----------- End|
-Dt#2:                            |Start ----------- End|                  
+Scenario #4 = "Include - Table #1 Starts Midway Table #2 Span" Table #1 date range nicely overlaps Table #2's (Tbl#1.End > Tbl#2.Start  AND  Tbl#1.Start < Tbl#2.End)
+Table#1:                                     |Start ----------- End|
+Table#2:                            |Start ----------- End|                  
                   
 
-Scenario #5 = "Include - Dt#1 Starts at Dt#2 End" Date #1 start exactly at Date #2 End (Dt#1.End > Dt#2.St  AND  Dt#1.St = Dt#2.End)
-Dt#1:                                                  |Start ----------- End|
-Dt#2:                            |Start ----------- End|                  
+Scenario #5 = "Include - Table #1 Starts at Table #2 End" Table #1 date range start exactly at Table #2's End (Tbl#1.End > Tbl#2.St  AND  Tbl#1.St = Tbl#2.End)
+Table#1:                                                  |Start ----------- End|
+Table#2:                            |Start ----------- End|                  
                   
 
-Scenario #6 = "Discard - No Overlap" Date #1 is entirely after Date #2 (Dt#1.Start is NOT < Dt#2.End)
-Dt#1:                                                       |Start ----------- End|
-Dt#2:                            |Start ----------- End|                  
+Scenario #6 = "Discard - No Overlap" Date #1 is entirely after Date #2 (Tbl#1.Start is > Tbl#2.End)
+Table#1:                                                       |Start ----------- End|
+Table#2:                            |Start ----------- End|                  
 
 ```
 
