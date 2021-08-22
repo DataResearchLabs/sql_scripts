@@ -224,5 +224,5 @@ This is a best practice concept, no SQL code is applicable...
 	
 Up to this point, all of the SQL data validation tests have been laid out logically, by validation test type to facilitate learning.  The record counts were grouped together in Rule Set #1, or numeric field tests were grouped in Rule Set #4.  
 	
-However, you should organize your tests differently when you go to implement these as automated scripts running in the real world against Dev or Test environments, or as a series of trip wire alerts in Prod environments.  I have found that organizing tests by table and field order is best.  Focus on validating each table one by one and title your test cases accordingly so they sort nicel (depending on how your output is done).  
+However, you should organize your tests differently when you go to implement these as automated scripts running in the real world against Dev or Test environments, or as a series of trip wire alerts in Prod environments.  I have found that organizing tests by table and field order is best.  Focus on validating each table one by one and title your test cases accordingly so they sort nicely (depending on how your output is done).  
 	
