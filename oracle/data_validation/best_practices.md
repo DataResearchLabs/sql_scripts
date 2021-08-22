@@ -214,9 +214,10 @@ FROM (
 )
 WHERE status <> 'P';
 ```
-<br>
-
-
+</details>
+<br>	
+	
+	
 <a id="t067" class="anchor" href="#t067" aria-hidden="true"> </a>
 ### T067 - Test Case Layout Design Consideration
 This is a best practice concept, no SQL code is applicable...
