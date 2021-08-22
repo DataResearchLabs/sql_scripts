@@ -92,7 +92,7 @@ Notice the following aspects of the SQL code above:
 </details>
 <br>
 
-### Setp 6 - Execute the Advanced Data Validation Script
+### Step 6 - Execute the Advanced Data Validation Script
 <details><summary>Expand if you would like to see how to execute the advanced script, step-by-step...</summary><br>
 
 Here are the steps to execute the advanced script in Oracle SQL Developer (typical output shown in the screenshot below).  
