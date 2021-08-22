@@ -93,10 +93,13 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   <img src="http://img.youtube.com/vi/J0uE2LnOLXI/0.jpg" alt="Video Tutorial" width="200" />
   </a>
   </kbd>
-
 </td>
 <td>
-  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=EYO2n2h8XTY" target="_blank">
+  <img src="http://img.youtube.com/vi/EYO2n2h8XTY/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 <td></td>  
 </tr>  
