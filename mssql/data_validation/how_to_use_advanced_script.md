@@ -84,7 +84,7 @@ Notice the following aspects of the SQL code above:
 </details>
 <br>
 
-### Setp 5 - Execute the Advanced Data Validation Script
+### Step 5 - Execute the Advanced Data Validation Script
 <details><summary>Expand if you would like to see how to execute the advanced script, step-by-step...</summary><br>
 
 Here are the steps to execute the advanced script in SSMS (typical output shown in the screenshot below).  
