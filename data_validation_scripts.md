@@ -80,7 +80,11 @@ Because each database platform has its own unique flavor of SQL, this page is ju
   </kbd>
 </td>
 <td>
-  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+  <kbd>
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=E0D4sbhKpMc" target="_blank">
+  <img src="http://img.youtube.com/vi/E0D4sbhKpMc/0.jpg" alt="Video Tutorial" width="200" />
+  </a>
+  </kbd>
 </td>
 </tr><tr>
 <td>
