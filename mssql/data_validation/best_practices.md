@@ -194,10 +194,12 @@ CREATE TABLE #test_case_config (
 
 INSERT INTO #test_case_config VALUES('NumberDaysLookBack','100');
 INSERT INTO #test_case_config VALUES('MaxNbrRowsRtn','5');
-
+```
+	
 </details>
 	
-	
+
+```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT CASE WHEN row_count < 5 THEN 'FAIL'
