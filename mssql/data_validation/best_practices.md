@@ -204,7 +204,7 @@ FROM (
 WHERE status <> 'P';
 ```
 <br>
-
+</details>
 
 <a id="t067" class="anchor" href="#t067" aria-hidden="true"> </a>
 ### T067 - Test Case Layout Design Consideration
