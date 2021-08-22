@@ -214,6 +214,7 @@ FROM (
 )
 WHERE status <> 'P';
 ```
+
 </details>
 <br>	
 	
