@@ -183,11 +183,21 @@ There are times when you want parameterize the data validation script rather tha
 <details><summary>Example Config Table Setup...</summary><br>
 	
 ```sql
-WITH config
-AS (
-  SELECT 'NumberDaysLookBack' AS prop_nm, '100' AS prop_val
-)
+IF OBJECT_ID('tempdb..#test_case_config') IS NOT NULL
+	DROP TABLE #test_case_config
+GO
 
+CREATE TABLE #test_case_config (
+  prop_nm     VARCHAR(99)
+, prop_val    VARCHAR(255)
+);
+
+INSERT INTO #test_case_config VALUES('NumberDaysLookBack','100');
+INSERT INTO #test_case_config VALUES('MaxNbrRowsRtn','5');
+
+</details>
+	
+	
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT CASE WHEN row_count < 5 THEN 'FAIL'
@@ -197,13 +207,12 @@ FROM (
     SELECT COUNT(*) AS row_count 
     FROM demo_hr..countries
     WHERE date_last_updated >= GETDATE() - (SELECT CAST(prop_val AS INT) 
-                                            FROM config 
+                                            FROM #test_case_config 
                                             WHERE prop_nm = 'NumberDaysLookBack')
   ) t
 ) t2
 WHERE status <> 'P';
 ```
-</details>
 <br>	
 	
 	
