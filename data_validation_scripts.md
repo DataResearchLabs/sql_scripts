@@ -246,32 +246,14 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Advanced Validation Script<br>
 </td>
  
-<td>
-  1. Row Count<br>& Key Tests<br>Tutorial<br>(TODO)
-</td>
-<td>
-  2. Heuristics, Table<br>Schema & Data<br>Tests Tutorial<br>(TODO)
-</td>
-<td>
-  3. Numeric & Date<br>Field Test Tutorials<br>(TODO)
-</td></tr>
-<tr><td>
-  4. Text Field Test Tutorials<br>(TODO)
-</td>
-<td>
-  5. Reg Expr Test Tutorials<br>(TODO)
-</td>
-<td>
-  6. Best Practices<br>for Tests<br>Tutorial<br>(TODO)
+<td colspan=3>
 </td>
 </tr><tr>
-<td>
-  7. How to Use<br>Basic<br>Validation Script<br>(TODO)
+<td colspan=3>
 </td>
-<td>
-  8. How to Use<br>Advanced<br>Validation Script<br>(TODO)
+</tr><tr>
+<td colspan=3>
 </td>
-<td></td>  
 </tr>  
 
 
@@ -283,7 +265,7 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <td colspan="4" >
 
 ## Greenplum
-* Use the Postgresql scripts and video tutorials above<br>
+* Use the Postgresql scripts above<br>
 </td>
 </tr>
   
