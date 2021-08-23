@@ -128,14 +128,9 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 * Advanced Validation Script<br>
 </td>
  
-<td colspan=3>
-</td>
-</tr><tr>
-<td colspan=3>
-</td>
-</tr><tr>
-<td colspan=3>
-</td>
+<td rowspan=3></td>
+<td rowspan=3></td>
+<td rowspan=3></td>
 </tr>  
   
   
