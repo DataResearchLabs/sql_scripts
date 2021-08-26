@@ -1051,7 +1051,7 @@ USE demo_hr
 	            ELSE 'P'
 	       END AS status
          , '"X#1 WarnSkip" - Verify ValueFrequencyThresholds()" for [region_id] values (eg: value=1 for 28% to 36% of rows) in table [countries]' AS tst_descr   
-	
+;
 
  
 -- T063 ------------------------------------------------------------------------------------------
