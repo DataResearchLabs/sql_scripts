@@ -46,7 +46,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 
 The script currently consists of 1,156 lines of SQL code broken down as follows:
 * Lines 1-41 are the comment block header, containing notes and definitions
-* Lines 42-1,156 are the 66 individual example validation test cases (written as SQL SELECTs)
+* Lines 42-1,137 are the 65 individual example validation test cases (written as SQL SELECTs)
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
@@ -74,9 +74,9 @@ Notice the following aspects of the SQL code:
 ### Step 5 - Execute the Basic Data Validation Script
 <details><summary>Expand if you would like to see how to execute the basic script, step-by-step...</summary><br>
 
-Here are the steps to execute the basic script in Oracle SQL Developer (typical output shown in the screenshot below).  
+Here are the steps to execute the basic script in MySQL Workbench (typical output shown in the screenshot below).  
 1. Open SSMS (or equivalent SQL Editor)
-2. Blue Dot #1 - You must load the basic validation script into SSMS (or equivalent IDE)
+2. Blue Dot #1 - You must load the basic validation script into MySQL Workbench (or equivalent IDE)
 3. Blue Dot #2 - Be sure to click the "Text Output" toggle button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
 4. Blue Dot #3 - The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/02_data_val_mssql_run_results_mysql.png">
