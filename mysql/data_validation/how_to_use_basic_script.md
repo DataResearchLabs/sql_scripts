@@ -4,7 +4,7 @@
 #### [Return to Data Validation Home Page](https://github.com/DataResearchLabs/sql_scripts/blob/main/data_validation_scripts.md)
 
 
-# How to Use the Basic Data Validation Script in MS SQL Server
+# How to Use the Basic Data Validation Script in MySQL
 
 ### Overview
 This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in MySQL Workbench, returning the test id, the test status (pass or fail), and the test description.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).<br>
