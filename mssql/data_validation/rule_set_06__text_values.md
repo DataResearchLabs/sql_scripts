@@ -41,13 +41,9 @@ Note: These text validation checks are important.  Good data loading practices l
 ### T021 - Not Null
 Verify text field is not null.  For example, to verify that table countries has no NULLs in field country_name:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT country_name
-       , CASE WHEN country_name IS NULL THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..countries
-) t
-WHERE status <> 'P';
+SELECT country_name
+     , CASE WHEN country_name IS NULL THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr..countries;
 ```
 <br>
 
@@ -55,13 +51,9 @@ WHERE status <> 'P';
 ### T022 - Not Null String
 Verify text field is not null string "" (but in Oracle null strings don't exist, they are converted to nulls...therefore look for a space instead and treat this test case as a place holder equivalent to other database platforms).  For example, to verify that table countries has rows where field country_name = a space:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT country_name
-       , CASE WHEN country_name = '' THEN 'FAIL' ELSE 'P'  END AS status
-  FROM demo_hr..countries
-) t
-WHERE status <> 'P';
+SELECT country_name
+     , CASE WHEN country_name = '' THEN 'FAIL' ELSE 'P'  END AS status
+FROM demo_hr..countries;
 ```
 <br>
 
@@ -70,16 +62,12 @@ WHERE status <> 'P';
 ### T023 - No Leading or Trailing Spaces
 Verify text field has no leading or trailing spaces.  For example, to verify that table countries, field country_name has no rows with a leading and/or trailing space:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT country_name
-  , CASE WHEN country_name LIKE ' %'  THEN 'REJ-01: Verify no leading space at country_name|exp=noLeadSpace|act=''' + country_name +''''
-         WHEN country_name LIKE '% '  THEN 'REJ-02: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' + country_name +''''
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..countries
-) t
-WHERE status <> 'P';
+SELECT country_name
+, CASE WHEN country_name LIKE ' %'  THEN 'REJ-01: Verify no leading space at country_name|exp=noLeadSpace|act=''' + country_name +''''
+       WHEN country_name LIKE '% '  THEN 'REJ-02: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' + country_name +''''
+       ELSE 'P'
+  END AS status
+FROM demo_hr..countries;
 ```
 <br>
 
@@ -88,17 +76,13 @@ WHERE status <> 'P';
 ### T024 - In Value List
 Verify text field value is in the list of approved values.  For example, to verify that field job_id of table employees is always in the list of 19 approved values:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT job_id
-  , CASE WHEN job_id NOT IN('ST_MAN','ST_CLERK','SH_CLERK','SA_REP','SA_MAN','PU_CLERK','PR_REP','MK_REP','MK_MAN','IT_PROG'
-                           ,'HR_REP','FI_MGR','FI_ACCOUNT','AD_VP','AD_PRES','AD_ASST','AC_MGR','AC_ACCOUNT','PU_MAN')
-              THEN 'FAIL'
-    	   ELSE 'P'
-    	END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT job_id
+, CASE WHEN job_id NOT IN('ST_MAN','ST_CLERK','SH_CLERK','SA_REP','SA_MAN','PU_CLERK','PR_REP','MK_REP','MK_MAN','IT_PROG'
+                         ,'HR_REP','FI_MGR','FI_ACCOUNT','AD_VP','AD_PRES','AD_ASST','AC_MGR','AC_ACCOUNT','PU_MAN')
+            THEN 'FAIL'
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -107,13 +91,9 @@ WHERE status <> 'P';
 ### T025 - Not In Value List
 Verify text field value is **not** in the list of invalid values.  For example, to verify that field job_id of table employees is never in the list of 5 invalid values:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT job_id
-       , CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT job_id
+     , CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -122,15 +102,12 @@ WHERE status <> 'P';
 ### T026 - Multi Field Compare
 Verify text field value is comprised of other field values.  For example, use the SQL below to verify that field email = first letter of field first_name + field last_name in table employees.  Note that there were exceptions to the rule in the data, so these were manually removed from the test in the WHERE clause.
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT email, first_name, last_name
-  , CASE WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
-  WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
-                  -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
-) t
-WHERE status <> 'P';
+SELECT email, first_name, last_name
+, CASE WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr..employees
+WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
+                -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
+;
 ```
 <br>
 
@@ -139,15 +116,11 @@ WHERE status <> 'P';
 ### T027 - Text Length
 Verify text field value length is an exact amount or within a range.  For example, to verify that the field phone_number length is either 12 (US) or 18 (international) characters in length:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT phone_number
-  , CASE WHEN LEN(phone_number) NOT IN(12,18) THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(5))
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT phone_number
+, CASE WHEN LEN(phone_number) NOT IN(12,18) THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(5))
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -156,17 +129,13 @@ WHERE status <> 'P';
 ### T028 - Upper and Lower Case Characters
 Verify text field characters are uppercase, lowercase, or a mix.  For example, to verify that the field last_name is all lowercase **after** the first character, and that field job_id is all uppercase in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT job_id, last_name
-  , CASE WHEN job_id COLLATE SQL_Latin1_General_CP1_CS_AS <> UPPER(job_id)                 THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' + job_id
-         WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) 
-              <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255))  THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
-    	    ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT job_id, last_name
+, CASE WHEN job_id COLLATE SQL_Latin1_General_CP1_CS_AS <> UPPER(job_id)                 THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' + job_id
+       WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) 
+            <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255))  THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -175,16 +144,12 @@ WHERE status <> 'P';
 ### T029 - Alpha and Numeric Characters
 Verify text field characters are alpha, numeric, or a mix.  For example, to verify that the field employee_id is numeric only, and field last_name is slpha only in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT employee_id, last_name
-  , CASE WHEN employee_id LIKE '%[A-Za-z]%' THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
-         WHEN last_name LIKE '%[0-9]%'      THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' + LAST_NAME 
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT employee_id, last_name
+, CASE WHEN employee_id LIKE '%[A-Za-z]%' THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
+       WHEN last_name LIKE '%[0-9]%'      THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' + LAST_NAME 
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -193,16 +158,12 @@ WHERE status <> 'P';
 ### T030 - No Quote Characters
 Verify text field does not have ' or " characters.  For example, to verify that the field first_name has no quotes or single quotes in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT first_name
-  , CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' + first_name
-         WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' + first_name
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT first_name
+, CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' + first_name
+       WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' + first_name
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -211,18 +172,14 @@ WHERE status <> 'P';
 ### T031 - No CRLF Characters
 Verify text field does not have carriage return (CHAR-13 / "CR") or line feed (CHAR-10 / "LF") characters.  For example, to verify that the field last_name has no CRLFs in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, CHAR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' 
-		                     + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
-    	    WHEN CHARINDEX(last_name, CHAR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' 
-					                  + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT last_name
+, CASE WHEN CHARINDEX(last_name, CHAR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' 
+                                                     + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' 
+                                                     + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
@@ -231,13 +188,9 @@ WHERE status <> 'P';
 ### T032 - No TAB Characters
 Verify text field does not have tab (CHAR-9) characters.  For example, to verify that the field last_name has no TABs in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, CHAR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT last_name
+, CASE WHEN CHARINDEX(last_name, CHAR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr..employees;
 ```
 <br>
 
