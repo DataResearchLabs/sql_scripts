@@ -41,6 +41,11 @@
 -- Advanced Script: Table-output framework (this script you are reading now)
 
 
+-- -----------------------------------------------------------------------------------------------
+-- INITIALIZE
+-- -----------------------------------------------------------------------------------------------
+USE Demo_HR;
+
 
 -- -----------------------------------------------------------------------------------------------
 -- RULE SET #1: ROW COUNTS
@@ -299,7 +304,7 @@
 -- T019 ------------------------------------------------------------------------------------------
     SELECT 'T019' AS tst_id
          , CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-         , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has time part (is not 12:00:00) at table [employees]' AS tst_descr   
+         , '"RS-5 Dates" #4 - Verify HasTimePart() where [start_tm] has time part (is not 12:00:00) at table [test_case_results]' AS tst_descr   
     FROM (
     	SELECT start_tm
              , CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'FAIL' ELSE 'P' END AS status
@@ -412,7 +417,7 @@
          , '"RS-6 Text" #07 - Verify TextLength() where [phone_number] length is 12 or 18 characters in table [employees]' AS tst_descr   
     FROM (
     	SELECT phone_number
-             , CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
+             , CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' || CAST(LENGTH(phone_number) AS VARCHAR2(5))
     	            ELSE 'P'
     	       END AS status
     	FROM demo_hr.employees

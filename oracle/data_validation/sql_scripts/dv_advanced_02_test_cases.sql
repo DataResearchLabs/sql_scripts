@@ -2140,7 +2140,7 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$') THEN 'REJ-01: Field zip9 will not convert to a number|exp=converts to number|act=' || zip5 
+	SELECT CASE WHEN NOT REGEXP_LIKE(zip5, '^\d+(\.\d+)?$') THEN 'REJ-01: Field zip5 will not convert to a number|exp=converts to number|act=' || zip5 
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'SELECT employee_id, zip5 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR2(15)) AS lookup_sql
@@ -3538,7 +3538,7 @@ AS (
 	            WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
 	            WHEN email <> SUBSTR(UPPER(SUBSTR(
 	                            first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTR(UPPER(SUBSTR(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
-	            WHEN LENGTH(phone_number) NOT IN(12,18)                       THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
+	            WHEN LENGTH(phone_number) NOT IN(12,18)                       THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' || CAST(LENGTH(phone_number) AS VARCHAR2(6))
 	            WHEN REGEXP_LIKE(job_id, '[[:lower:]]')                       THEN 'REJ-09: Field job_id does not contain lower case characters|exp=ucase|act=' || EMAIL
 	            WHEN NOT REGEXP_LIKE(SUBSTR(LAST_NAME,1), '[[:upper:]]')      THEN 'REJ-10: Field last_name after first char is all lower case|exp=lcase|act=' || LAST_NAME 
 	            WHEN REGEXP_LIKE(employee_id, '[[:alpha:]]')                  THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' || EMPLOYEE_ID
