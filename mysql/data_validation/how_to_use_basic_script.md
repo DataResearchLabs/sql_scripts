@@ -36,7 +36,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 ### Step 3 - Download the Basic Data Validation Script
 <details><summary>Expand if you need instructions on how to download and configure the basic script...</summary><br>
    
-1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_validation/sql_scripts/dv_basic_test_cases.sql)</b>.
+1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_validation/scripts/dv_basic_test_cases.sql)</b>.
 2. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate SQL Server "demo_hr" database.
 </details>
 <br>
