@@ -1078,10 +1078,10 @@ USE demo_hr;
 	-- SELECT * FROM bll;
     
     SELECT CASE WHEN (SELECT COUNT(*) FROM bll) = 0 THEN 'SKIP'
-	            WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'FAIL:%') > 0 THEN 'FAIL'
-	            WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'WARN:%') > 0 THEN 'WARN'
-	            ELSE 'P'
-	       END AS status
+                WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'FAIL:%') > 0 THEN 'FAIL'
+	        WHEN (SELECT COUNT(*) FROM bll WHERE status LIKE 'WARN:%') > 0 THEN 'WARN'
+	        ELSE 'P'
+	   END AS status
     ;
 
  
