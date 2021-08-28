@@ -7,7 +7,7 @@
 # How to Use the Basic Data Validation Script in MS SQL Server
 
 ### Overview
-This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in Oracle SQL Developer, returning the test id, the test status (pass or fail), and the test description.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).
+This basic data validation script runs one of each type of data validation test case (T001-T066) shown in the Rule Set markdown (.md) pages.  All the SQL validation test cases run sequentially in SQL Server Management Studio, returning the test id, the test status (pass or fail), and the test description.  Only one row is returned per validation test. To keep the process simple, output is streamed to the console (screen as text, not grids).
 <br><br>
 
 ### Step 1 - Download & Install Microsoft SQL Server Management Studio (SSMS)
@@ -73,7 +73,7 @@ Notice the following aspects of the SQL code:
 ### Step 5 - Execute the Basic Data Validation Script
 <details><summary>Expand if you would like to see how to execute the basic script, step-by-step...</summary><br>
 
-Here are the steps to execute the basic script in Oracle SQL Developer (typical output shown in the screenshot below).  
+Here are the steps to execute the basic script in SSMS (typical output shown in the screenshot below).  
 1. Open SSMS (or equivalent SQL Editor)
 2. Blue Dot #1 - You must load the basic validation script into SSMS (or equivalent IDE)
 3. Blue Dot #2 - Be sure to click the "Text Output" toggle button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
