@@ -114,18 +114,18 @@ Because each database platform has its own unique flavor of SQL, this page is ju
 <td rowspan=3 width=325>
 
 ## MySQL
-* Rule Set 01 - Row Counts<br>
-* Rule Set 02 - Keys<br>
-* Rule Set 03 - Heuristic Thresholds<br>
-* Rule Set 04 - Numeric Values<br>
-* Rule Set 05 - Date Values<br>
-* Rule Set 06 - Text Values<br>
-* Rule Set 07 - Reg Expr's<br>
-* Rule Set 08 - Diff Checks<br>
-* Rule Set 09 - Defect Regression<br>
-* Best Practices<br>
-* Basic Validation Script<br>
-* Advanced Validation Script<br>
+* [Rule Set 01 - Row Counts](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_01__row_counts.md)<br>
+* [Rule Set 02 - Keys](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_02__keys.md)<br>
+* [Rule Set 03 - Heuristic Thresholds](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_03__heuristic_thresholds.md)<br>
+* [Rule Set 04 - Numeric Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_04__numeric_values.md)<br>
+* [Rule Set 05 - Date Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_05__date_values.md)<br>
+* [Rule Set 06 - Text Values](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_06__text_values.md)<br>
+* [Rule Set 07 - Reg Expr's](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_07__regular_expressions.md)<br>
+* [Rule Set 08 - Diff Checks](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_08__diff_checks.md)<br>
+* [Rule Set 09 - Defect Regression](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/rule_set_09__defect_regression.md)<br>
+* [Best Practices](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/best_practices.md)<br>
+* [Basic Validation Script](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/how_to_use_basic_script.md)<br>
+* [Advanced Validation Script](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/how_to_use_advanced_script.md)<br>
 </td>
  
 <td colspan=3>
