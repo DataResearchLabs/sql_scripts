@@ -43,7 +43,7 @@ Verify text field is not null.  For example, to verify that table countries has 
 ```sql
 SELECT country_name
      , CASE WHEN country_name IS NULL THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr.countries
+FROM demo_hr.countries;
 ```
 <br>
 
@@ -53,7 +53,7 @@ Verify text field is not null string "" (but in Oracle null strings don't exist,
 ```sql
 SELECT country_name
      , CASE WHEN country_name = '' THEN 'FAIL' ELSE 'P'  END AS status
-FROM demo_hr.countries
+FROM demo_hr.countries;
 ```
 <br>
 
@@ -67,7 +67,7 @@ SELECT country_name
             WHEN country_name LIKE '% '  THEN CONCAT('REJ-03: Verify no trailing space at country_name|exp=noTrailingSpace|act=''', country_name, '''')
              ELSE 'P'
        END AS status
-FROM demo_hr.countries
+FROM demo_hr.countries;
 ```
 <br>
 
@@ -82,7 +82,7 @@ SELECT job_id
             THEN 'FAIL'
   	    ELSE 'P'
  	END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -93,7 +93,7 @@ Verify text field value is **not** in the list of invalid values.  For example, 
 ```sql
 SELECT job_id
      , CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -107,6 +107,7 @@ SELECT email, first_name, last_name
 FROM demo_hr.employees
 WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
                  -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
+;
 ```
 <br>
 
@@ -119,7 +120,7 @@ SELECT phone_number
      , CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN CONCAT('REJ-01: Verify phone_number length is allowed|exp=12,18|act=', CAST(LENGTH(phone_number) AS CHAR(6)))
             ELSE 'P'
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -129,12 +130,12 @@ FROM demo_hr.employees
 Verify text field characters are uppercase, lowercase, or a mix.  For example, to verify that the field last_name is all lowercase **after** the first character, and that field job_id is all uppercase in table employees:
 ```sql
 SELECT job_id, last_name
-     , CASE WHEN job_id COLLATE utf8mb4_bin <> UPPER(job_id)             THEN CONCAT('REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=', job_id)
+     , CASE WHEN job_id COLLATE utf8mb4_bin <> UPPER(job_id)                 THEN CONCAT('REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=', job_id)
             WHEN SUBSTRING(last_name COLLATE utf8mb4_bin, 2, 255) 
                   <> LOWER(SUBSTRING(last_name COLLATE utf8mb4_bin, 2, 255)) THEN CONCAT('REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=', last_name)
             ELSE 'P'
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -148,7 +149,7 @@ SELECT employee_id, last_name
             WHEN last_name REGEXP '[0-9]'      THEN CONCAT('REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=', last_name)
             ELSE 'P'
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -162,7 +163,7 @@ SELECT first_name
             WHEN first_name LIKE '%"%'   THEN CONCAT('REJ-02: Verify first_name does not contain quotation characters|exp=none|act=', first_name)
             ELSE 'P'
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -172,13 +173,11 @@ FROM demo_hr.employees
 Verify text field does not have carriage return (CHAR-13 / "CR") or line feed (CHAR-10 / "LF") characters.  For example, to verify that the field last_name has no CRLFs in table employees:
 ```sql
 SELECT last_name
-     , CASE WHEN LOCATE(last_name, CHAR(10))  > 0 THEN CONCAT('REJ-01: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ' 
-                                                       , CAST(LOCATE(last_name, CHAR(10 using ASCII)) AS CHAR(4)))
-            WHEN LOCATE(last_name, CHAR(13))  > 0 THEN CONCAT('REJ-02: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ' 
-                                                       , CAST(LOCATE(last_name, CHAR(13 using ASCII)) AS CHAR(4)))
+     , CASE WHEN LOCATE(last_name, CHAR(10))  > 0 THEN CONCAT('REJ-01: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(10 using ASCII)) AS CHAR(4)))
+            WHEN LOCATE(last_name, CHAR(13))  > 0 THEN CONCAT('REJ-02: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(13 using ASCII)) AS CHAR(4)))
             ELSE 'P'
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -191,7 +190,7 @@ SELECT last_name
      , CASE WHEN LOCATE(last_name, CHAR(9 using ASCII)) > 0 THEN CONCAT('REJ-01: Field last_name has a Tab (CHAR-9)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(9 using ASCII)) AS CHAR(4))) 
             ELSE 'P'
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -204,7 +203,7 @@ SELECT last_name
      , CASE WHEN LOCATE(last_name, CHAR(160 using ASCII)) > 0 THEN CONCAT('REJ-01: Field last_name has a Non-Breaking-Space (CHAR-160)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(160 using ASCII)) AS CHAR(4)))
             ELSE 'P' 
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -217,7 +216,7 @@ SELECT last_name
      , CASE WHEN LOCATE(last_name, CHAR(151 using ASCII)) > 0 THEN CONCAT('REJ-01: Field last_name has a Non-Breaking-Space (CHAR-151)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(151 using ASCII)) AS CHAR(4)))
             ELSE 'P' 
        END AS status
-FROM demo_hr.employees
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -226,17 +225,13 @@ FROM demo_hr.employees
 ### T035 - No VT-FF-NEL Characters
 Verify text field does not have any vertical tab (CHAR-11 / "VT"), form feed (CHAR-12 / "FF"), or next line (CHAR-133 / "NEL") characters.  For example, use the SQL below to verify that the field last_name has no VT, FF, or NEL characters in table employees.  Note that this SQL checks for all three characters, each on its own CASE...WHEN clause, and that it returns the location within a string where the bad character occurs.
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, CHAR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT last_name
+     , CASE WHEN LOCATE(last_name, CHAR(11 using ASCII)) > 0  THEN CONCAT('REJ-01: Field last_name has a Vertical Tab (CHAR-11)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(11 using ASCII)) AS CHAR(4)))
+            WHEN LOCATE(last_name, CHAR(12 using ASCII)) > 0  THEN CONCAT('REJ-02: Field last_name has a Form Feed (CHAR-12)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(12 using ASCII)) AS CHAR(4)))
+            WHEN LOCATE(last_name, CHAR(133 using ASCII)) > 0 THEN CONCAT('REJ-03: Field last_name has a Next Line (CHAR-133)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(133 using ASCII)) AS CHAR(4)))
+            ELSE 'P'
+	       END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -245,13 +240,12 @@ WHERE status <> 'P';
 ### T036 - No Period or Dash Characters
 Verify text field does not have any periods or dashes.  For example, to verify that the field last_name has no periods or dashes in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, '.') > 0 OR CHARINDEX(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT last_name
+     , CASE WHEN LOCATE(last_name, '.') > 0 THEN CONCAT('REJ-01: Field last_name has a period|exp=none|act=at position ', CAST(LOCATE(last_name, '.') AS CHAR(4)))
+            WHEN LOCATE(last_name, '0') > 0 THEN CONCAT('REJ-02: Field last_name has a dash|exp=none|act=at position ', CAST(LOCATE(last_name, '-') AS CHAR(4)))
+            ELSE 'P' 
+ 			   END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -260,13 +254,9 @@ WHERE status <> 'P';
 ### T037 - No Funky ",/:()&#?;" Characters
 Verify text field does not have any funky ",/:()&#?;" characters.  For example, to verify that the field last_name has commas, colons, etc. in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT last_name
-  , CASE WHEN last_name LIKE '%[,/:()&#?;]%' THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT last_name
+     , CASE WHEN last_name REGEXP '[,/:()&#?;]' THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -275,13 +265,9 @@ WHERE status <> 'P';
 ### T038 - Only Allowed Characters In List
 Verify text field contains only allowed characters from a specific list.  For example, use the SQL below to verify that the field phone_number in table employees only has characters ".0123456789".  The LIKE expression does the work.  Specifically, the []'s indicating look for these characters, and the ^ means look for any character not in this list.  So it reads: "find any phone numbers containing characters not in [.0123456789]".
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT phone_number
-  , CASE WHEN phone_number LIKE '%[^.0123456789]%' THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT phone_number
+     , CASE WHEN phone_number REGEXP '[^.0123456789]' THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
