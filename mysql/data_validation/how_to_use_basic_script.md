@@ -23,7 +23,7 @@ NOTE: That MySQL Workbench can only have 50 result grids open, so when the 51st 
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to your own databases, then you will need to download and deploy the demo_hr test dataset.
-1. Download the "demo_hr_01_create_database.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_validation/demo_data/demo_hr_01_create_database.sql)</b>.
+1. Download the "demo_hr_01_create_database.sql" script from <b>[here](https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/demo_data/demo_hr_01_create_database.sql)</b>.
 2. Run the script on a SQL Server database where you have permissions (local is fine too).
 3. Download the "demo_hr_02_create_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_validation/demo_data/demo_hr_02_create_tables.sql)</b>.
 4. Run the script on the same SQL Server database.
