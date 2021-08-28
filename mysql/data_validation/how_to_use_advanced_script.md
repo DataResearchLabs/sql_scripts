@@ -87,10 +87,10 @@ Notice the following aspects of the SQL code above:
 ### Step 5 - Execute the Advanced Data Validation Script
 <details><summary>Expand if you would like to see how to execute the advanced script, step-by-step...</summary><br>
 
-Here are the steps to execute the advanced script in SSMS (typical output shown in the screenshot below).  
-1. Open SQL Server Management Studio (or equivalent SQL Editor)
-2. Blue Dot #1 - You must load the advanced validation script "dv_advanced_test_cases.sql" into SQL Developer (or equivalent IDE) -- see Step 4 above.  
-3. Blue Dot #2 - Click the "Run Statement" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary reoprt SELECT.
+Here are the steps to execute the advanced script in MySQL Workbench (typical output shown in the screenshot below).  
+1. Open MySQL Workbench (or equivalent SQL Editor)
+2. Blue Dot #1 - You must load the advanced validation script "dv_advanced_test_cases.sql"  -- see Step 4 above.  
+3. Blue Dot #2 - Click the "Execute" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary report SELECT.
 4. Blue Dot #3 - The output is beautifully laid out for all data validation test cases in a grid.  You can scroll and view the grid details, or export it out to a file using your SQL Editor.  Fields include everything, from test id, test description, and status to test case execution time, start time, rejection details, expected and actual results, and lookup SQL.
 
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/04_data_val_mysql_run_results_adv.png">
@@ -104,7 +104,7 @@ You could just skip reading all the sections above and jump directly down here. 
 Here are my recommendations for writing your validation script(s):
 1. **Learn**: You really should expand and read Step 5 above.  It goes into a lot of detail about how the test case script works, what the various blocks of code do, etc.
 2. **Reference**: I would suggest that you open the advanced test case script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
-3. **Main Editor**: Open SSMS with a blank new script that you are going to build out for your tests as follows:
+3. **Main Editor**: Open MySQL Workbench with a blank new script that you are going to build out for your tests as follows:
 4. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
 5. **Select Schema**: You will have a schema (database) that is "under test".  Identify it.  List it in the comment block.  Prefix all SQL code with it going forward (below).
 6. **Table #1**:  Pick the first table for which you are going to start writing validation cases for.  Could be the first table alphabetically. Could be a highest priority table you want to begin writing validation checks against (biggest bang for the buck).  Could be the simplest table to ease in with baby steps (low-hanging fruit).  You decide.
