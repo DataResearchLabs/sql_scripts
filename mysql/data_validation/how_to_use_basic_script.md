@@ -75,10 +75,10 @@ Notice the following aspects of the SQL code:
 <details><summary>Expand if you would like to see how to execute the basic script, step-by-step...</summary><br>
 
 Here are the steps to execute the basic script in MySQL Workbench (typical output shown in the screenshot below).  
-1. Open SSMS (or equivalent SQL Editor)
+1. Open MySQL Workbench (or equivalent SQL Editor)
 2. Blue Dot #1 - You must load the basic validation script into MySQL Workbench (or equivalent IDE)
-3. Blue Dot #2 - Be sure to click the "Text Output" toggle button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
-4. Blue Dot #3 - The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
+3. Blue Dot #2 - Click the "Execute Script" button so to run the test cases
+4. Blue Dot #3 - Unfortunately, the output is put into 50 separate grids, one for each data validation test case select (erroring at 50 grids -- the max allowed).  To work around this, use the advanced script referenced in the parent page of this gitHub document.  Alternatively, highilght and run just 50 test cases at a time.  Finally, you could use a different IDE (Toad, etc.) to be able to send the output to text file instead.
 <img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/02_data_val_mssql_run_results_mysql.png">
 
 </details>
@@ -89,7 +89,7 @@ You could just skip reading all the sections above and jump directly down here. 
 
 Here are my recommendations for writing your validation script(s):
 1. **Reference**: I would suggest that you open the basic script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
-2. **Main Editor**: Open SQL Server Management Studio with a blank new script that you are going to build out for your tests as follows:
+2. **Main Editor**: Open MySQL Workbench with a blank new script that you are going to build out for your tests as follows:
 3. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
 4. **Select Schema**: You will have a schema (database) that is "under test".  Identify it.  List it in the comment block.  Prefix all SQL code with it going forward (below).
 5. **Table #1**:  Pick the first table for which you are going to start writing validation cases for.  Could be the first table alphabetically. Could be a highest priority table you want to begin writing validation checks against (biggest bang for the buck).  Could be the simplest table to ease in with baby steps (low-hanging fruit).  You decide.
