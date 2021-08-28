@@ -39,7 +39,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
 1. Download the advanced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_validation/sql_scripts/dv_advanced_test_cases.sql)</b>.
-2. Make the appropriate changes to lines 69-70 to insert parameter names and values your script needs into the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
+2. Make the appropriate changes to lines 59 to point to the correct "database under test".
 </details>
 <br>
 
@@ -49,10 +49,10 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 The script currently consists of 3,701 lines of SQL code (3x bigger than the basic script) and is broken down as follows:
 * Lines 1-55 are the comment block header, containing notes and definitions
 * Lines 56-60 are to point the script environment to the correct database
-* Lines 61-77 are to populate the configuration table with parameter names and values
-* Lines 78-3,639 are the 66 individual example validation test cases (written as SQL SELECTs with a lot of boilerplate code)
-* Lines 3,640-3,665 are used to calculate the test case execution time -- very handy for tuning the data validation performance (if a test runs long, speed it up by only checking the past 1-5 days, or refactor the SQL, or combine with other tests into one large single pass table scan query).  Also, you can monitor the test case execution time over weeks and months to spot system performance issues (eg: need an archiving strategy b/c table getting too large, or need a covering index for where clause condition, etc.)
-* Lines 3,666-3,701 are used to organize and post the test case results as a "report" (splits out expected and actual values into own column, etc.)
+* Lines 61-69 are a substitute for a configuration table of parameter names and values.  So it turns out that MySQL can only reference a temp table one time per SQL statement during execution.  This was problematic for data validation test queries where I wanted to lookup values multiple times.  So, unlike the other platforms (MSSQL, Oracle, etc.), I opted for a simple "Search & Replace" option.  Just highlight the full text "100 /*=NumberDaysLookBack*/ and replace the numeric part with whatever new value you'd like.
+* Lines 70-3,576 are the 66 individual example validation test cases (written as SQL SELECTs with a lot of boilerplate code)
+* Lines 3,577-3,613 are used to calculate the test case execution time -- very handy for tuning the data validation performance (if a test runs long, speed it up by only checking the past 1-5 days, or refactor the SQL, or combine with other tests into one large single pass table scan query).  Also, you can monitor the test case execution time over weeks and months to spot system performance issues (eg: need an archiving strategy b/c table getting too large, or need a covering index for where clause condition, etc.)
+* Lines 3,614-3,650 are used to organize and post the test case results as a "report" (splits out expected and actual values into own column, etc.)
 <br>
 
 A typical data validation test has SQL code that looks something like this one -- T031 which checks for carriage return or line feed characters in field last_name: <br>  
