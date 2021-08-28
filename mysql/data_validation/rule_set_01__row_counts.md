@@ -50,7 +50,7 @@ FROM (
 
 <a id="t004" class="anchor" href="#t004" aria-hidden="true"> </a>
 ### T004 - "Recent" Row Count
-Verify recent row counts.  The example below verifies that table countries has had at least 5 rows updated in the past 10 days based on the date stamp in field date_last_updated.  The inner query uses GETDATE() (SQL Server current date time stamp) and subtracts 10 days.  The inner query counts how many rows in table countries have a date_last_updated with the past 10 days.  The outer query can then confirm that at least 5 rows are recent for a Pass...if not then it returns a Fail.
+Verify recent row counts.  The example below verifies that table countries has had at least 5 rows updated in the past 150 days based on the date stamp in field date_last_updated.  The inner query uses DATE_SUB() (MySQL current date time stamp) and subtracts 150 days.  The inner query counts how many rows in table countries have a date_last_updated with the past 150 days.  The outer query can then confirm that at least 5 rows are recent for a Pass...if not then it returns a Fail.
 ```sql
 SELECT CASE WHEN row_count < 5 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
