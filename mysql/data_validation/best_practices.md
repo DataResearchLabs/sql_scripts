@@ -171,6 +171,8 @@ WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOL
 ### T066 - Use Config Tables to Parameterize
 There was no simple way to do this in MySQL (that I could find -- please email me or comment if you found a simple way).
 <br>
+<br>
+<br>
 	
 	
 <a id="t067" class="anchor" href="#t067" aria-hidden="true"> </a>
