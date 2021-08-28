@@ -73,11 +73,11 @@ Verify text field has no leading or trailing spaces.  For example, to verify tha
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT country_name
-  , CASE WHEN country_name LIKE ' %'  THEN 'REJ-01: Verify no leading space at country_name|exp=noLeadSpace|act=''' + country_name +''''
-         WHEN country_name LIKE '% '  THEN 'REJ-02: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' + country_name +''''
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..countries
+       , CASE WHEN country_name LIKE ' %'  THEN CONCAT('REJ-02: Verify no leading space at country_name|exp=noLeadSpace|act=''', country_name, '''')
+              WHEN country_name LIKE '% '  THEN CONCAT('REJ-03: Verify no trailing space at country_name|exp=noTrailingSpace|act=''', country_name, '''')
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.countries
 ) t
 WHERE status <> 'P';
 ```
@@ -96,7 +96,7 @@ FROM (
               THEN 'FAIL'
     	   ELSE 'P'
     	END AS status
-  FROM demo_hr..employees
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -125,10 +125,10 @@ Verify text field value is comprised of other field values.  For example, use th
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT email, first_name, last_name
-  , CASE WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
+       , CASE WHEN email <> SUBSTRING(UPPER(CONCAT(SUBSTRING(first_name, 1, 1), last_name)), 1, 8) THEN 'FAIL' ELSE 'P' END AS status
+  FROM demo_hr.employees
   WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
-                  -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
+                   -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
 ) t
 WHERE status <> 'P';
 ```
@@ -142,10 +142,10 @@ Verify text field value length is an exact amount or within a range.  For exampl
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT phone_number
-  , CASE WHEN LEN(phone_number) NOT IN(12,18) THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(5))
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
+       , CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN CONCAT('REJ-01: Verify phone_number length is allowed|exp=12,18|act=', CAST(LENGTH(phone_number) AS CHAR(6)))
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -159,12 +159,12 @@ Verify text field characters are uppercase, lowercase, or a mix.  For example, t
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT job_id, last_name
-  , CASE WHEN job_id COLLATE SQL_Latin1_General_CP1_CS_AS <> UPPER(job_id)                 THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' + job_id
-         WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) 
-              <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255))  THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
-    	    ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
+       , CASE WHEN job_id COLLATE utf8mb4_bin <> UPPER(job_id)             THEN CONCAT('REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=', job_id)
+              WHEN SUBSTRING(last_name COLLATE utf8mb4_bin, 2, 255) 
+                    <> LOWER(SUBSTRING(last_name COLLATE utf8mb4_bin, 2, 255)) THEN CONCAT('REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=', last_name)
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -178,11 +178,11 @@ Verify text field characters are alpha, numeric, or a mix.  For example, to veri
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT employee_id, last_name
-  , CASE WHEN employee_id LIKE '%[A-Za-z]%' THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
-         WHEN last_name LIKE '%[0-9]%'      THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' + LAST_NAME 
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
+       , CASE WHEN employee_id REGEXP '[A-Za-z]' THEN CONCAT('REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=', CAST(employee_id AS CHAR(20)))
+              WHEN last_name REGEXP '[0-9]'      THEN CONCAT('REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=', last_name)
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -196,11 +196,11 @@ Verify text field does not have ' or " characters.  For example, to verify that 
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT first_name
-  , CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' + first_name
-         WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' + first_name
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
+       , CASE WHEN first_name LIKE '%''%'  THEN CONCAT('REJ-01: Verify first_name does not contain single quote characters|exp=none|act=', first_name)
+              WHEN first_name LIKE '%"%'   THEN CONCAT('REJ-02: Verify first_name does not contain quotation characters|exp=none|act=', first_name)
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -214,13 +214,13 @@ Verify text field does not have carriage return (CHAR-13 / "CR") or line feed (C
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, CHAR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' 
-		                     + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
-    	    WHEN CHARINDEX(last_name, CHAR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' 
-					                  + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
+       , CASE WHEN LOCATE(last_name, CHAR(10))  > 0 THEN CONCAT('REJ-01: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ' 
+                                                         , CAST(LOCATE(last_name, CHAR(10 using ASCII)) AS CHAR(4)))
+              WHEN LOCATE(last_name, CHAR(13))  > 0 THEN CONCAT('REJ-02: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ' 
+                                                         , CAST(LOCATE(last_name, CHAR(13 using ASCII)) AS CHAR(4)))
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -234,8 +234,10 @@ Verify text field does not have tab (CHAR-9) characters.  For example, to verify
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, CHAR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
+       , CASE WHEN LOCATE(last_name, CHAR(9 using ASCII)) > 0 THEN CONCAT('REJ-01: Field last_name has a Tab (CHAR-9)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(9 using ASCII)) AS CHAR(4))) 
+              ELSE 'P'
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
@@ -249,8 +251,10 @@ Verify text field does not have non-breaking-space (CHAR-160 / "NBS") characters
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT last_name
-  , CASE WHEN CHARINDEX(last_name, CHAR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
+       , CASE WHEN LOCATE(last_name, CHAR(160 using ASCII)) > 0 THEN CONCAT('REJ-01: Field last_name has a Non-Breaking-Space (CHAR-160)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(160 using ASCII)) AS CHAR(4)))
+              ELSE 'P' 
+         END AS status
+  FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
 ```
