@@ -81,14 +81,10 @@ P.S. - To achieve maximum performance here, find an indexed field to filter on i
 </details>
 	
  ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT region_id, date_last_updated
-  , CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..countries
-  WHERE date_last_updated >= GETDATE() - 30 
-) t
-WHERE status <> 'P';
+SELECT region_id, date_last_updated
+, CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr..countries
+WHERE date_last_updated >= GETDATE() - 30;
 ```
 <br>
 
@@ -98,14 +94,10 @@ WHERE status <> 'P';
 There are times when developers aren't going to fix a defect for weeks/months, or the data will only be corrected on a go-forward basis.  When eitehr occurs, you want your data validation check to stop trigger a Fail alert.  Sometimes the quickest way to resolve the issue is to implement T063 above and reset the minimum test data to today's date.  Otehr times, you may want to specifically exclude known data rows going forward.  Below is such an example, where country_id BR, DK, and IL were causing fails due to some defect that won't be resolved.  So for this test scenario, those countries will be excluded from the null check going forward.  The WHERE clause at the inner query is doing all the work for this best practice.
 
  ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT region_id, country_id
-  , CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..countries
-  WHERE country_id NOT IN('BR','DK','IL') 
-) t
-WHERE status <> 'P';
+SELECT region_id, country_id
+, CASE WHEN region_id IS NULL  THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr..countries
+WHERE country_id NOT IN('BR','DK','IL');
 ```
 <br>
 
@@ -124,53 +116,50 @@ For example, below I've bundled validation tests from many small granular tests 
 In the example below, there is an inner query that you can highlight and execute from your SQL IDE to see results at the row level with specific rejection codes encountered, if any.  The outer query is simply a wrapper that returns a single value of pass or fail depending on whether rejection codes were found in the data.
 
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT employee_id, salary, commission_pct, hire_date, zip5, job_id, email, first_name, last_name, phone_number, some_date_fmt1
-  , CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' + CAST(employee_id AS VARCHAR(10))
-         WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' + CAST(employee_id AS VARCHAR(10))
-         WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' + CAST(salary * commission_pct AS VARCHAR(15))
-         WHEN CONVERT(VARCHAR(8), hire_date, 108) <> '00:00:00'        THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' + CONVERT(VARCHAR(8), hire_date, 108)
-         WHEN zip5 LIKE '%[^0-9]%'                                     THEN 'REJ-05: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5
-         WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' + job_id
-         WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) 
-                   + last_name), 1, 8)                                 THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' + SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) + '|act=' + email
-         WHEN LEN(phone_number) NOT IN(12,18)                          THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(6))
-         WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255)) THEN 'REJ-10: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
-         WHEN employee_id LIKE '%[A-Za-z]%'                            THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
-         WHEN last_name LIKE '%[0-9]%'                                 THEN 'REJ-12: Field last_name does not contain numeric digits|exp=no-digits|act=' + last_name 
-         WHEN first_name LIKE '%''%'                                   THEN 'REJ-13: Field first_name does not contain single quote characters|exp=none|act=' + first_name
-         WHEN first_name LIKE '%"%'                                    THEN 'REJ-14: Field first_name does not contain quotation characters|exp=none|act=' + first_name
-         WHEN CHARINDEX(last_name, CHAR(10))  > 0                      THEN 'REJ-15: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(13))  > 0                      THEN 'REJ-16: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(9))   > 0                      THEN 'REJ-17: Field last_name has a Tab (CHAR-9)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(9)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(160)) > 0                      THEN 'REJ-18: Field last_name has a Non-Breaking-Space (CHAR-160)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(160)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(151)) > 0                      THEN 'REJ-19: Field last_name has a Non-Breaking-Space (CHAR-151)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(151)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(11)) > 0                       THEN 'REJ-20: Field last_name has a Vertical Tab (CHAR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(12)) > 0                       THEN 'REJ-21: Field last_name has a Form Feed (CHAR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, CHAR(133)) > 0                      THEN 'REJ-22: Field last_name has a Next Line (CHAR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
-         WHEN CHARINDEX(last_name, '.') > 0                            THEN 'REJ-23: Field last_name has a period|exp=none|act=at position ' + CAST(CHARINDEX(last_name, '.') AS VARCHAR(4))
-         WHEN last_name LIKE '%[,/:()&#?;]%'                           THEN 'REJ-24: Field last_name has a ",/:()&#?;" characters|exp=none|act=' + last_name 
-         WHEN phone_number LIKE '%[^.0123456789]%'                     THEN 'REJ-25: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' + phone_number 
-         WHEN phone_number NOT LIKE '%.%'                              THEN 'REJ-26: Verify phone_number contains a ''.''|exp=contains-.|act=' + phone_number
-         WHEN phone_number NOT LIKE '___.___.____' 
-          AND phone_number NOT LIKE '011.__.____._____%'               THEN 'REJ-27: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' + phone_number
-         WHEN zip5 LIKE '%[^0-9]%'                                     THEN 'REJ-28: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5 
-         WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-              REPLACE(REPLACE(REPLACE(some_date_fmt1,'0',''),'1','')
-              ,'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8'
-              ,''),'9','')  > ''                                       THEN 'REJ-29: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT LEN(TRIM(some_date_fmt1)) = 8                           THEN 'REJ-30: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-31: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-32: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-33: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-  WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
-                   -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON)
-) t
-WHERE status <> 'P';
+SELECT employee_id, salary, commission_pct, hire_date, zip5, job_id, email, first_name, last_name, phone_number, some_date_fmt1
+, CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' + CAST(employee_id AS VARCHAR(10))
+       WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' + CAST(employee_id AS VARCHAR(10))
+       WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' + CAST(salary * commission_pct AS VARCHAR(15))
+       WHEN CONVERT(VARCHAR(8), hire_date, 108) <> '00:00:00'        THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' + CONVERT(VARCHAR(8), hire_date, 108)
+       WHEN zip5 LIKE '%[^0-9]%'                                     THEN 'REJ-05: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5
+       WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' + job_id
+       WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) 
+                 + last_name), 1, 8)                                 THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' + SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) + '|act=' + email
+       WHEN LEN(phone_number) NOT IN(12,18)                          THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(6))
+       WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255)) THEN 'REJ-10: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
+       WHEN employee_id LIKE '%[A-Za-z]%'                            THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
+       WHEN last_name LIKE '%[0-9]%'                                 THEN 'REJ-12: Field last_name does not contain numeric digits|exp=no-digits|act=' + last_name 
+       WHEN first_name LIKE '%''%'                                   THEN 'REJ-13: Field first_name does not contain single quote characters|exp=none|act=' + first_name
+       WHEN first_name LIKE '%"%'                                    THEN 'REJ-14: Field first_name does not contain quotation characters|exp=none|act=' + first_name
+       WHEN CHARINDEX(last_name, CHAR(10))  > 0                      THEN 'REJ-15: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(13))  > 0                      THEN 'REJ-16: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(9))   > 0                      THEN 'REJ-17: Field last_name has a Tab (CHAR-9)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(9)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(160)) > 0                      THEN 'REJ-18: Field last_name has a Non-Breaking-Space (CHAR-160)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(160)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(151)) > 0                      THEN 'REJ-19: Field last_name has a Non-Breaking-Space (CHAR-151)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(151)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(11)) > 0                       THEN 'REJ-20: Field last_name has a Vertical Tab (CHAR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(12)) > 0                       THEN 'REJ-21: Field last_name has a Form Feed (CHAR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, CHAR(133)) > 0                      THEN 'REJ-22: Field last_name has a Next Line (CHAR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
+       WHEN CHARINDEX(last_name, '.') > 0                            THEN 'REJ-23: Field last_name has a period|exp=none|act=at position ' + CAST(CHARINDEX(last_name, '.') AS VARCHAR(4))
+       WHEN last_name LIKE '%[,/:()&#?;]%'                           THEN 'REJ-24: Field last_name has a ",/:()&#?;" characters|exp=none|act=' + last_name 
+       WHEN phone_number LIKE '%[^.0123456789]%'                     THEN 'REJ-25: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' + phone_number 
+       WHEN phone_number NOT LIKE '%.%'                              THEN 'REJ-26: Verify phone_number contains a ''.''|exp=contains-.|act=' + phone_number
+       WHEN phone_number NOT LIKE '___.___.____' 
+        AND phone_number NOT LIKE '011.__.____._____%'               THEN 'REJ-27: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' + phone_number
+       WHEN zip5 LIKE '%[^0-9]%'                                     THEN 'REJ-28: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5 
+       WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+            REPLACE(REPLACE(REPLACE(some_date_fmt1,'0',''),'1','')
+            ,'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8'
+            ,''),'9','')  > ''                                       THEN 'REJ-29: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+       WHEN NOT LEN(TRIM(some_date_fmt1)) = 8                           THEN 'REJ-30: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+       WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-31: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+       WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-32: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+       WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-33: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+       ELSE 'P'
+  END AS status
+FROM demo_hr..employees
+WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
+                 -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON)
+;
 ```
 </details>
 <br>
@@ -200,20 +189,16 @@ INSERT INTO #test_case_config VALUES('MaxNbrRowsRtn','5');
 	
 
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
+SELECT CASE WHEN row_count < 5 THEN 'FAIL'
+            ELSE 'P'
+       END AS status
 FROM (
-  SELECT CASE WHEN row_count < 5 THEN 'FAIL'
-              ELSE 'P'
-         END AS status
-  FROM (
-    SELECT COUNT(*) AS row_count 
-    FROM demo_hr..countries
-    WHERE date_last_updated >= GETDATE() - (SELECT CAST(prop_val AS INT) 
-                                            FROM #test_case_config 
-                                            WHERE prop_nm = 'NumberDaysLookBack')
-  ) t
-) t2
-WHERE status <> 'P';
+  SELECT COUNT(*) AS row_count 
+  FROM demo_hr..countries
+  WHERE date_last_updated >= GETDATE() - (SELECT CAST(prop_val AS INT) 
+                                          FROM #test_case_config 
+                                          WHERE prop_nm = 'NumberDaysLookBack')
+) t;
 ```
 <br>	
 	
