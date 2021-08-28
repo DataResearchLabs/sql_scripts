@@ -50,7 +50,7 @@ The script currently consists of 1,156 lines of SQL code broken down as follows:
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/01_data_val_mssql_example_test_case_sql_code_mysql.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/01_data_val_mysql_example_test_case_sql_code.png">
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
@@ -79,7 +79,7 @@ Here are the steps to execute the basic script in MySQL Workbench (typical outpu
 2. Blue Dot #1 - You must load the basic validation script into MySQL Workbench (or equivalent IDE)
 3. Blue Dot #2 - Click the "Execute Script" button so to run the test cases
 4. Blue Dot #3 - Unfortunately, the output is put into 50 separate grids, one for each data validation test case select (erroring at 50 grids -- the max allowed).  To work around this, use the advanced script referenced in the parent page of this gitHub document.  Alternatively, highilght and run just 50 test cases at a time.  Finally, you could use a different IDE (Toad, etc.) to be able to send the output to text file instead.
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/02_data_val_mssql_run_results_mysql.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/02_data_val_mysql_run_results.png">
 
 </details>
 <br>
