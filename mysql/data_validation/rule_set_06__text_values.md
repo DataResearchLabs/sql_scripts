@@ -94,8 +94,8 @@ FROM (
   , CASE WHEN job_id NOT IN('ST_MAN','ST_CLERK','SH_CLERK','SA_REP','SA_MAN','PU_CLERK','PR_REP','MK_REP','MK_MAN','IT_PROG'
                            ,'HR_REP','FI_MGR','FI_ACCOUNT','AD_VP','AD_PRES','AD_ASST','AC_MGR','AC_ACCOUNT','PU_MAN')
               THEN 'FAIL'
-    	   ELSE 'P'
-    	END AS status
+    	    ELSE 'P'
+   	END AS status
   FROM demo_hr.employees
 ) t
 WHERE status <> 'P';
