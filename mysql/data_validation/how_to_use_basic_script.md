@@ -50,7 +50,7 @@ The script currently consists of 1,156 lines of SQL code broken down as follows:
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/img/01_data_val_mssql_example_test_case_sql_code.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/01_data_val_mssql_example_test_case_sql_code_mysql.png">
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
@@ -79,7 +79,7 @@ Here are the steps to execute the basic script in Oracle SQL Developer (typical 
 2. Blue Dot #1 - You must load the basic validation script into SSMS (or equivalent IDE)
 3. Blue Dot #2 - Be sure to click the "Text Output" toggle button (or equivalent in other IDEs) so that all test cases will output to a single text document on screen (**not** as 66 separate grids)
 4. Blue Dot #3 - The output is concisely laid out for all data validation test cases.  The red-boxed test case includes test_id (eg: T001) in column #1, followed by the status (eg: pass or fail) in column #2, and finally ends with the test description on the right in column #3 (because width varies so much want it on the end for better readability).
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/img/02_data_val_mssql_run_results1.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mysql/data_validation/img/02_data_val_mssql_run_results_mysql.png">
 
 </details>
 <br>
