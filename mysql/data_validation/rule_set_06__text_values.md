@@ -230,7 +230,7 @@ SELECT last_name
             WHEN LOCATE(last_name, CHAR(12 using ASCII)) > 0  THEN CONCAT('REJ-02: Field last_name has a Form Feed (CHAR-12)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(12 using ASCII)) AS CHAR(4)))
             WHEN LOCATE(last_name, CHAR(133 using ASCII)) > 0 THEN CONCAT('REJ-03: Field last_name has a Next Line (CHAR-133)|exp=none|act=at position ', CAST(LOCATE(last_name, CHAR(133 using ASCII)) AS CHAR(4)))
             ELSE 'P'
-	       END AS status
+       END AS status
 FROM demo_hr.employees;
 ```
 <br>
@@ -244,7 +244,7 @@ SELECT last_name
      , CASE WHEN LOCATE(last_name, '.') > 0 THEN CONCAT('REJ-01: Field last_name has a period|exp=none|act=at position ', CAST(LOCATE(last_name, '.') AS CHAR(4)))
             WHEN LOCATE(last_name, '0') > 0 THEN CONCAT('REJ-02: Field last_name has a dash|exp=none|act=at position ', CAST(LOCATE(last_name, '-') AS CHAR(4)))
             ELSE 'P' 
- 			   END AS status
+       END AS status
 FROM demo_hr.employees;
 ```
 <br>
@@ -276,17 +276,13 @@ FROM demo_hr.employees;
 ### T039 - Like Wildcards
 Verify text field matches simple like patterns.  For example, use the SQL below to verify that the field phone_number in table employees matches either the US (###.###.####) or international format (011.##.####.#####).  The LIKE command use "%" to represent any number of any character and "\_" to represent any single character.
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT phone_number
-       , CASE WHEN phone_number NOT LIKE '%.%'                THEN 'REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
-              WHEN phone_number NOT LIKE '___.___.____' 
-               AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
-              ELSE 'P'
-         END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT phone_number
+      , CASE WHEN phone_number NOT LIKE '%.%'                THEN CONCAT('REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=', phone_number)
+             WHEN phone_number NOT LIKE '___.___.____' 
+              AND phone_number NOT LIKE '011.__.____._____%' THEN CONCAT('REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=', phone_number)
+             ELSE 'P'
+        END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -295,13 +291,9 @@ WHERE status <> 'P';
 ### T040 - IsNumeric()
 Verify text field is numeric.  For example, use the SQL below to verify that the field zip5 in table employees is numeric.
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT zip5
-  , CASE WHEN zip5 LIKE '%[^0-9]%' THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT zip5
+     , CASE WHEN zip5 REGEXP '[^0-9]' THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -320,21 +312,17 @@ Verify text field is a date formatted as "yyyymmdd".  For example, use the SQL b
 </details>
 
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT some_date_fmt1
-  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-              some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
-              > ''                                                        THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT LEN(TRIM(some_date_fmt1)) = 8                           THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT some_date_fmt1
+     , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                 some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
+                 > ''                                                        THEN CONCAT('REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=', some_date_fmt1)
+            WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                        THEN CONCAT('REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=', some_date_fmt1)
+            WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN CONCAT('REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=', some_date_fmt1)
+            WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN CONCAT('REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=', some_date_fmt1)
+            WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN CONCAT('REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=', some_date_fmt1)
+            ELSE 'P'
+       END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -353,21 +341,17 @@ Verify text field is a date formatted as "mm/dd/yyyy".  For example, use the SQL
 </details>
 
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT some_date_fmt2
-  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-              some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
-              > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-         WHEN NOT LEN(TRIM(some_date_fmt2)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-         WHEN NOT SUBSTRING(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-         WHEN NOT SUBSTRING(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-         WHEN NOT SUBSTRING(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT some_date_fmt2
+     , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                 some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
+                 > ''                                                        THEN CONCAT('REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=', some_date_fmt2)
+            WHEN NOT LENGTH(TRIM(some_date_fmt2)) = 10                       THEN CONCAT('REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=', some_date_fmt2)
+            WHEN NOT SUBSTRING(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN CONCAT('REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=', some_date_fmt2)
+            WHEN NOT SUBSTRING(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN CONCAT('REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=', some_date_fmt2)
+            WHEN NOT SUBSTRING(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN CONCAT('REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=', some_date_fmt2)
+            ELSE 'P'
+       END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -386,21 +370,17 @@ Verify text field is a date formatted as "mm-dd-yyyy".  For example, use the SQL
 </details>
 
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT some_date_fmt3
-  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-              some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
-              > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-         WHEN NOT LEN(TRIM(some_date_fmt3)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-         WHEN NOT SUBSTRING(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-         WHEN NOT SUBSTRING(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-         WHEN NOT SUBSTRING(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT some_date_fmt3
+     , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                 some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
+                 > ''                                                        THEN CONCAT('REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=', some_date_fmt3)
+            WHEN NOT LENGTH(TRIM(some_date_fmt3)) = 10                       THEN CONCAT('REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=', some_date_fmt3)
+            WHEN NOT SUBSTRING(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN CONCAT('REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=', some_date_fmt3)
+            WHEN NOT SUBSTRING(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN CONCAT('REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=', some_date_fmt3)
+            WHEN NOT SUBSTRING(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN CONCAT('REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=', some_date_fmt3)
+            ELSE 'P'
+       END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -419,21 +399,17 @@ Verify text field is a date formatted as "yyyy-mm-dd".  For example, use the SQL
 </details>
 
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT some_date_fmt4
-  , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-              some_date_fmt4,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
-              > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-         WHEN NOT LEN(TRIM(some_date_fmt4)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-         WHEN NOT SUBSTRING(some_date_fmt4,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-         WHEN NOT SUBSTRING(some_date_fmt4,6,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-         WHEN NOT SUBSTRING(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-         ELSE 'P'
-    END AS status
-  FROM demo_hr..employees
-) t
-WHERE status <> 'P';
+SELECT some_date_fmt4
+     , CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                 some_date_fmt4,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
+                 > ''                                                        THEN CONCAT('REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=', some_date_fmt4)
+            WHEN NOT LENGTH(TRIM(some_date_fmt4)) = 10                       THEN CONCAT('REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=', some_date_fmt4)
+            WHEN NOT SUBSTRING(some_date_fmt4,1,4) BETWEEN '1753' AND '9999' THEN CONCAT('REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyy-mm-dd"|act=', some_date_fmt4)
+            WHEN NOT SUBSTRING(some_date_fmt4,6,2) BETWEEN '01' AND '12'     THEN CONCAT('REJ-04: Month Not Btw 01-12|exp=Fmt="yyyy-mm-dd"|act=', some_date_fmt4)
+            WHEN NOT SUBSTRING(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN CONCAT('REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=', some_date_fmt4)
+            ELSE 'P'
+       END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
