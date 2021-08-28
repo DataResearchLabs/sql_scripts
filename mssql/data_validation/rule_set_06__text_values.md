@@ -111,7 +111,7 @@ SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
   SELECT job_id
        , CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS') THEN 'FAIL'  ELSE 'P'  END AS status
-  FROM demo_hr.employees
+  FROM demo_hr..employees
 ) t
 WHERE status <> 'P';
 ```
