@@ -41,16 +41,12 @@ WHERE region_id < 0;
 ### T012 - Numeric Range
 Verify numeric field value is within a range.  In the example below, we verify that field employee_id is between 100 and 999 in table employees.  Note that you can run the inner query yourself to return the actual rejection code (is too low or too high) along with the actual value and the expected value...all nicely packaged for easy troubleshooting.
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT employee_id
-       , CASE WHEN employee_id < 100   THEN CONCAT('REJ-01: Verify employee_id > 99|exp>99|act=', CAST(employee_id AS CHAR(10)) )
-              WHEN employee_id > 999   THEN CONCAT('REJ-02: Verify employee_id < 1000|exp<1000|act=', CAST(employee_id AS CHAR(10)) )
-              ELSE 'P'
-         END AS status
-  FROM demo_hr.employees
-) t
-WHERE status <> 'P';
+SELECT employee_id
+     , CASE WHEN employee_id < 100   THEN CONCAT('REJ-01: Verify employee_id > 99|exp>99|act=', CAST(employee_id AS CHAR(10)) )
+            WHEN employee_id > 999   THEN CONCAT('REJ-02: Verify employee_id < 1000|exp<1000|act=', CAST(employee_id AS CHAR(10)) )
+            ELSE 'P'
+       END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -59,13 +55,9 @@ WHERE status <> 'P';
 ### T013 - In Value List
 Verify numeric field is **in** the list of values.  For example, to verify that table countries field region_id is always values 1, 2, 3, or 4 we use the IN() clause as shown below:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT region_id
-  , CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.countries
-) t
-WHERE status <> 'P';
+SELECT region_id
+, CASE WHEN region_id NOT IN(1,2,3,4) THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.countries;
 ```
 <br>
 
@@ -74,13 +66,9 @@ WHERE status <> 'P';
 ### T014 - Not In Value List
 Verify numeric field is **not** in the list of values.  For example, to verify that table countries field region_id is never in values 97, 98, or 99 we use the NOT IN() clauses as shown below:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT region_id
-  , CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.countries
-) t
-WHERE status <> 'P';
+SELECT region_id
+, CASE WHEN region_id IN(97,98,99) THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.countries;
 ```
 <br>
 
@@ -89,12 +77,8 @@ WHERE status <> 'P';
 ### T015 - Multi Field Compare
 Verify numeric field values in relation to one another.  For example, to verify that salary times commission_pct is always less than $10,000 in table employees:
 ```sql
-SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM (
-  SELECT salary, commission_pct
-  , CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
-  FROM demo_hr.employees
-) t
-WHERE status <> 'P';
+SELECT salary, commission_pct
+, CASE WHEN salary * commission_pct > 10000 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
