@@ -57,7 +57,7 @@ FROM (
   SELECT COUNT(*) AS row_count 
   FROM demo_hr..countries
   WHERE date_last_updated >= NOW()::DATE - 150
-);
+) t;
 ```
 
 
