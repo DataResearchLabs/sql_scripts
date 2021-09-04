@@ -36,7 +36,7 @@ SELECT date_last_updated
        WHEN date_last_updated < TO_DATE('01/01/2021', 'mm/dd/yyyy') THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' || CAST(date_last_updated AS VARCHAR(20))
        ELSE 'P'
   END AS status
-FROM demo_hr.countries
+FROM demo_hr.countries;
 ```
 <br>
 
