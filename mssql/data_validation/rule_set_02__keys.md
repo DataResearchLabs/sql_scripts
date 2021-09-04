@@ -48,7 +48,7 @@ FROM (
 
 <a id="t007" class="anchor" href="#t007" aria-hidden="true"> </a>
 ### T007 - Foreign Key Parent Is Childless
-Im not sure this particular test is all the useful because often it is okay for the parent-side of a foreign key relationship to not have children.  But, if for some reason you need to be sure there is data present on both sides (parent **and** child), then this test is for you.  You will notice in the example below that the query is very similar to T006 above, but the parent and child tables have switched positions in the FROM and LEFT JOIN lines.  This is because we want to first pull all parent rows, then left join to find missing (FKey field IS NULL) child rows.
+I'm not sure this particular test is all that useful because often it is okay for the parent-side of a foreign key relationship to not have children.  But, if for some reason you need to be sure there is data present on both sides (parent **and** child), then this test is for you.  You will notice in the example below that the query is very similar to T006 above, but the parent and child tables have switched positions in the FROM and LEFT JOIN lines.  This is because we want to first pull all parent rows, then left join to find missing (FKey field IS NULL) child rows.
 ```sql
 SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
 FROM (
