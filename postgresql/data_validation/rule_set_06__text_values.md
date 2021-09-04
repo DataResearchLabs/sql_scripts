@@ -186,8 +186,8 @@ FROM demo_hr.employees;
 Verify text field does not have tab (CHAR-9) characters.  For example, to verify that the field last_name has no TABs in table employees:
 ```sql
 SELECT last_name
-, CASE WHEN CHARINDEX(last_name, CHAR(9)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN POSITION(CHR(9) IN last_name) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -197,8 +197,8 @@ FROM demo_hr..employees;
 Verify text field does not have non-breaking-space (CHAR-160 / "NBS") characters.  For example, to verify that the field last_name has no NBS chars in table employees:
 ```sql
 SELECT last_name
-, CASE WHEN CHARINDEX(last_name, CHAR(160)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN POSITION(CHR(160) IN last_name) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -208,8 +208,8 @@ FROM demo_hr..employees;
 Verify text field does not have an em-dash character (CHAR-151; common Microsoft Office "--" copy-paste conversion causing data load issues).  For example, to verify that the field last_name has no em-dashes in table employees:
 ```sql
 SELECT last_name
-, CASE WHEN CHARINDEX(last_name, CHAR(151)) > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN POSITION(CHR(151) IN last_name) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -219,12 +219,12 @@ FROM demo_hr..employees;
 Verify text field does not have any vertical tab (CHAR-11 / "VT"), form feed (CHAR-12 / "FF"), or next line (CHAR-133 / "NEL") characters.  For example, use the SQL below to verify that the field last_name has no VT, FF, or NEL characters in table employees.  Note that this SQL checks for all three characters, each on its own CASE...WHEN clause, and that it returns the location within a string where the bad character occurs.
 ```sql
 SELECT last_name
-, CASE WHEN CHARINDEX(last_name, CHAR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
-       WHEN CHARINDEX(last_name, CHAR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
-       WHEN CHARINDEX(last_name, CHAR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
-       ELSE 'P'
-  END AS status
-FROM demo_hr..employees;
+, CASE WHEN POSITION(CHR(11) IN last_name) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(POSITION(CHR(11) IN last_name) AS VARCHAR(4))
+       WHEN POSITION(CHR(12) IN last_name) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(POSITION(CHR(12) IN last_name) AS VARCHAR(4))
+       WHEN POSITION(CHR(133) IN last_name) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(POSITION(CHR(133) IN last_name) AS VARCHAR(4))
+	      ELSE 'P'
+   END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -234,8 +234,8 @@ FROM demo_hr..employees;
 Verify text field does not have any periods or dashes.  For example, to verify that the field last_name has no periods or dashes in table employees:
 ```sql
 SELECT last_name
-, CASE WHEN CHARINDEX(last_name, '.') > 0 OR CHARINDEX(last_name, '-') > 0 THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN POSITION('.' IN last_name) > 0 OR POSITION('0' IN last_name) > 0 THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -245,8 +245,8 @@ FROM demo_hr..employees;
 Verify text field does not have any funky ",/:()&#?;" characters.  For example, to verify that the field last_name has commas, colons, etc. in table employees:
 ```sql
 SELECT last_name
-, CASE WHEN last_name LIKE '%[,/:()&#?;]%' THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN last_name ~ '[,/:()&#?;]' THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -256,8 +256,8 @@ FROM demo_hr..employees;
 Verify text field contains only allowed characters from a specific list.  For example, use the SQL below to verify that the field phone_number in table employees only has characters ".0123456789".  The LIKE expression does the work.  Specifically, the []'s indicating look for these characters, and the ^ means look for any character not in this list.  So it reads: "find any phone numbers containing characters not in [.0123456789]".
 ```sql
 SELECT phone_number
-, CASE WHEN phone_number LIKE '%[^.0123456789]%' THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN phone_number ~ '[^.0123456789]' THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -272,7 +272,7 @@ SELECT phone_number
              AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
             ELSE 'P'
        END AS status
-FROM demo_hr..employees;
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -282,8 +282,8 @@ FROM demo_hr..employees;
 Verify text field is numeric.  For example, use the SQL below to verify that the field zip5 in table employees is numeric.
 ```sql
 SELECT zip5
-, CASE WHEN zip5 LIKE '%[^0-9]%' THEN 'FAIL' ELSE 'P' END AS status
-FROM demo_hr..employees;
+, CASE WHEN NOT zip5 ~ '^\d+(\.\d+)?$' THEN 'FAIL' ELSE 'P' END AS status
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -312,7 +312,7 @@ SELECT some_date_fmt1
        WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
        ELSE 'P'
   END AS status
-FROM demo_hr..employees;
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -341,7 +341,7 @@ SELECT some_date_fmt2
        WHEN NOT SUBSTRING(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
        ELSE 'P'
   END AS status
-FROM demo_hr..employees;
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -370,7 +370,7 @@ SELECT some_date_fmt3
        WHEN NOT SUBSTRING(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
        ELSE 'P'
   END AS status
-FROM demo_hr..employees;
+FROM demo_hr.employees;
 ```
 <br>
 
@@ -399,7 +399,7 @@ SELECT some_date_fmt4
        WHEN NOT SUBSTRING(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
        ELSE 'P'
   END AS status
-FROM demo_hr..employees;
+FROM demo_hr.employees;
 ```
 <br>
 
