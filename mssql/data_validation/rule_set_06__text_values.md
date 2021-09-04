@@ -270,9 +270,9 @@ FROM demo_hr..employees;
 Verify text field matches simple like patterns.  For example, use the SQL below to verify that the field phone_number in table employees matches either the US (###.###.####) or international format (011.##.####.#####).  The LIKE command use "%" to represent any number of any character and "\_" to represent any single character.
 ```sql
 SELECT phone_number
-     , CASE WHEN phone_number NOT LIKE '%.%'                THEN 'REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
+     , CASE WHEN phone_number NOT LIKE '%.%'                THEN 'REJ-01: Verify phone_number contains a ''.''|exp=contains-.|act=' + phone_number
             WHEN phone_number NOT LIKE '___.___.____' 
-             AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
+             AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-02: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' + phone_number
             ELSE 'P'
        END AS status
 FROM demo_hr..employees;
