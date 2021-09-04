@@ -431,7 +431,7 @@
     SELECT CASE WHEN COUNT(*) > 0 THEN 'FAIL' ELSE 'P' END AS status
     FROM (
     	SELECT phone_number
-             , CASE WHEN LENGTH(phone_number) NOT IN(112,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=112,18|act=' || LENGTH(phone_number)
+             , CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=112,18|act=' || LENGTH(phone_number)
     	            ELSE 'P'
     	       END AS status
     	FROM demo_hr.employees
