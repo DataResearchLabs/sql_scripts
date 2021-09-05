@@ -9,7 +9,7 @@
 ### Overview
 The advanced data validation scripts runs the exact same 66 test cases (T001-T066) as the basic script.  
 However, this script is more sophisticated as follows:
-1. Output is written to a temp table during the test execution phase, then returned as a single SELECT grid at the end
+1. Output is written to a temp table during the test execution phase, then returned as a single SELECT grid at the end (thus, this script will work in pgAdmin, unlike the [basic script](https://github.com/DataResearchLabs/sql_scripts/blob/main/postgresql/data_validation/how_to_use_basic_script.md))
 2. The output is more comprehensive than just test id, status, and description.  The output also includes detailed rejection codes, expected results, and actual results behind every fail.
 <br><br>
 
