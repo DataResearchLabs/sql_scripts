@@ -66,7 +66,7 @@
 -- ===============================================================================================
 DROP TABLE IF EXISTS test_case_config;
 
-CREATE TEMP TABLE test_case_config (
+CREATE TEMPORARY TABLE test_case_config (
   prop_nm     VARCHAR(99)
 , prop_val    VARCHAR(255)
 );
@@ -90,13 +90,6 @@ CREATE TEMP TABLE test_case_results (
 , rej_dtls    VARCHAR(1024)
 , lookup_sql  VARCHAR(1024)
 );
-
-
-
--- -----------------------------------------------------------------------------------------------
--- INITIALIZE
--- -----------------------------------------------------------------------------------------------
-USE demo_hr;
 
 
 
