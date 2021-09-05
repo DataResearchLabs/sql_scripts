@@ -1,7 +1,7 @@
 -- ===============================================================================================
 -- Filename:          dv_advanced_test_cases.sql
 -- Description:       Data Validation Sripts - Verification Check Examples
--- Platform:          SQL Server
+-- Platform:          Postgresql
 -- Author:            DataResearchLabs
 -- GitHub:            https://github.com/DataResearchLabs/sql_scripts
 -- YouTube Tutorials: https://www.youtube.com/channel/UCQciXv3xaBykeUFc04GxSXA
@@ -53,39 +53,31 @@
 -- Advanced Script: Table-output framework (this script you are reading now)
 
 
--- ===============================================================================================
--- IMPORTANT
--- ===============================================================================================
-USE Demo_HR;
 
 -- ===============================================================================================
 -- CONFIGURE TEST RUN
 -- ===============================================================================================
-IF OBJECT_ID('tempdb..#test_case_config') IS NOT NULL
-	DROP TABLE #test_case_config
-GO
+DROP TABLE IF EXISTS test_case_config;
 
-CREATE TABLE #test_case_config (
+CREATE TEMPORARY TABLE test_case_config (
   prop_nm     VARCHAR(99)
 , prop_val    VARCHAR(255)
 );
 
-INSERT INTO #test_case_config VALUES('NumberDaysLookBack','100');
-INSERT INTO #test_case_config VALUES('MaxNbrRowsRtn','5');
+INSERT INTO test_case_config VALUES('NumberDaysLookBack','100');
+INSERT INTO test_case_config VALUES('MaxNbrRowsRtn','5');
 
 
 
 -- ===============================================================================================
 -- EXECUTE TEST CASES 
 -- ===============================================================================================
-IF OBJECT_ID('tempdb..#test_case_results') IS NOT NULL
-	DROP TABLE #test_case_results
-GO
+DROP TABLE IF EXISTS test_case_results;
 
-CREATE TABLE #test_case_results (
+CREATE TEMP TABLE test_case_results (
   tst_id      VARCHAR(5)
 , tst_descr   VARCHAR(255)
-, START_TM    DATETIME      DEFAULT GETDATE()
+, start_tm    TIMESTAMP      DEFAULT CLOCK_TIMESTAMP()
 , exec_tm     VARCHAR(15)
 , status      VARCHAR(5)
 , rej_dtls    VARCHAR(1024)
@@ -93,11 +85,13 @@ CREATE TABLE #test_case_results (
 );
 
 
+
 -- -----------------------------------------------------------------------------------------------
 -- RULE SET #1: ROW COUNTS
 -- -----------------------------------------------------------------------------------------------
 
 -- T001 ------------------------------------------------------------------------------------------
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg  -- Config parameters 
 AS (
 	SELECT 'T001' AS tst_id 
@@ -106,14 +100,14 @@ AS (
 , dut -- Data Under Test
 AS (
 	SELECT COUNT(*) AS row_count 
-	FROM demo_hr..countries
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
-	SELECT CASE WHEN row_count <> 25 THEN 'REJ: Incorrect row count|exp=25|act=' + CAST(row_count AS VARCHAR(10))
+	SELECT CASE WHEN row_count <> 25 THEN 'REJ: Incorrect row count|exp=25|act=' || CAST(row_count AS VARCHAR(10))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT COUNT(*) FROM demo_hr..countries' AS lookup_sql
+	     , 'SELECT COUNT(*) FROM demo_hr.countries' AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -128,16 +122,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP(SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn')
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -148,6 +141,7 @@ SELECT * FROM fdtl
 
 -- T002 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify 'Partial' Table Row Counts"
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg  -- Config parameters 
 AS (
 	SELECT 'T002' AS tst_id 
@@ -156,17 +150,17 @@ AS (
 , dut -- Data Under Test
 AS (
 	SELECT COUNT(*) AS row_count 
-	FROM demo_hr..countries
+	FROM demo_hr.countries
 	WHERE region_id = 1
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
 	SELECT CASE WHEN row_count <> 8 THEN 'REJ: Table [countries] count where Region_ID=1 must be 8|'
-	                 + 'exp=8' 
-	                 + '|act=' + CAST(row_count AS VARCHAR(5))
+	                 || 'exp=8' 
+	                 || '|act=' || CAST(row_count AS VARCHAR(5))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT COUNT(*) FROM demo_hr..countries WHERE region_id = 1' AS lookup_sql
+	     , 'SELECT COUNT(*) FROM demo_hr.countries WHERE region_id = 1' AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -181,16 +175,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn')
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -198,9 +191,9 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
-
 -- T003 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify 'Relative' Table Row Counts (vs. other tables)"
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg  -- Config parameters 
 AS (
 	SELECT 'T003' AS tst_id 
@@ -208,17 +201,17 @@ AS (
 )
 , dut -- Data Under Test
 AS (
-	SELECT (SELECT COUNT(*) AS row_count FROM demo_hr..countries) AS countries_count 
-	     , (SELECT COUNT(*) AS row_count FROM demo_hr..regions)   AS regions_count
+	SELECT (SELECT COUNT(*) AS row_count FROM demo_hr.countries) AS countries_count 
+	     , (SELECT COUNT(*) AS row_count FROM demo_hr.regions)   AS regions_count
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
 	SELECT CASE WHEN countries_count < 5 * regions_count THEN 'REJ: Table [countries] row count must be >= 5x [regions] row count|'
-	                 + 'exp=' + CAST(regions_count * 5 AS VARCHAR(5)) 
-	                 + '|act=' + CAST(countries_count AS VARCHAR(5))
+	                 || 'exp=' || CAST(regions_count * 5 AS VARCHAR(5)) 
+	                 || '|act=' || CAST(countries_count AS VARCHAR(5))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT COUNT(*) FROM demo_hr..countries;SELECT COUNT(*) FROM demo_hr..regions;' AS lookup_sql
+	     , 'SELECT COUNT(*) FROM demo_hr.countries;SELECT COUNT(*) FROM demo_hr.regions;' AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -233,16 +226,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -250,31 +242,33 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T004 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify 'Recent' Table Row Counts"
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg  -- Config parameters 
 AS (
 	SELECT 'T004' AS tst_id 
 	     , '"RS-1 Row Counts" #4 - Verify RecentRowCount() >= 5 in table [countries] where [date_last_updated] in past '
-	       + (SELECT prop_val FROM #test_case_config WHERE prop_nm = 'NumberDaysLookBack') + ' days' AS tst_descr
+	       || (SELECT prop_val FROM test_case_config WHERE prop_nm = 'NumberDaysLookBack') || ' days' AS tst_descr
 )
 , dut -- Data Under Test
 AS (
 	SELECT COUNT(*) AS row_count 
-	FROM demo_hr..countries
-	WHERE date_last_updated >= GETDATE() - (SELECT CAST(prop_val AS INT) FROM #test_case_config WHERE prop_nm = 'NumberDaysLookBack')
+	FROM demo_hr.countries
+	WHERE date_last_updated >= NOW() - (SELECT CAST(prop_val AS INT) FROM test_case_config WHERE prop_nm = 'NumberDaysLookBack') * INTERVAL '1 day'
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
 	SELECT CASE WHEN row_count < 5 THEN 'REJ: Table [countries] count in past ' 
-	                                   + (SELECT prop_val FROM #test_case_config WHERE prop_nm = 'NumberDaysLookBack') + ' days is too low|'
+	                                   || (SELECT prop_val FROM test_case_config WHERE prop_nm = 'NumberDaysLookBack') || ' days is too low|'
 	
-	                 + 'exp>=5' 
-	                 + '|act=' + CAST(row_count AS VARCHAR(5))
+	                 || 'exp>=5' 
+	                 || '|act=' || CAST(row_count AS VARCHAR(5))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT COUNT(*) FROM demo_hr..countries WHERE date_last_updated >= GETDATE() - ' 
-	       + (SELECT prop_val FROM #test_case_config WHERE prop_nm = 'NumberDaysLookBack') AS lookup_sql
+	     , 'SELECT COUNT(*) FROM demo_hr.countries WHERE date_last_updated >= CLOCK_TIMESTAMP() - ' 
+	       || (SELECT prop_val FROM test_case_config WHERE prop_nm = 'NumberDaysLookBack') AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -289,16 +283,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')	
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -314,6 +307,7 @@ SELECT * FROM fdtl
 -- T005 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Dups in Unique Keys (Ukeys)"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T005' AS tst_id 
@@ -323,16 +317,16 @@ AS (
 AS (
 	SELECT country_name        -- PKey/UKey fields 
 	     , COUNT(*) AS match_count 
-	FROM demo_hr..countries          -- PKey/UKey fields 
+	FROM demo_hr.countries          -- PKey/UKey fields 
 	GROUP BY country_name 
 	HAVING COUNT(*) > 1
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
-	SELECT CASE WHEN COUNT(*) > 0 THEN 'REJ: Duplicates exist by UKey|exp=0|act=' + CAST(COUNT(*) AS VARCHAR(10))
+	SELECT CASE WHEN COUNT(*) > 0 THEN 'REJ: Duplicates exist by UKey|exp=0|act=' || CAST(COUNT(*) AS VARCHAR(10))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT country_name, COUNT(*) FROM demo_hr..countries GROUP BY country_name HAVING COUNT(*) > 1' AS lookup_sql
+	     , 'SELECT country_name, COUNT(*) FROM demo_hr.countries GROUP BY country_name HAVING COUNT(*) > 1' AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -347,16 +341,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -364,9 +357,11 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T006 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Foreign Key Children are not Orphans"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T006' AS tst_id 
@@ -375,16 +370,16 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT DISTINCT c.region_id AS child_id, p.region_id AS parent_id
-	FROM      demo_hr..countries c 
-	LEFT JOIN demo_hr..regions   p  ON p.region_id = c.region_id
+	FROM      demo_hr.countries c 
+	LEFT JOIN demo_hr.regions   p  ON p.region_id = c.region_id
 	WHERE p.region_id IS NULL
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
-	SELECT CASE WHEN parent_id IS NULL THEN 'REJ: Orphaned region_id=' + CAST(child_id AS VARCHAR(5)) + '|exp=Exists In Tbl Regions|act=Does Not Exist'
+	SELECT CASE WHEN parent_id IS NULL THEN 'REJ: Orphaned region_id=' || CAST(child_id AS VARCHAR(5)) || '|exp=Exists In Tbl Regions|act=Does Not Exist'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..regions WHERE region_id=' + CAST(child_id AS VARCHAR(5)) AS lookup_sql
+	     , 'SELECT * FROM demo_hr.regions WHERE region_id=' || CAST(child_id AS VARCHAR(5)) AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -399,16 +394,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -419,6 +413,7 @@ SELECT * FROM fdtl
 -- T007 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Foreign Key Parents are not Childless Leaf Nodes"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T007' AS tst_id 
@@ -427,17 +422,17 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT DISTINCT c.country_id AS child_id, p.country_id AS parent_id
-	FROM      demo_hr..countries p 
-	LEFT JOIN demo_hr..locations c  ON p.country_id = c.country_id
+	FROM      demo_hr.countries p 
+	LEFT JOIN demo_hr.locations c  ON p.country_id = c.country_id
 	WHERE c.country_id IS NULL
 	  AND p.country_id IN('IT','JP','US','CA','CN','IN','AU','SG','UK','DE','CH','NL','MX')
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
-	SELECT CASE WHEN child_id IS NULL THEN 'REJ: Childless (leaf node) region_id=' + CAST(parent_id AS VARCHAR(5)) + '|exp=Exists In Tbl countries|act=Does Not Exist'
+	SELECT CASE WHEN child_id IS NULL THEN 'REJ: Childless (leaf node) region_id=' || CAST(parent_id AS VARCHAR(5)) || '|exp=Exists In Tbl countries|act=Does Not Exist'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE region_id=' + CAST(parent_id AS VARCHAR(5)) AS lookup_sql
+	     , 'SELECT * FROM demo_hr.countries WHERE region_id=' || CAST(parent_id AS VARCHAR(5)) AS lookup_sql
 	FROM dut
 )
 -- >>>>>>>>>>>>>> Begin Boilerplate code
@@ -452,16 +447,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -476,6 +470,7 @@ SELECT * FROM fdtl
 -- T008 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Null Rate Thresholds"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T008' AS tst_id 
@@ -483,16 +478,16 @@ AS (
 )
 , dut -- data under test
 AS (
-	SELECT CAST(SUM(CASE WHEN department_name IS NULL THEN 1 ELSE 0 END) AS FLOAT) / CAST(COUNT(*) AS FLOAT) AS nr_dept_nm
-         , CAST(SUM(CASE WHEN manager_id      IS NULL THEN 1 ELSE 0 END) AS FLOAT) / CAST(COUNT(*) AS FLOAT) AS nr_mgr_id
-         , CAST(SUM(CASE WHEN url             IS NULL THEN 1 ELSE 0 END) AS FLOAT) / CAST(COUNT(*) AS FLOAT) AS nr_url
-	FROM demo_hr..departments
+	SELECT CAST(SUM(CASE WHEN department_name IS NULL THEN 1 ELSE 0 END) AS DOUBLE PRECISION) / CAST(COUNT(*) AS DOUBLE PRECISION) AS nr_dept_nm
+         , CAST(SUM(CASE WHEN manager_id      IS NULL THEN 1 ELSE 0 END) AS DOUBLE PRECISION) / CAST(COUNT(*) AS DOUBLE PRECISION) AS nr_mgr_id
+         , CAST(SUM(CASE WHEN url             IS NULL THEN 1 ELSE 0 END) AS DOUBLE PRECISION) / CAST(COUNT(*) AS DOUBLE PRECISION) AS nr_url
+	FROM demo_hr.departments
 )
 , bll -- business logic layer: apply heuristics...what constitutes a pass or a fail?
 AS (
-	SELECT CASE WHEN nr_dept_nm > 0.0000 then 'REJ-01: Null rate too high at department_name|exp=0.0000|act=' + CAST(nr_dept_nm AS VARCHAR(8))
-                WHEN nr_mgr_id  > 0.6500 then 'REJ-02: Null rate too high at manager_id|exp<=0.6500|act=' + CAST(nr_mgr_id AS VARCHAR(8))
-                WHEN nr_url     > 0.8000 then 'REJ-03: Null rate too high at url|exp<=0.8000|act=' + CAST(nr_url AS VARCHAR(8))
+	SELECT CASE WHEN nr_dept_nm > 0.0000 then 'REJ-01: Null rate too high at department_name|exp=0.0000|act=' || CAST(nr_dept_nm AS VARCHAR(8))
+                WHEN nr_mgr_id  > 0.6500 then 'REJ-02: Null rate too high at manager_id|exp<=0.6500|act=' || CAST(nr_mgr_id AS VARCHAR(8))
+                WHEN nr_url     > 0.8000 then 'REJ-03: Null rate too high at url|exp<=0.8000|act=' || CAST(nr_url AS VARCHAR(8))
                 ELSE 'allgood'
 	       END AS rej_dtls
 	     ,  'Too complex. Highight and run the "dut" section of test query to lookup/confirm.' AS lookup_sql
@@ -510,16 +505,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -527,10 +521,10 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
-
 -- T009 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Value Frequency Thresholds"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T009' AS tst_id 
@@ -539,20 +533,20 @@ AS (
 , dut -- data under test
 AS (
 	SELECT region_id
-	, CAST(freq AS FLOAT) / CAST(den AS FLOAT) AS freq_rt
+	, CAST(freq AS DOUBLE PRECISION) / CAST(den AS DOUBLE PRECISION) AS freq_rt
 	FROM (
 	    SELECT region_id, COUNT(*) AS freq
-	    , (SELECT COUNT(*) FROM demo_hr..countries) AS den
-        FROM demo_hr..countries
+	    , (SELECT COUNT(*) FROM demo_hr.countries) AS den
+        FROM demo_hr.countries
         GROUP BY region_id
     ) t
 )
 , bll -- business logic layer: apply heuristics...what constitutes a pass or a fail?
 AS (
-	SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.28 AND 0.36 then 'REJ-01: Frequency occurrence of region_id=1 is outside threshold|exp=0.28 thru 0.36|act=' + CAST(freq_rt AS VARCHAR(8))
-                WHEN region_id = 2  AND freq_rt NOT BETWEEN 0.16 AND 0.24 then 'REJ-02: Frequency occurrence of region_id=2 is outside threshold|exp=0.16 thru 0.24|act=' + CAST(freq_rt AS VARCHAR(8))
-                WHEN region_id = 3  AND freq_rt NOT BETWEEN 0.20 AND 0.28 then 'REJ-03: Frequency occurrence of region_id=3 is outside threshold|exp=0.20 thru 0.28|act=' + CAST(freq_rt AS VARCHAR(8))
-                WHEN region_id = 4  AND freq_rt NOT BETWEEN 0.20 AND 0.28 then 'REJ-04: Frequency occurrence of region_id=4 is outside threshold|exp=0.20 thru 0.28|act=' + CAST(freq_rt AS VARCHAR(8))
+	SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.28 AND 0.36 then 'REJ-01: Frequency occurrence of region_id=1 is outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR(8))
+                WHEN region_id = 2  AND freq_rt NOT BETWEEN 0.16 AND 0.24 then 'REJ-02: Frequency occurrence of region_id=2 is outside threshold|exp=0.16 thru 0.24|act=' || CAST(freq_rt AS VARCHAR(8))
+                WHEN region_id = 3  AND freq_rt NOT BETWEEN 0.20 AND 0.28 then 'REJ-03: Frequency occurrence of region_id=3 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR(8))
+                WHEN region_id = 4  AND freq_rt NOT BETWEEN 0.20 AND 0.28 then 'REJ-04: Frequency occurrence of region_id=4 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR(8))
                 ELSE 'allgood'
 	       END AS rej_dtls
 	     ,  'Too complex. Highight and run the "dut" section of test query to lookup/confirm.' AS lookup_sql
@@ -570,16 +564,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -594,6 +587,7 @@ SELECT * FROM fdtl
 -- T010 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Nulls in Numeric Column"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T010' AS tst_id 
@@ -604,8 +598,8 @@ AS (
 	SELECT CASE WHEN region_id IS NULL  THEN 'REJ: No nulls allowed at field region_id|exp=NoNulls|act=Null'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -623,16 +617,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -643,6 +636,7 @@ SELECT * FROM fdtl
 -- T011 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Numeric Values Are Not Negative"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T011' AS tst_id 
@@ -651,11 +645,11 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT CASE WHEN region_id < 0
-                THEN 'REJ-01: Verify region_id is not negative|exp>=0|act=' + CAST(region_id AS VARCHAR(10))
+                THEN 'REJ-01: Verify region_id is not negative|exp>=0|act=' || CAST(region_id AS VARCHAR(10))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -673,16 +667,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -693,6 +686,7 @@ SELECT * FROM fdtl
 -- T012 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Numeric Boundaries (e.g.: price between $100 and $150)"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T012' AS tst_id 
@@ -700,12 +694,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-    SELECT CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' + CAST(employee_id AS VARCHAR(10))
-	            WHEN employee_id > 999   THEN 'REJ-02: Verify employee_id < 1000|exp<1000|act=' + CAST(employee_id AS VARCHAR(10))
+    SELECT CASE WHEN employee_id < 100   THEN 'REJ-01: Verify employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR(10))
+	            WHEN employee_id > 999   THEN 'REJ-02: Verify employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR(10))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees GROUP BY employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees GROUP BY employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -723,16 +717,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -740,10 +733,10 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
-
 -- T013 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Numeric Values In List of Valid Values"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T013' AS tst_id 
@@ -752,11 +745,11 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT CASE WHEN region_id NOT IN(1,2,3,4)
-                THEN 'REJ-01: Verify region_id in domain list (1,2,3,4) of possible values|exp=1,2,3,4|act=' + CAST(region_id AS VARCHAR(3))
+                THEN 'REJ-01: Verify region_id in domain list (1,2,3,4) of possible values|exp=1,2,3,4|act=' || region_id
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -774,16 +767,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -794,6 +786,7 @@ SELECT * FROM fdtl
 -- T014 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Numeric Values In List of Valid Values"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T014' AS tst_id 
@@ -802,11 +795,11 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT CASE WHEN region_id IN(97,98,99)
-                THEN 'REJ-01: Verify region_id not in domain list (97,98,99) of possible values|exp<>97,98,99|act=' + CAST(region_id AS VARCHAR(3))
+                THEN 'REJ-01: Verify region_id not in domain list (97,98,99) of possible values|exp<>97,98,99|act=' || region_id
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -824,16 +817,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -844,6 +836,7 @@ SELECT * FROM fdtl
 -- T015 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Numeric Value Multi-Field Compare"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T015' AS tst_id 
@@ -852,11 +845,11 @@ AS (
 , dut -- Data Under Test 
 AS (
     SELECT CASE WHEN salary * commission_pct > 10000
-                THEN 'REJ-01: Verify salary x commission_pct <= $10,000|exp<10,000|act=' + CAST(salary * commission_pct AS VARCHAR(15))
+                THEN 'REJ-01: Verify salary x commission_pct <= $10,000|exp<10,000|act=' || CAST(salary * commission_pct AS VARCHAR(15))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -874,16 +867,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -898,6 +890,7 @@ SELECT * FROM fdtl
 -- T016 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Nulls in Date Column"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T016' AS tst_id 
@@ -908,8 +901,8 @@ AS (
 	SELECT CASE WHEN date_last_updated IS NULL  THEN 'REJ: No nulls allowed at field date_last_updated|exp=NoNulls|act=Null'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -927,16 +920,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -947,6 +939,7 @@ SELECT * FROM fdtl
 -- T017 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Date is not in the Future"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T017' AS tst_id 
@@ -954,12 +947,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN date_last_updated > GETDATE()    THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' + CAST(GETDATE() AS VARCHAR(20)) + '|act=' + CAST(date_last_updated AS VARCHAR(20))
-	            WHEN date_last_updated < '01/01/2021' THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' + CAST(date_last_updated AS VARCHAR(20))
+	SELECT CASE WHEN date_last_updated > CLOCK_TIMESTAMP()                   THEN 'REJ-01: Field date_last_updated cannot be in the future|exp<=' || CAST(CLOCK_TIMESTAMP() AS VARCHAR(20)) || '|act=' || CAST(date_last_updated AS VARCHAR(20))
+	            WHEN date_last_updated < TO_DATE('01/01/2021', 'mm/dd/yyyy') THEN 'REJ-02: Field date_last_updated cannot be too old|exp>=1/1/2021|act=' || CAST(date_last_updated AS VARCHAR(20))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT date_last_updated FROM demo_hr..countries WHERE country_id=''' + country_id + '''' AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT date_last_updated FROM demo_hr.countries WHERE country_id=''' || country_id || '''' AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -977,16 +970,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -996,20 +988,21 @@ SELECT * FROM fdtl
 
 
 -- T018 ------------------------------------------------------------------------------------------
--- EXAMPLE: How to "Verify Date has no time part (time = 00:00:00) at table [employees]"
+-- EXAMPLE: How to "Verify Date has no time part (time = 12:00:00) at table [employees]"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T018' AS tst_id 
-	     , '"RS-5 Dates" #3 - Verify NoTimePart() where [hire_date] has no time part (is "00:00:00") in table [employees]' AS tst_descr
+	     , '"RS-5 Dates" #3 - Verify NoTimePart() where [hire_date] has no time part (is "12:00:00") in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CONVERT(VARCHAR(8), hire_date, 108) <> '00:00:00' THEN 'REJ-01: Field hire_date cannot have a time part|exp=00:00:00|act=' + CONVERT(VARCHAR(8), hire_date, 108)
+	SELECT CASE WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00' THEN 'REJ-01: Field hire_date cannot have a time part|exp=12:00:00|act=' || TO_CHAR(hire_date, 'hh:nn:ss')
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT hire_date FROM demo_hr..employees WHERE employee_id=''' + CAST(employee_id AS VARCHAR(10)) + '''' AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT hire_date FROM demo_hr.employees WHERE employee_id=''' || employee_id || '''' AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1027,16 +1020,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1045,20 +1037,21 @@ SELECT * FROM fdtl
 
 
 -- T019 ------------------------------------------------------------------------------------------
--- EXAMPLE: How to "Verify Date has time part (time <> 00:00:00) at table [test_case_results]"
+-- EXAMPLE: How to "Verify Date has time part (time <> 12:00:00) at table [test_case_results]"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T019' AS tst_id 
-	     , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has time part (is not "00:00:00") at table [employees]' AS tst_descr
+	     , '"RS-5 Dates" #4 - Verify HasTimePart() where [hire_date] has time part (is not 12:00:00) at table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CONVERT(VARCHAR(8), start_tm, 108) = '00:00:00' THEN 'REJ-01: Field start_tm must have a time part|exp<>00:00:00|act=' + CONVERT(VARCHAR(8), start_tm, 108)
+	SELECT CASE WHEN TO_CHAR(start_tm, 'hh:mi:ss') = '12:00:00' THEN 'REJ-01: Field start_tm must have a time part|exp<>12:00:00|act=' || TO_CHAR(start_tm, 'hh:nn:ss')
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT start_tm FROM #test_case_results WHERE tst_id=''' + tst_id + '''' AS lookup_sql
-	FROM #test_case_results
+	     , 'SELECT start_tm FROM test_case_results WHERE tst_id=''' || tst_id || '''' AS lookup_sql
+	FROM test_case_results
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1076,16 +1069,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1096,6 +1088,7 @@ SELECT * FROM fdtl
 -- T020 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Date Values Multi-Field Compare"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T020' AS tst_id 
@@ -1107,8 +1100,8 @@ AS (
                 THEN 'REJ-01: Verify start_date < end_date|exp=true|act=false'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..job_history WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..job_history
+	     , 'SELECT * FROM demo_hr.job_history WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.job_history
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1126,21 +1119,21 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
 ;
 -- End Boilerplate code <<<<<<<<<<<<<< 
+
 
 
 
@@ -1151,6 +1144,7 @@ SELECT * FROM fdtl
 -- T021 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Nulls in Text Column"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T021' AS tst_id 
@@ -1161,8 +1155,8 @@ AS (
 	SELECT CASE WHEN country_name IS NULL  THEN 'REJ: No nulls allowed at field country_name|exp=NoNulls|act=Null'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1180,16 +1174,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1200,6 +1193,7 @@ SELECT * FROM fdtl
 -- T022 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Null Strings in Text Column"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T022' AS tst_id 
@@ -1207,11 +1201,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN country_name = ''  THEN 'REJ: No null strings (spaces) allowed at field country_name|exp=NoNullStrings|act=NullString'
+	SELECT CASE WHEN country_name = ' '  THEN 'REJ: No null strings (spaces) allowed at field country_name|exp=NoNullStrings|act=NullString'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1229,16 +1223,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1249,6 +1242,7 @@ SELECT * FROM fdtl
 -- T023 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text Values have no leading or trailing spaces"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T023' AS tst_id 
@@ -1256,12 +1250,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN country_name LIKE ' %'  THEN 'REJ-02: Verify no leading space at country_name|exp=noLeadSpace|act=''' + country_name +''''
-				WHEN country_name LIKE '% '  THEN 'REJ-03: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' + country_name +''''
+	SELECT CASE WHEN country_name LIKE ' %'  THEN 'REJ-02: Verify no leading space at country_name|exp=noLeadSpace|act=''' || country_name ||''''
+				WHEN country_name LIKE '% '  THEN 'REJ-03: Verify no trailing space at country_name|exp=noTrailingSpace|act=''' || country_name ||''''
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1279,16 +1273,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1299,6 +1292,7 @@ SELECT * FROM fdtl
 -- T024 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Values In List of Valid Values"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T024' AS tst_id 
@@ -1308,11 +1302,11 @@ AS (
 AS (
 	SELECT CASE WHEN job_id NOT IN('ST_MAN','ST_CLERK','SH_CLERK','SA_REP','SA_MAN','PU_CLERK','PR_REP','MK_REP','MK_MAN','IT_PROG'
                                   ,'HR_REP','FI_MGR','FI_ACCOUNT','AD_VP','AD_PRES','AD_ASST','AC_MGR','AC_ACCOUNT','PU_MAN')
-                THEN 'REJ-01: Verify job_id in domain list of possible values|exp=1of18|act=' + JOB_ID
+                THEN 'REJ-01: Verify job_id in domain list of possible values|exp=1of18|act=' || JOB_ID
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees GROUP BY employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees GROUP BY employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1330,16 +1324,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1347,10 +1340,10 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
-
 -- T025 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Values In List of Valid Values"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T025' AS tst_id 
@@ -1359,11 +1352,11 @@ AS (
 , dut -- Data Under Test 
 AS (
 	SELECT CASE WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')
-                THEN 'REJ-01: Verify job_id not in domain list of excluded values|exp<>1of5|act=' + job_id
+                THEN 'REJ-01: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees GROUP BY employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees GROUP BY employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1381,16 +1374,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1401,6 +1393,7 @@ SELECT * FROM fdtl
 -- T026 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Cross Field Comparisons"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T026' AS tst_id 
@@ -1408,12 +1401,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) THEN 'REJ-01: Field email <> first char of first_name + last_name|exp=' 
-	                          + SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) + '|act=' + email
+	SELECT CASE WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) || last_name), 1, 8) THEN 'REJ-01: Field email <> first char of first_name + last_name|exp=' 
+	                          || SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT email, first_name, last_name FROM demo_hr..employees WHERE employee_id=''' + cast(employee_id AS VARCHAR(10)) + '''' AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT email, first_name, last_name FROM demo_hr.employees WHERE employee_id=''' || employee_id || '''' AS lookup_sql
+	FROM demo_hr.employees
 	WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
 	               -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON 
 )
@@ -1433,16 +1426,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1454,6 +1446,7 @@ SELECT * FROM fdtl
 -- T027 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Text Value Length"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T027' AS tst_id 
@@ -1461,11 +1454,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN LEN(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(6))
+	SELECT CASE WHEN LENGTH(phone_number) NOT IN(12,18)  THEN 'REJ-01: Verify phone_number length is allowed|exp=12,18|act=' || LENGTH(phone_number)
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, phone_number, LENGTH(phone_number) FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, phone_number, LENGTH(phone_number) FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1483,16 +1476,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1500,9 +1492,11 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T028 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Values all Upper or Lower Case"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T028' AS tst_id 
@@ -1510,13 +1504,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN job_id COLLATE SQL_Latin1_General_CP1_CS_AS <> UPPER(job_id)             THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' + job_id
-	            WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) 
-				  <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255)) THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
+	SELECT CASE WHEN job_id ~ '[[:lower:]]'                     THEN 'REJ-01: Verify job_id does not contain lower case characters|exp=ucase|act=' || job_id
+	            WHEN NOT SUBSTRING(last_name,1) ~ '[[:upper:]]' THEN 'REJ-02: Verify last_name after first char is all lower case|exp=lcase|act=' || last_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1534,16 +1527,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1554,6 +1546,7 @@ SELECT * FROM fdtl
 -- T029 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Values all Alpha only or Numeric only, or Combination"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T029' AS tst_id 
@@ -1561,12 +1554,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN employee_id LIKE '%[A-Za-z]%' THEN 'REJ-01: Verify employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
-                WHEN last_name LIKE '%[0-9]%'      THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' + last_name 
+	SELECT CASE WHEN some_date_fmt1 ~ '[[:alpha:]]' THEN 'REJ-01: Verify some_date_fmt1 does not contain alpha characters|exp=no-alphas|act=' || some_date_fmt1
+                WHEN last_name ~ '[[:digit:]]'      THEN 'REJ-02: Verify last_name does not contain numeric digits|exp=no-digits|act=' || last_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1584,16 +1577,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1604,6 +1596,7 @@ SELECT * FROM fdtl
 -- T030 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Values have no quotes or single quotes"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T030' AS tst_id 
@@ -1611,12 +1604,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' + first_name
-                WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' + first_name
+	SELECT CASE WHEN first_name LIKE '%''%'  THEN 'REJ-01: Verify first_name does not contain single quote characters|exp=none|act=' || first_name
+                WHEN first_name LIKE '%"%'   THEN 'REJ-02: Verify first_name does not contain quotation characters|exp=none|act=' || first_name
                 ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1634,16 +1627,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1651,8 +1643,10 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T031 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No CRLFs"
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T031' AS tst_id 
@@ -1660,14 +1654,14 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CHARINDEX(last_name, CHAR(10))  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ' 
-	                                                      + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(13))  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ' 
-				                                          + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
+	SELECT CASE WHEN POSITION(CHR(10) IN last_name)  > 0 THEN 'REJ-01: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' 
+	                                                      || CAST(POSITION(CHR(10) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(13) IN last_name)  > 0 THEN 'REJ-02: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' 
+				                                          || CAST(POSITION(CHR(13) IN last_name) AS VARCHAR(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1685,16 +1679,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1705,6 +1698,7 @@ SELECT * FROM fdtl
 -- T032 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Tabs"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T032' AS tst_id 
@@ -1712,11 +1706,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CHARINDEX(last_name, CHAR(9))   > 0 THEN 'REJ-01: Field last_name has a Tab (CHAR-9)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(9)) AS VARCHAR(4))
+	SELECT CASE WHEN POSITION(CHR(9) IN last_name)   > 0 THEN 'REJ-01: Field last_name has a Tab (CHR-9)|exp=none|act=at position ' || CAST(POSITION(CHR(9) IN last_name) AS VARCHAR(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1734,16 +1728,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1754,6 +1747,7 @@ SELECT * FROM fdtl
 -- T033 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No NBSs"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T033' AS tst_id 
@@ -1761,11 +1755,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CHARINDEX(last_name, CHAR(160)) > 0 THEN 'REJ-01: Field last_name has a Non-Breaking-Space (CHAR-160)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(160)) AS VARCHAR(4))
+	SELECT CASE WHEN POSITION(CHR(160) IN last_name) > 0 THEN 'REJ-01: Field last_name has a Non-Breaking-Space (CHR-160)|exp=none|act=at position ' || CAST(POSITION(CHR(160) IN last_name) AS VARCHAR(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1783,16 +1777,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1800,9 +1793,11 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T034 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Emdashes"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T034' AS tst_id 
@@ -1810,11 +1805,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CHARINDEX(last_name, CHAR(151)) > 0 THEN 'REJ-01: Field last_name has a Non-Breaking-Space (CHAR-151)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(151)) AS VARCHAR(4))
+	SELECT CASE WHEN POSITION(CHR(151) IN last_name) > 0 THEN 'REJ-01: Field last_name has a Non-Breaking-Space (CHR-151)|exp=none|act=at position ' || CAST(POSITION(CHR(151) IN last_name) AS VARCHAR(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1832,16 +1827,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1852,6 +1846,7 @@ SELECT * FROM fdtl
 -- T035 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No VT, FF, or NELs"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T035' AS tst_id 
@@ -1859,13 +1854,13 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CHARINDEX(last_name, CHAR(11)) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHAR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(12)) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHAR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(133)) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHAR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
+	SELECT CASE WHEN POSITION(CHR(11) IN last_name) > 0  THEN 'REJ-01: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(POSITION(CHR(11) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(12) IN last_name) > 0  THEN 'REJ-02: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(POSITION(CHR(12) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(133) IN last_name) > 0 THEN 'REJ-03: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(POSITION(CHR(133) IN last_name) AS VARCHAR(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1883,16 +1878,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1900,10 +1894,10 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
-
 -- T036 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Periods/Dashes"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T036' AS tst_id 
@@ -1911,12 +1905,12 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN CHARINDEX(last_name, '.') > 0 THEN 'REJ-01: Field last_name has a period|exp=none|act=at position ' + CAST(CHARINDEX(last_name, '.') AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, '0') > 0 THEN 'REJ-02: Field last_name has a dash|exp=none|act=at position ' + CAST(CHARINDEX(last_name, '-') AS VARCHAR(4))
+	SELECT CASE WHEN POSITION('.' IN last_name) > 0 THEN 'REJ-01: Field last_name has a period|exp=none|act=at position ' || CAST(POSITION('.' IN last_name) AS VARCHAR(4))
+	            WHEN POSITION('0' IN last_name) > 0 THEN 'REJ-02: Field last_name has a dash|exp=none|act=at position ' || CAST(POSITION('0' IN last_name) AS VARCHAR(4))
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1934,16 +1928,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -1954,6 +1947,7 @@ SELECT * FROM fdtl
 -- T037 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Funky Chars ,/:()&#?;"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T037' AS tst_id 
@@ -1961,11 +1955,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN last_name LIKE '%[,/:()&#?;]%' THEN 'REJ-01: Field last_name has a ",/:()&#?;" characters|exp=none|act=' + last_name 
+	SELECT CASE WHEN last_name ~ '[,/:()&#?;]' THEN 'REJ-01: Field last_name has a ",/:()&#?;" characters|exp=none|act=' || last_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -1983,16 +1977,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2003,6 +1996,7 @@ SELECT * FROM fdtl
 -- T038 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Only Allowed Chars .0123456789"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T038' AS tst_id 
@@ -2010,11 +2004,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN phone_number LIKE '%[^.0123456789]%' THEN 'REJ-01: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' + phone_number 
+	SELECT CASE WHEN phone_number ~ '[^.0123456789]' THEN 'REJ-01: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' || phone_number 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, phone_number FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, phone_number FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2032,16 +2026,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2049,9 +2042,11 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T039 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text Using Wildcards"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T039' AS tst_id 
@@ -2059,13 +2054,13 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN phone_number NOT LIKE '%.%'          THEN 'REJ-02: Verify phone_number contains a ''.''|exp=contains-.|act=' + phone_number
+	SELECT CASE WHEN phone_number NOT LIKE '%.%'          THEN 'REJ-02: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
                 WHEN phone_number NOT LIKE '___.___.____' 
-                 AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-03: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' + phone_number
+                 AND phone_number NOT LIKE '011.__.____._____%' THEN 'REJ-03: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees GROUP BY employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees GROUP BY employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2083,16 +2078,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2103,6 +2097,7 @@ SELECT * FROM fdtl
 -- T040 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text is a number"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T040' AS tst_id 
@@ -2110,11 +2105,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN zip5 LIKE '%[^0-9]%' THEN 'REJ-01: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5 
+	SELECT CASE WHEN NOT zip5 ~ '^\d+(\.\d+)?$' THEN 'REJ-01: Field zip5 will not convert to a number|exp=converts to number|act=' || zip5 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, zip5 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, zip5 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2132,16 +2127,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2152,6 +2146,7 @@ SELECT * FROM fdtl
 -- T041 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text Date Format is yyyymmdd"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T041' AS tst_id 
@@ -2161,15 +2156,15 @@ AS (
 AS (
 	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                     some_date_fmt1,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','')
-                    > ''                                                         THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT LEN(TRIM(some_date_fmt1)) = 8                           THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+                    > ''                                                         THEN 'REJ-01: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                        THEN 'REJ-02: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
                 ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, some_date_fmt1 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, some_date_fmt1 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2187,16 +2182,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2207,6 +2201,7 @@ SELECT * FROM fdtl
 -- T042 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text Date Format is mm/dd/yyyy"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T042' AS tst_id 
@@ -2216,15 +2211,15 @@ AS (
 AS (
 	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                      some_date_fmt2,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'/','')
-                     > ''                                                       THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-               WHEN NOT LEN(TRIM(some_date_fmt2)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-               WHEN NOT SUBSTRING(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-               WHEN NOT SUBSTRING(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
-               WHEN NOT SUBSTRING(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' + some_date_fmt2
+                     > ''                                                       THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+               WHEN NOT LENGTH(TRIM(some_date_fmt2)) = 10                       THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+               WHEN NOT SUBSTRING(some_date_fmt2,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+               WHEN NOT SUBSTRING(some_date_fmt2,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
+               WHEN NOT SUBSTRING(some_date_fmt2,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm/dd/yyyy"|act=' || some_date_fmt2
                ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, some_date_fmt2 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, some_date_fmt2 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2242,16 +2237,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2262,6 +2256,7 @@ SELECT * FROM fdtl
 -- T043 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text Date Format is mm/dd/yyyy"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T043' AS tst_id 
@@ -2271,15 +2266,15 @@ AS (
 AS (
 	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                      some_date_fmt3,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
-                     > ''                                                       THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-               WHEN NOT LEN(TRIM(some_date_fmt3)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-               WHEN NOT SUBSTRING(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-               WHEN NOT SUBSTRING(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
-               WHEN NOT SUBSTRING(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' + some_date_fmt3
+                     > ''                                                       THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+               WHEN NOT LENGTH(TRIM(some_date_fmt3)) = 10                       THEN 'REJ-02: Must be 10 Chars|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+               WHEN NOT SUBSTRING(some_date_fmt3,7,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+               WHEN NOT SUBSTRING(some_date_fmt3,1,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
+               WHEN NOT SUBSTRING(some_date_fmt3,4,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="mm-dd-yyyy"|act=' || some_date_fmt3
                ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, some_date_fmt3 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, some_date_fmt3 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2297,16 +2292,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2317,6 +2311,7 @@ SELECT * FROM fdtl
 -- T044 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Text Date Format is mm/dd/yyyy"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T044' AS tst_id 
@@ -2326,15 +2321,15 @@ AS (
 AS (
 	SELECT CASE WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                     some_date_fmt4,'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9',''),'-','')
-                    > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-               WHEN NOT LEN(TRIM(some_date_fmt4)) = 10                          THEN 'REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-               WHEN NOT SUBSTRING(some_date_fmt4,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-               WHEN NOT SUBSTRING(some_date_fmt4,6,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
-               WHEN NOT SUBSTRING(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=' + some_date_fmt4
+                    > ''                                                        THEN 'REJ-01: Unexpected Chars Exist|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
+               WHEN NOT LENGTH(TRIM(some_date_fmt4)) = 10                       THEN 'REJ-02: Must be 10 Chars|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
+               WHEN NOT SUBSTRING(some_date_fmt4,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-03: Year Not Btw 1753-9999|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
+               WHEN NOT SUBSTRING(some_date_fmt4,6,2) BETWEEN '01' AND '12'     THEN 'REJ-04: Month Not Btw 01-12|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
+               WHEN NOT SUBSTRING(some_date_fmt4,9,2) BETWEEN '01' AND '31'     THEN 'REJ-05: Day Not Btw 01-31|exp=Fmt="yyyy-mm-dd"|act=' || some_date_fmt4
                ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, some_date_fmt4 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, some_date_fmt4 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2352,16 +2347,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2373,26 +2367,24 @@ SELECT * FROM fdtl
 -- -----------------------------------------------------------------------------------------------
 -- RULE SET #7: REGULAR EXPRESSIONS
 -- -----------------------------------------------------------------------------------------------
--- SQL Server does NOT have Regular Expressions built in...but it does have very similar functionality
--- built into the LIKE operator.  We'll adjust these "regex" examples accordingly.
-
 
 -- T045 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp PhoneNumber"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T045' AS tst_id 
-	     , '"RS-7 RegEx" #01 - Verify RegExp("IsPhoneNumber") where phone_number matches pattern "###-###-####" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #01 - Verify RegExp("IsPhoneNumber") where phone_number matches RegEx pattern "[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
     -- NOTE: Use RegEx pattern "^\+(\d+\s?)+$" for international phone numbers
-    SELECT CASE WHEN phone_number NOT LIKE '[0-9][0-9][0-9][-. ][0-9][0-9][0-9][-. ][0-9][0-9][0-9][0-9]' THEN 'REJ-01: Field phone_number failed RegExpression check|exp=Like"###-###-####" where "-" could be " " or "." too|act=' + phone_number 
+    SELECT CASE WHEN NOT phone_number ~ '[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}' THEN 'REJ-01: Field phone_number failed RegExpression check|exp=Like"[0-9]{3}[-. ][0-9]{3}[-. ][0-9]{4}"|act=' || phone_number 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, phone_number FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, phone_number FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2410,16 +2402,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2430,18 +2421,19 @@ SELECT * FROM fdtl
 -- T046 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp SSN"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T046' AS tst_id 
-	     , '"RS-7 RegEx" #02 - Verify RegExp("IsSSN") where [fake_ssn] matches pattern "###-##-####" in table [employees]' AS tst_descr
-) 
+	     , '"RS-7 RegEx" #02 - Verify RegExp("IsSSN") where [fake_ssn] matches RegEx pattern "^[0-9]{3}-[0-9]{2}-[0-9]{4}$" in table [employees]' AS tst_descr
+)
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN fake_ssn NOT LIKE '[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]' THEN 'REJ-01: Field fake_ssn failed RegExpression check|exp=Like"###-##-####"|act=' + fake_ssn 
+	SELECT CASE WHEN NOT fake_ssn ~ '^[0-9]{3}-[0-9]{2}-[0-9]{4}$' THEN 'REJ-01: Field fake_ssn failed RegExpression check|exp=Like"^[0-9]{3}-[0-9]{2}-[0-9]{4}$"|act=' || fake_ssn 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, fake_ssn FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, fake_ssn FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2459,16 +2451,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2479,18 +2470,19 @@ SELECT * FROM fdtl
 -- T047 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Zip5"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T047' AS tst_id 
-	     , '"RS-7 RegEx" #03 - Verify RegExp("IsZip5") where [zip5] matches pattern "#####" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #03 - Verify RegExp("IsZip5") where [zip5] matches RegEx pattern "^[0-9]{5}$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN zip5 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]' THEN 'REJ-01: Field zip5 failed RegExpression check|exp=Like"#####"|act=' + zip5 
+	SELECT CASE WHEN NOT zip5 ~ '^[0-9]{5}$' THEN 'REJ-01: Field zip5 failed RegExpression check|exp=Like"^[0-9]{5}$"|act=' || zip5 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, zip5 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, zip5 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2508,16 +2500,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2528,19 +2519,19 @@ SELECT * FROM fdtl
 -- T048 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Zip5or9"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T048' AS tst_id 
-	     , '"RS-7 RegEx" #04 - Verify RegExp("IsZip5or9") where [zip5or9] matches pattern "#####" or "#####-####" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #04 - Verify RegExp("IsZip5or9") where [zip5or9] matches RegEx pattern "^[[:digit:]]{5}(-[[:digit:]]{4})?$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN zip5or9 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]'
-	             AND zip5or9 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]' THEN 'REJ-01: Field zip5or9 failed RegExpression check|exp=Like"#####" or "#####-####"|act=' + zip5or9 
+	SELECT CASE WHEN NOT zip5or9 ~ '^[[:digit:]]{5}(-[[:digit:]]{4})?$' THEN 'REJ-01: Field zip5or9 failed RegExpression check|exp=Like"^([[:digit:]]{5})(-[[:digit:]]{4})?$"|act=' || zip5or9 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, zip5or9 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, zip5or9 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2558,16 +2549,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2578,18 +2568,19 @@ SELECT * FROM fdtl
 -- T049 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Zip9"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T049' AS tst_id 
-	     , '"RS-7 RegEx" #05 - Verify RegExp("IsZip9") where [zip9] matches pattern "#####-####" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #05 - Verify RegExp("IsZip9") where [zip9] matches RegEx pattern "^[[:digit:]]{5}[-/.][[:digit:]]{4}$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN zip9 NOT LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]' THEN 'REJ-01: Field zip9 failed RegExpression check|exp=Like"#####-####"|act=' + zip9 
+	SELECT CASE WHEN NOT zip9 ~ '^[[:digit:]]{5}[-/.][[:digit:]]{4}$' THEN 'REJ-01: Field zip9 failed RegExpression check|exp=Like"^[[:digit:]]{5}[-/.][[:digit:]]{4}$"|act=' || zip9 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, zip9 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, zip9 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2607,16 +2598,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2627,18 +2617,19 @@ SELECT * FROM fdtl
 -- T050 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Text and Spaces Only (for names)"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T050' AS tst_id 
-	     , '"RS-7 RegEx" #06 - Verify RegExp("OnlyText") where [last_name] matches pattern "%[^a-zA-Z ]%" in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #06 - Verify RegExp("OnlyText") where [last_name] matches RegEx pattern "^[a-zA-Z ]+$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN last_name LIKE '%[^a-zA-Z ]%' THEN 'REJ-01: Field last_name failed RegExpression check|exp=OnlyAlphaCharsOrSpace"|act=' + last_name 
+	SELECT CASE WHEN NOT last_name ~ '^[a-zA-Z ]+$' THEN 'REJ-01: Field last_name failed RegExpression check|exp=Like"^[a-zA-Z ]+$"|act=' || last_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2656,16 +2647,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2676,6 +2666,7 @@ SELECT * FROM fdtl
 -- T051 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp is Numeric only"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T051' AS tst_id 
@@ -2683,11 +2674,11 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN zip5 LIKE '%[^0-9.]%' THEN 'REJ-01: Field zip5 failed RegExpression check|exp=Like"^[0-9]+$"|act=' + zip5 
+	SELECT CASE WHEN NOT zip5 ~ '^[0-9]+$' THEN 'REJ-01: Field zip5 failed RegExpression check|exp=Like"^[0-9]+$"|act=' || zip5 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, zip5 FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, zip5 FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2705,16 +2696,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2725,18 +2715,19 @@ SELECT * FROM fdtl
 -- T052 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Leading/Trailing Whitespace"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T052' AS tst_id 
-	     , '"RS-7 RegEx" #08 - Verify RegExp("NoLeadTrailSpaces") where [last_name] matches pattern " %" or "% " in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #08 - Verify RegExp("NoLeadTrailSpaces") where [last_name] matches RegEx pattern "(^\s)|(\s$)" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN last_name LIKE ' %' OR last_name LIKE '% ' THEN 'REJ-01: Field last_name failed check|exp=NoLeadingOrTrailingSpaces|act=' + last_name 
+	SELECT CASE WHEN last_name ~ '(^\s)|(\s$)' THEN 'REJ-01: Field last_name failed RegExpression check|exp=Like"(^\s)|(\s$)"|act=' || last_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, last_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, last_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2754,16 +2745,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2774,22 +2764,19 @@ SELECT * FROM fdtl
 -- T053 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp No Whitespace"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T053' AS tst_id 
-	     , '"RS-7 RegEx" #09 - Verify RegExp("NoWhitespaces") where [job_id] has no spaces/CRLFs/TABs/NBS in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #09 - Verify RegExp("NoWhitespaces") where [job_id] matches RegEx pattern "(\s)+" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN job_id LIKE '% %'
-	              OR job_id LIKE '%' + CHAR(13) + '%'
-				  OR job_id LIKE '%' + CHAR(10) + '%' 
-				  OR job_id LIKE '%' + CHAR(9) + '%'
-				  OR job_id LIKE '%' + CHAR(160) + '%' THEN 'REJ-01: Field job_id failed RegExpression check|exp=NoSpacesTabsNewLinesNBS|act=' + job_id 
+	SELECT CASE WHEN job_id ~ '(\s)+' THEN 'REJ-01: Field job_id failed RegExpression check|exp=Like"(\s)+"|act=' || job_id 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, job_id FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, job_id FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2807,16 +2794,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2824,22 +2810,24 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T054 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Only Lower Case"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T054' AS tst_id 
-	     , '"RS-7 RegEx" #10 - Verify RegExp("OnlyLowerCase") at 3rd and 4th chars of [first_name] are Lower Case only in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #10 - Verify RegExp("OnlyLowerCase") at 3rd and 4th chars of [first_name] matching RegEx pattern "^[a-z]+$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN SUBSTRING(first_name COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2) <> LOWER(SUBSTRING(first_name COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2))  
-	                 THEN 'REJ-01: Chars #3 and #4 for [first_name] failed check|exp=LowerCaseOnly|act=' + SUBSTRING(first_name,2,2) 
+	SELECT CASE WHEN NOT SUBSTRING(first_name,3,2) ~ '^[a-z]+$' THEN 'REJ-01: Chars #3 and #4 for [first_name] failed RegExpression check|exp=Like"^[a-z]+$"|act=' || first_name
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, first_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, first_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
+	WHERE LENGTH(first_name) > 2
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2857,16 +2845,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2877,19 +2864,19 @@ SELECT * FROM fdtl
 -- T055 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Only Upper Case"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T055' AS tst_id 
-	     , '"RS-7 RegEx" #11 - Verify RegExp("OnlyUpperCase") where [email] are Upper Case only in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #11 - Verify RegExp("OnlyUpperCase") where [email] matching RegEx pattern "^[A-Z]+$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN SUBSTRING(email COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2) <> UPPER(SUBSTRING(email COLLATE SQL_Latin1_General_CP1_CS_AS, 3, 2)) 
-	                 THEN 'REJ-01: Field [email] failed RegExpression check|exp=UpperCaseOnly|act=' + email 
+	SELECT CASE WHEN NOT SUBSTRING(email,3,2) ~ '^[A-Z]+$' THEN 'REJ-01: Field [email] failed RegExpression check|exp=Like"^[A-Z]+$"|act=' || email 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, email FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, email FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2907,16 +2894,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2927,22 +2913,21 @@ SELECT * FROM fdtl
 -- T056 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp Title Case"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T056' AS tst_id 
-	     , '"RS-7 RegEx" #12 - Verify RegExp("TitleCase") where [first_name] upper cases first letter second name too in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #12 - Verify RegExp("TitleCase") where [first_name] upper cases first letter second name too and matches RegEx pattern "(\s[A-Z]){1}" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS NOT LIKE '[A-Z]%'       THEN 'REJ-01: Field first_name first character not uppercase|exp=Like"[A-Z]%"|act=' + first_name 
-				WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '[A-Z]%[^a-z]%'    THEN 'REJ-02: Field first_name characters in first word after first character not lowercase|exp=all lower case"|act=' + first_name
-				WHEN first_name NOT LIKE '% %'                                               THEN 'allgood'  -- Only one word, so no space + first character to check for uppercase
-	            WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '% [^A-Z]%'        THEN 'REJ-03: Field first_name first character after space is not uppercase|exp=IsUCASE|act=' + first_name 
-	            WHEN first_name COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '% [A-Z][^a-z]%'   THEN 'REJ-04: Field first_name characters after space + one letter are not lowercase|exp=IsUCASE|act=' + first_name 
+	SELECT CASE WHEN NOT SUBSTRING(first_name,1,1) ~ '([A-Z])'   THEN 'REJ-01: Field first_name first character not upper case|exp=Like"[A-Z]"|act=' || first_name 
+                WHEN first_name NOT LIKE '% %'                   THEN 'allgood'  -- Only one word, so no space + first character to check for uppercase
+	            WHEN NOT first_name ~ '(\s[A-Z]){1}'             THEN 'REJ-02: Field first_name failed RegExpression check|exp=Like"(\s[A-Z]){1}"|act=' || first_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, first_name FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, first_name FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -2960,16 +2945,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -2977,34 +2961,26 @@ SELECT * FROM fdtl
 -- End Boilerplate code <<<<<<<<<<<<<< 
 
 
+
 -- T057 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp EmailAddress"
--- THANK YOU:  https://www.mssqltips.com/sqlservertip/6519/valid-email-address-check-with-tsql/
 
--- UPDATE EMPLOYEES SET email_address = lower(email) + '@nowhere.com'; 
+-- UPDATE EMPLOYEES SET email_address = lower(email) || '@nowhere.com'; commit;
 
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T057' AS tst_id 
-	     , '"RS-7 RegEx" #13 - Verify RegExp("EmailAddress") where [email_address] matches many address pattern rules in table [employees]' AS tst_descr
+	     , '"RS-7 RegEx" #13 - Verify RegExp("EmailAddress") where [email_address] matches RegEx pattern "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" in table [employees]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN email_address IS NULL                                     THEN 'REJ-01: Field email_address is NULL'
-	            WHEN email_address = ''                                        THEN 'REJ-02: Field email_address is blank'
-	            WHEN email_address LIKE '%["(),:;<>\]%'                        THEN 'REJ-03: Field email_address contains bad characters ["(),:;<>\]'
-	            WHEN SUBSTRING(email_address, CHARINDEX('@', email_address), len(email_address)) LIKE '%[!#$%&*+/=?^`_{|]%'
-				                                                               THEN 'REJ-04: Field email_address company name after @ contains bad characters [!#$%&*+/=?^`_{|]'
-				WHEN LEFT(email_address,1) LIKE '[-_.+]'                       THEN 'REJ-05: Field email_address should not start with [-_.+] characters'
-				WHEN RIGHT(email_address,1) LIKE '[-_.+]'                      THEN 'REJ-06: Field email_address should not end with [-_.+] characters'
-				WHEN email_address LIKE '%[%' OR email_address LIKE '%]%'      THEN 'REJ-07: Field email_address should not contain [ or ] characters'
-				WHEN email_address LIKE '%@%@%'                                THEN 'REJ-08: Field email_address should not contain more than one @ character'
-				WHEN email_address LIKE '[_]%@[_]%.[_]%'                       THEN 'REJ-09: Field email_address should not have leading underscores at any segment (gmail blocks)'
-				ELSE 'allgood'
+	SELECT CASE WHEN NOT email_address ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$' THEN 'REJ-01: Field email_address failed RegExpression check|exp=Like"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"|act=' || email_address 
+	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT employee_id, email_address FROM demo_hr..employees WHERE employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT employee_id, email_address FROM demo_hr.employees WHERE employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -3022,16 +2998,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3042,23 +3017,19 @@ SELECT * FROM fdtl
 -- T058 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify RegExp URL"
 
--- THANK YOU: https://www.mssqltips.com/sqlservertutorial/9116/regular-expressions-business-case-examples-with-tsql/
-
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T058' AS tst_id 
-	     , '"RS-7 RegEx" #14 - Verify RegExp("IsUrl") where [url] matches pattern rules in table [departments]' AS tst_descr
+	     , '"RS-7 RegEx" #14 - Verify RegExp("IsUrl") where [url] matches RegEx pattern "(http)(s)?(:\/\/)" in table [departments]' AS tst_descr
 )
 , dut -- Data Under Test 
 AS ( 
-	SELECT CASE WHEN url NOT LIKE'http://%' 
-	             AND url NOT LIKE'https://%'                                  THEN 'REJ-01: Field url is missing "http://" and "https://"|exp=Like"http(s)://"|act=' + url 
-	            WHEN url NOT LIKE '%[A-Z0-9][.][A-Z0-9]%[A-Z0-9]%'            THEN 'REJ-02: Field is not alphanumeric + "." + alphanumeric + "/" + alphanumeric|exp=aaaa.aaa|act=' + url 
-              --WHEN url NOT LIKE '%[A-Z0-9][.][A-Z0-9]%[A-Z0-9][/][A-Z0-9]%' THEN 'REJ-03: Field is not alphanumeric + "." + alphanumeric + "/" + alphanumeric|exp=aaaa.aaa/aaa|act=' + url 
-				ELSE 'allgood'
+	SELECT CASE WHEN NOT url ~ '(http)(s)?(:\/\/)' THEN 'REJ-01: Field url failed RegExpression check|exp=Like"(http)(s)?(:\/\/)"|act=' || url 
+	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT department_id, url FROM demo_hr..departments WHERE department_id=' + CAST(department_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..departments
+	     , 'SELECT department_id, url FROM demo_hr.departments WHERE department_id=' || CAST(department_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.departments
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -3076,21 +3047,21 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
 ;
 -- End Boilerplate code <<<<<<<<<<<<<< 
+
 
 
 
@@ -3102,6 +3073,7 @@ SELECT * FROM fdtl
 -- T059 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Static Ref Table Contents for [locations]"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T059' AS tst_id 
@@ -3109,51 +3081,61 @@ AS (
 )
 , expected 
 AS (
-	      SELECT 1 AS ord_pos, 'LOCATION_ID'    AS column_nm, 'NUMERIC(4,0)' AS data_typ, 'NOT NULL' AS nullable
-	UNION SELECT 2 AS ord_pos, 'STREET_ADDRESS' AS column_nm, 'VARCHAR(40)'  AS data_typ, 'NULL'     AS nullable
-	UNION SELECT 3 AS ord_pos, 'POSTAL_CODE'    AS column_nm, 'VARCHAR(12)'  AS data_typ, 'NULL'     AS nullable
-	UNION SELECT 4 AS ord_pos, 'CITY'           AS column_nm, 'VARCHAR(30)'  AS data_typ, 'NOT NULL' AS nullable
-	UNION SELECT 5 AS ord_pos, 'STATE_PROVINCE' AS column_nm, 'VARCHAR(25)'  AS data_typ, 'NULL'     AS nullable
-	UNION SELECT 6 AS ord_pos, 'COUNTRY_ID'     AS column_nm, 'CHAR(2)'      AS data_typ, 'NULL'     AS nullable
+	      SELECT 1 AS ord_pos, 'location_id'    AS column_nm, 'integer(32)'           AS data_typ, 'NOT NULL' AS nullable
+	UNION SELECT 2 AS ord_pos, 'street_address' AS column_nm, 'character varying(40)' AS data_typ, 'NULL' AS nullable
+	UNION SELECT 3 AS ord_pos, 'postal_code'    AS column_nm, 'character varying(12)' AS data_typ, 'NULL' AS nullable
+	UNION SELECT 4 AS ord_pos, 'city'           AS column_nm, 'character varying(30)' AS data_typ, 'NOT NULL' AS nullable
+	UNION SELECT 5 AS ord_pos, 'state_province' AS column_nm, 'character varying(25)' AS data_typ, 'NULL' AS nullable
+	UNION SELECT 6 AS ord_pos, 'country_id'     AS column_nm, 'character(2)'          AS data_typ, 'NULL' AS nullable
+	ORDER BY ord_pos
+)
+, actual_base_tbl
+AS (
+ SELECT table_schema AS SchemaName
+  , table_catalog
+  , table_type, table_name, table_schema
+  FROM INFORMATION_SCHEMA.TABLES
+  WHERE TABLE_SCHEMA = 'demo_hr' 
+    AND TABLE_TYPE = 'BASE TABLE'
 )
 , actual
 AS (
 	SELECT
-	  RIGHT('000' + CAST(tut.ORDINAL_POSITION AS VARCHAR(3)), 3) AS ord_pos
+	  RIGHT('000' || CAST(tut.ORDINAL_POSITION AS VARCHAR(3)), 3) AS ord_pos
 	, tut.column_name                                            AS column_nm
-	, tut.data_type + 
-      CASE WHEN tut.data_type IN('varchar','nvarchar')    THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type IN('char','nchar')          THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type ='date'                     THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type ='datetime'                 THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type LIKE '%int%'                THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10))  + ')'
-	       WHEN tut.data_type = 'uniqueidentifier'        THEN '(16)'
-	       WHEN tut.data_type = 'money'                   THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type = 'decimal'                 THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type = 'numeric'                 THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type = 'varbinary'               THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type = 'xml'                     THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
-	       WHEN tut.data_type IN('char','nchar')          THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
-	       WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN '(' + CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) + ')'
-		   WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN '(' + CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) + ')'
+	, COALESCE(tut.data_type, 'unknown') || 
+      CASE WHEN tut.DATA_TYPE IN('varchar','nvarchar')    THEN '(' || CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE IN('char','nchar')          THEN '(' || CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE ='date'                     THEN '(' || CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE ='datetime'                 THEN '(' || CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE LIKE '%int%'                THEN '(' || CAST(tut.NUMERIC_PRECISION AS VARCHAR(10))  || ')'
+	       WHEN tut.DATA_TYPE = 'uniqueidentifier'        THEN '(16)'
+	       WHEN tut.DATA_TYPE = 'money'                   THEN '(' || CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE = 'decimal'                 THEN '(' || CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) || ',' || CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE = 'numeric'                 THEN '(' || CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) || ',' || CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE = 'varbinary'               THEN '(' || CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE = 'xml'                     THEN '(' || CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) || ')'
+	       WHEN tut.DATA_TYPE IN('char','nchar')          THEN '(' || CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) || ')'
+	       WHEN tut.CHARACTER_MAXIMUM_LENGTH IS NOT NULL  THEN '(' || CAST(tut.CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) || ')'
+		   WHEN tut.DATETIME_PRECISION IS NOT NULL        THEN '(' || CAST(tut.DATETIME_PRECISION AS VARCHAR(10)) || ')'
 	       WHEN tut.NUMERIC_PRECISION IS NOT NULL
-		    AND tut.NUMERIC_SCALE     IS NULL             THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ')'
+		    AND tut.NUMERIC_SCALE     IS NULL             THEN '(' || CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) || ')'
 	       WHEN tut.NUMERIC_PRECISION IS NOT NULL
-		    AND tut.NUMERIC_SCALE     IS NOT NULL         THEN '(' + CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) + ',' + CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) + ')'
+		    AND tut.NUMERIC_SCALE     IS NOT NULL         THEN '(' || CAST(tut.NUMERIC_PRECISION AS VARCHAR(10)) || ',' || CAST(tut.NUMERIC_SCALE AS VARCHAR(10)) || ')'
 		   ELSE ''
       END AS data_typ
 	, CASE WHEN tut.IS_NULLABLE = 'YES' THEN 'NULL' ELSE 'NOT NULL' END AS nullable
-	FROM       INFORMATION_SCHEMA.COLUMNS  tut
-	WHERE tut.TABLE_CATALOG  = 'DEMO_HR'
-	  AND tut.table_name = 'LOCATIONS'
+    FROM       INFORMATION_SCHEMA.COLUMNS tut
+    INNER JOIN actual_base_tbl            bt  ON bt.table_catalog = tut.TABLE_CATALOG AND bt.table_name = tut.table_name
+	WHERE tut.table_name = 'locations'
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN (SELECT COUNT(*) FROM actual) = 0 THEN 'REJ-01: Table [locations] does not exist (may be case sensistive name)|exp=exists|act=notExist' 
-	            WHEN a.column_nm IS NULL               THEN 'REJ-01: Expected column is missing from actual schema (may be case sensitive name)|exp=' + e.column_nm + '|act=IsMissing' 
-	            WHEN a.ord_pos <> e.ord_pos            THEN 'REJ-02: Ordinal Positions at field ' + e.column_nm + ' do not match|exp=' + CAST(e.ord_pos AS VARCHAR(3)) + '|act=' + CAST(a.ord_pos AS VARCHAR(3))
-	            WHEN a.data_typ <> e.data_typ          THEN 'REJ-03: Data Types at field ' + e.column_nm + ' do not match|exp=' + e.data_typ + '|act=' + a.data_typ 
-	            WHEN a.nullable <> e.nullable          THEN 'REJ-04: Nullable settings at field ' + e.column_nm + ' do not match|exp=' + e.nullable + '|act=' + a.nullable 
+	SELECT CASE WHEN (SELECT COUNT(*) FROM actual) = 0        THEN 'REJ-01: Table [locations] does not exist (may be case sensistive name)|exp=exists|act=notExist' 
+	            WHEN a.column_nm IS NULL                      THEN 'REJ-01: Expected column is missing from actual schema (may be case sensitive name)|exp=' || e.column_nm || '|act=IsMissing' 
+	            WHEN CAST(a.ord_pos AS INTEGER) <> e.ord_pos  THEN 'REJ-02: Ordinal Positions at field ' || e.column_nm || ' do not match|exp=' || CAST(e.ord_pos AS VARCHAR(3)) || '|act=' || CAST(a.ord_pos AS VARCHAR(3))
+	            WHEN a.data_typ <> e.data_typ                 THEN 'REJ-03: Data Types at field ' || e.column_nm || ' do not match|exp=' || e.data_typ || '|act=' || a.data_typ 
+	            WHEN a.nullable <> e.nullable                 THEN 'REJ-04: Nullable settings at field ' || e.column_nm || ' do not match|exp=' || e.nullable || '|act=' || a.nullable 
 	            ELSE 'allgood'
 	       END AS rej_dtls
 	     , 'N/A - Go browse to table structure from tree grid in UI' AS lookup_sql
@@ -3176,16 +3158,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3196,6 +3177,7 @@ SELECT * FROM fdtl
 -- T060 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Static Ref Table Contents for [regions]"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T060' AS tst_id 
@@ -3203,22 +3185,22 @@ AS (
 )
 , metadata 
 AS (
-	      SELECT 1 AS region_id, 'Europe' AS region_name 
+	      SELECT 1 AS region_id, 'Europe'   AS region_name
 	UNION SELECT 2 AS region_id, 'Americas' AS region_name
-	UNION SELECT 3 AS region_id, 'Asia' AS region_name 
-	UNION SELECT 4 AS region_id, 'Middle East and Africa' AS region_name 
-  --ORDER BY region_id
+	UNION SELECT 3 AS region_id, 'Asia'     AS region_name
+	UNION SELECT 4 AS region_id, 'Middle East and Africa' AS region_name
+	ORDER BY region_id
 )
 , dut -- Data Under Test 
 AS (
-	SELECT CASE WHEN r.region_id IS NULL            THEN 'REJ-01: Record is missing from metadata|exp=NotMissing|act=' + CAST(m.region_id AS VARCHAR(4)) + ' is missing' 
-	            WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' + m.region_name + '|act=' + r.region_name 
+	SELECT CASE WHEN r.region_id IS NULL            THEN 'REJ-01: Record is missing from metadata|exp=NotMissing|act=' || m.region_id || ' is missing' 
+	            WHEN r.region_name <> m.region_name THEN 'REJ-02: Region_Name does not match|exp=' || m.region_name || '|act=' || r.region_name 
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..regions WHERE region_id=' + CAST(m.region_id AS VARCHAR(15)) AS lookup_sql
+	     , 'SELECT * FROM demo_hr.regions WHERE region_id=' || CAST(m.region_id AS VARCHAR(15)) AS lookup_sql
 	FROM      metadata   m 
-	LEFT JOIN demo_hr..regions r ON r.region_id = m.region_id
-  --ORDER BY m.region_id
+	LEFT JOIN demo_hr.regions r ON r.region_id = m.region_id
+	ORDER BY m.region_id
 	
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
@@ -3237,16 +3219,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3255,10 +3236,11 @@ SELECT * FROM fdtl
 
 
 -- T061 ------------------------------------------------------------------------------------------
--- EXAMPLE: How to "Verify Dynamic Ref Table Contents for [jobs] vs [jobs_snapshot]"
+-- EXAMPLE: How to "Verify Matching Ref Table Contents for [jobs] vs [jobs_snapshot]"
 
--- SELECT * INTO demo_hr..jobs_snapshot FROM demo_hr..jobs 
+-- CREATE TABLE demo_hr.jobs_snapshot AS SELECT * FROM demo_hr.jobs
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T061' AS tst_id 
@@ -3268,20 +3250,20 @@ AS (
 AS (
     SELECT MAX(tbl_nm) AS tbl_nm, job_id, job_title, min_salary, max_salary, COUNT(*) AS match_count_found
     FROM (
-		SELECT CAST('jobs' AS VARCHAR(15)) AS tbl_nm,          job_id, job_title, min_salary, max_salary FROM demo_hr..JOBS  
+		SELECT CAST('jobs' AS VARCHAR(15)) AS tbl_nm,          job_id, job_title, min_salary, max_salary FROM demo_hr.JOBS  
 		UNION ALL 
-		SELECT CAST('jobs_snapshot' AS VARCHAR(15)) AS tbl_nm, job_id, job_title, min_salary, max_salary FROM demo_hr..JOBS_SNAPSHOT 
+		SELECT CAST('jobs_snapshot' AS VARCHAR(15)) AS tbl_nm, job_id, job_title, min_salary, max_salary FROM demo_hr.JOBS_SNAPSHOT 
     ) comb_sets 
     GROUP BY job_id, job_title, min_salary, max_salary
     HAVING COUNT(*) < 2
 )
 , dut -- Data Under Test 
 AS (
-	SELECT 'REJ-01: Mismatch Found: tbl_nm="' + tbl_nm +'", job_id="' + job_id + '", job_title="' + job_title 
-	    + '", min_salary=' + CAST(min_salary AS VARCHAR(20)) + '", max_salary=' + CAST(max_salary AS VARCHAR(20)) AS rej_dtls
+	SELECT 'REJ-01: Mismatch Found: tbl_nm="' || tbl_nm ||'", job_id="' || job_id || '", job_title="' || job_title 
+	    || '", min_salary=' || CAST(min_salary AS VARCHAR(20)) || '", max_salary=' || CAST(max_salary AS VARCHAR(20)) AS rej_dtls
 	     , 'Too complex, better to go manually run the SQL for "non_matches" CTE sub-table' AS lookup_sql
 	FROM      non_matches  
-  --ORDER BY 1
+	ORDER BY 1
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -3299,16 +3281,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3334,6 +3315,7 @@ SELECT * FROM fdtl
 -- T062 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify Column Value Frequency Thresholds"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T062' AS tst_id 
@@ -3342,18 +3324,18 @@ AS (
 , dut -- data under test
 AS (
 	SELECT region_id
-	, CAST(freq AS FLOAT) / CAST(den AS FLOAT) AS freq_rt
+	, CAST(freq AS DOUBLE PRECISION) / CAST(den AS DOUBLE PRECISION) AS freq_rt
 	FROM (
 	    SELECT region_id, COUNT(*) AS freq
-	    , (SELECT COUNT(*) FROM demo_hr..countries) AS den
-        FROM demo_hr..countries
+	    , (SELECT COUNT(*) FROM demo_hr.countries) AS den
+        FROM demo_hr.countries
         GROUP BY region_id
     ) t
 )
 , bll -- business logic layer: apply heuristics...what constitutes a pass or a fail?
 AS (
-	SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.10 AND 0.50 then 'FAIL: Frequency occurrence of region_id=1 is FAR outside threshold|exp=0.28 thru 0.36|act=' + CAST(freq_rt AS VARCHAR(8))
-                WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.25 AND 0.35 then 'WARN: Frequency occurrence of region_id=1 is outside threshold|exp=0.20 thru 0.28|act=' + CAST(freq_rt AS VARCHAR(8))
+	SELECT CASE WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.10 AND 0.50 then 'FAIL: Frequency occurrence of region_id=1 is FAR outside threshold|exp=0.28 thru 0.36|act=' || CAST(freq_rt AS VARCHAR(8))
+                WHEN region_id = 1  AND freq_rt NOT BETWEEN 0.25 AND 0.35 then 'WARN: Frequency occurrence of region_id=1 is outside threshold|exp=0.20 thru 0.28|act=' || CAST(freq_rt AS VARCHAR(8))
                 ELSE 'allgood'
 	       END AS rej_dtls
 	     ,  'Too complex. Highight and run the "dut" section of test query to lookup/confirm.' AS lookup_sql
@@ -3367,32 +3349,33 @@ AS (
 	            WHEN (SELECT COUNT(*) FROM bll WHERE rej_dtls LIKE 'FAIL:%') > 0 THEN 'FAIL'
 	            WHEN (SELECT COUNT(*) FROM bll WHERE rej_dtls LIKE 'WARN:%') > 0 THEN 'WARN'
 	            ELSE 'P'
-	       END AS stus
+	       END AS status
 	     , '(Header)' AS rej_dtls 
 	     , ' ' AS lookup_sql
 	FROM cfg
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP (SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
-	     , (SELECT TOP 1 stus FROM hdr) AS stus
+	     , (SELECT status FROM hdr LIMIT 1)
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
 ;
  
 
+
 -- T063 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Nulls in Numeric Column"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T063' AS tst_id 
@@ -3403,9 +3386,9 @@ AS (
 	SELECT CASE WHEN region_id IS NULL  THEN 'REJ: No nulls allowed at field region_id|exp=NoNulls|act=Null'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
-	WHERE date_last_updated >= GETDATE() - 30  -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
+	WHERE date_last_updated >= NOW() - INTERVAL '30 DAY'  -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -3423,16 +3406,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP(SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3443,6 +3425,7 @@ SELECT * FROM fdtl
 -- T064 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Verify No Nulls in Numeric Column"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T064' AS tst_id 
@@ -3453,8 +3436,8 @@ AS (
 	SELECT CASE WHEN region_id IS NULL  THEN 'REJ: No nulls allowed at field region_id|exp=NoNulls|act=Null'
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..countries WHERE country_id=' + CAST(country_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..countries
+	     , 'SELECT * FROM demo_hr.countries WHERE country_id=' || CAST(country_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.countries
 	WHERE country_id NOT IN('BR','DK','IL')  -- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
@@ -3473,16 +3456,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP(SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3493,6 +3475,7 @@ SELECT * FROM fdtl
 -- T065 ------------------------------------------------------------------------------------------
 -- EXAMPLE: How to "Roll dozens of checks into a single table scan pass for best performance"
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T065' AS tst_id 
@@ -3500,48 +3483,48 @@ AS (
 )
 , dut -- Data Under Test 
 AS (
-    SELECT CASE WHEN employee_id < 100                                            THEN 'REJ-01: Field employee_id > 99|exp>99|act=' + CAST(employee_id AS VARCHAR(10))
-	            WHEN employee_id > 999                                            THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' + CAST(employee_id AS VARCHAR(10))
-	            WHEN salary * commission_pct > 10000                              THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' + CAST(salary * commission_pct AS VARCHAR(15))
-				WHEN CONVERT(VARCHAR(8), hire_date, 108) <> '00:00:00'            THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' + CONVERT(VARCHAR(8), hire_date, 108)
-                WHEN zip5 LIKE '%[^0-9]%'                                         THEN 'REJ-05: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5
-	            WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')                   THEN 'REJ-06: Field job_id not in domain list of excluded values|exp<>1of5|act=' + job_id
-	            WHEN email <> SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) 
-				              + last_name), 1, 8)                                 THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' + SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) + last_name), 1, 8) + '|act=' + email
-	            WHEN LEN(phone_number) NOT IN(12,18)                              THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' + CAST(LEN(phone_number) AS VARCHAR(6))
-	            WHEN job_id COLLATE SQL_Latin1_General_CP1_CS_AS <> UPPER(job_id) THEN 'REJ-09: Field job_id does not contain lower case characters|exp=ucase|act=' + EMAIL
-	            WHEN SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255) <> LOWER(SUBSTRING(last_name COLLATE SQL_Latin1_General_CP1_CS_AS, 2, 255)) THEN 'REJ-10: Verify last_name after first char is all lower case|exp=lcase|act=' + last_name 
-				WHEN employee_id LIKE '%[A-Za-z]%'                                THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' + CAST(employee_id AS VARCHAR(20))
-                WHEN last_name LIKE '%[0-9]%'                                     THEN 'REJ-12: Field last_name does not contain numeric digits|exp=no-digits|act=' + LAST_NAME 
-	            WHEN first_name LIKE '%''%'                                       THEN 'REJ-13: Field first_name does not contain single quote characters|exp=none|act=' + first_name
-                WHEN first_name LIKE '%"%'                                        THEN 'REJ-14: Field first_name does not contain quotation characters|exp=none|act=' + first_name
-                WHEN CHARINDEX(last_name, CHAR(10))  > 0                          THEN 'REJ-15: Field last_name has a Line Feed (CHAR-10)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(10)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(13))  > 0                          THEN 'REJ-16: Field last_name has a Carriage Return (CHAR-13)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(13)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(9))   > 0                          THEN 'REJ-17: Field last_name has a Tab (CHAR-9)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(9)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(160)) > 0                          THEN 'REJ-18: Field last_name has a Non-Breaking-Space (CHAR-160)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(160)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(151)) > 0                          THEN 'REJ-19: Field last_name has a Non-Breaking-Space (CHAR-151)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(151)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(11)) > 0                           THEN 'REJ-20: Field last_name has a Vertical Tab (CHAR-11)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(11)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(12)) > 0                           THEN 'REJ-21: Field last_name has a Form Feed (CHAR-12)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(12)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, CHAR(133)) > 0                          THEN 'REJ-22: Field last_name has a Next Line (CHAR-133)|exp=none|act=at position ' + CAST(CHARINDEX(last_name, CHAR(133)) AS VARCHAR(4))
-	            WHEN CHARINDEX(last_name, '.') > 0                                THEN 'REJ-23: Field last_name has a period|exp=none|act=at position ' + CAST(CHARINDEX(last_name, '.') AS VARCHAR(4))
-	            WHEN last_name LIKE '%[,/:()&#?;]%'                               THEN 'REJ-24: Field last_name has a ",/:()&#?;" characters|exp=none|act=' + last_name 
-	            WHEN phone_number LIKE '%[^.0123456789]%'                         THEN 'REJ-25: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' + phone_number 
-	            WHEN phone_number NOT LIKE '%.%'                                  THEN 'REJ-26: Verify phone_number contains a ''.''|exp=contains-.|act=' + phone_number
+    SELECT CASE WHEN employee_id < 100                                        THEN 'REJ-01: Field employee_id > 99|exp>99|act=' || CAST(employee_id AS VARCHAR(10))
+	            WHEN employee_id > 999                                        THEN 'REJ-02: Field employee_id < 1000|exp<1000|act=' || CAST(employee_id AS VARCHAR(10))
+	            WHEN salary * commission_pct > 10000                          THEN 'REJ-03: Fields salary x commission_pct <= $10,000|exp<10,000|act=' || CAST(salary * commission_pct AS VARCHAR(15))
+				WHEN TO_CHAR(hire_date, 'hh:mi:ss') <> '12:00:00'             THEN 'REJ-04: Field hire_date cannot have a time part|exp=12:00:00|act=' || TO_CHAR(hire_date, 'hh:nn:ss')
+                WHEN NOT zip5 ~ '^[0-9]+$'                                    THEN 'REJ-05: Field zip5 failed RegExpression check|exp=Like"^[0-9]+$"|act=' || zip5 
+	            WHEN job_id IN('CEO','CFO','COO','CIO','POTUS')               THEN 'REJ-06: Verify job_id not in domain list of excluded values|exp<>1of5|act=' || job_id
+	            WHEN email <> SUBSTRING(UPPER(SUBSTRING(
+	                            first_name, 1, 1) || last_name), 1, 8)        THEN 'REJ-07: Field email <> first char of first_name + last_name|exp=' || SUBSTRING(UPPER(SUBSTRING(first_name, 1, 1) || last_name), 1, 8) || '|act=' || email
+	            WHEN LENGTH(phone_number) NOT IN(12,18)                       THEN 'REJ-08: Field phone_number length is allowed|exp=12,18|act=' || CAST(LENGTH(phone_number) AS VARCHAR(6))
+	            WHEN job_id ~ '[[:lower:]]'                                   THEN 'REJ-09: Field job_id does not contain lower case characters|exp=ucase|act=' || EMAIL
+	            WHEN NOT SUBSTRING(LAST_NAME,1) ~ '[[:upper:]]'               THEN 'REJ-10: Field last_name after first char is all lower case|exp=lcase|act=' || LAST_NAME 
+	            WHEN some_date_fmt1 ~ '[[:alpha:]]'                           THEN 'REJ-11: Field employee_id does not contain alpha characters|exp=no-alphas|act=' || SOME_DATE_FMT1
+                WHEN last_name ~ '[[:digit:]]'                                THEN 'REJ-12: Field last_name does not contain numeric digits|exp=no-digits|act=' || LAST_NAME 
+	            WHEN first_name LIKE '%''%'                                   THEN 'REJ-13: Field first_name does not contain single quote characters|exp=none|act=' || first_name
+                WHEN first_name LIKE '%"%'                                    THEN 'REJ-14: Field first_name does not contain quotation characters|exp=none|act=' || first_name
+                WHEN POSITION(CHR(10) IN last_name)  > 0                      THEN 'REJ-15: Field last_name has a Line Feed (CHR-10)|exp=none|act=at position ' || CAST(POSITION(CHR(10) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(13) IN last_name)  > 0                      THEN 'REJ-16: Field last_name has a Carriage Return (CHR-13)|exp=none|act=at position ' || CAST(POSITION(CHR(13) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(9)  IN last_name)  > 0                      THEN 'REJ-17: Field last_name has a Tab (CHR-9)|exp=none|act=at position ' || CAST(POSITION(CHR(9) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(160) IN last_name) > 0                      THEN 'REJ-18: Field last_name has a Non-Breaking-Space (CHR-160)|exp=none|act=at position ' || CAST(POSITION(CHR(160) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(151) IN last_name) > 0                      THEN 'REJ-19: Field last_name has a Non-Breaking-Space (CHR-151)|exp=none|act=at position ' || CAST(POSITION(CHR(151) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(11) IN last_name)  > 0                      THEN 'REJ-20: Field last_name has a Vertical Tab (CHR-11)|exp=none|act=at position ' || CAST(POSITION(CHR(11) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(12) IN last_name)  > 0                      THEN 'REJ-21: Field last_name has a Form Feed (CHR-12)|exp=none|act=at position ' || CAST(POSITION(CHR(12) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION(CHR(133) IN last_name) > 0                      THEN 'REJ-22: Field last_name has a Next Line (CHR-133)|exp=none|act=at position ' || CAST(POSITION(CHR(133) IN last_name) AS VARCHAR(4))
+	            WHEN POSITION('.' IN last_name) > 0                           THEN 'REJ-23: Field last_name has a period|exp=none|act=at position ' || CAST(POSITION('.' IN last_name) AS VARCHAR(4))
+	            WHEN last_name ~ '[,/:()&#?;]'                                THEN 'REJ-24: Field last_name has a ",/:()&#?;" characters|exp=none|act=' || last_name 
+	            WHEN phone_number ~ '[^.0123456789]'                          THEN 'REJ-25: Field phone_number can only have characters ".012345789"|exp=onlyAlloweChars|act=' || phone_number 
+	            WHEN phone_number NOT LIKE '%.%'                              THEN 'REJ-26: Verify phone_number contains a ''.''|exp=contains-.|act=' || phone_number
                 WHEN phone_number NOT LIKE '___.___.____' 
-                 AND phone_number NOT LIKE '011.__.____._____%'                   THEN 'REJ-27: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' + phone_number
-	            WHEN zip5 LIKE '%[^0-9]%'                                         THEN 'REJ-28: Field zip9 will not convert to a number|exp=converts to number|act=' + zip5 
+                 AND phone_number NOT LIKE '011.__.____._____%'               THEN 'REJ-27: Verify phone_number like pattern "___.___.____" or "011.__.____._____"|exp=yes|act=' || phone_number
+	            WHEN NOT zip5 ~ '^\d+(\.\d+)?$'                               THEN 'REJ-28: Field zip9 will not convert to a number|exp=converts to number|act=' || zip5 
 	            WHEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
 	                 REPLACE(REPLACE(REPLACE(some_date_fmt1,'0',''),'1','')
 	                 ,'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8'
-	                 ,''),'9','')  > ''                                           THEN 'REJ-29: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT LEN(TRIM(some_date_fmt1)) = 8                            THEN 'REJ-30: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999'  THEN 'REJ-31: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'      THEN 'REJ-32: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
-                WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'      THEN 'REJ-33: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' + some_date_fmt1
+	                 ,''),'9','')  > ''                                       THEN 'REJ-29: Unexpected chars exist (numeric 0-9 only)|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT LENGTH(TRIM(some_date_fmt1)) = 8                     THEN 'REJ-30: Must be 8 Chars|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT SUBSTRING(some_date_fmt1,1,4) BETWEEN '1753' AND '9999' THEN 'REJ-31: Year Not Btw 1753-9999|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT SUBSTRING(some_date_fmt1,5,2) BETWEEN '01' AND '12'     THEN 'REJ-32: Month Not Btw 01-12|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
+                WHEN NOT SUBSTRING(some_date_fmt1,7,2) BETWEEN '01' AND '31'     THEN 'REJ-33: Day Not Btw 01-31|exp=Fmt="yyyymmdd"|act=' || some_date_fmt1
 	            ELSE 'allgood'
 	       END AS rej_dtls
-	     , 'SELECT * FROM demo_hr..employees GROUP BY employee_id=' + CAST(employee_id AS VARCHAR(15)) AS lookup_sql
-	FROM demo_hr..employees
+	     , 'SELECT * FROM demo_hr.employees GROUP BY employee_id=' || CAST(employee_id AS VARCHAR(15)) AS lookup_sql
+	FROM demo_hr.employees
     WHERE email NOT IN('DRAPHEAL', 'JAMRLOW', 'JMURMAN', 'LDEHAAN', 'JRUSSEL', 'TJOLSON')  
 	               -- DRAPHAEL vs DRAPHEAL, JMARLOW vs JAMRLOW, JMURMAN vs JURMAN, LDE HAAN VS LDEHAAN, JRUSSELL vs JRUSSEL, TOLSON vs TJOLSON)
 )
@@ -3561,16 +3544,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP(SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , bll.lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3581,6 +3563,7 @@ SELECT * FROM fdtl
 -- T066 ------------------------------------------------------------------------------------------
 -- EXAMPLE: Reference configuration settings from a temporary lookup table
 
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 WITH cfg -- Config Variables 
 AS (
 	SELECT 'T066' AS tst_id 
@@ -3589,15 +3572,15 @@ AS (
 , dut -- Data Under Test 
 AS (
     SELECT CASE WHEN row_count < 5 THEN 'FAIL'
-                ELSE 'allgood'
-           END AS rej_dtls
+                    ELSE 'allgood'
+               END AS rej_dtls
         FROM (
             SELECT COUNT(*) AS row_count 
-            FROM demo_hr..countries
-            WHERE date_last_updated >= GETDATE() - (SELECT CAST(prop_val AS INT) 
-                                                    FROM #test_case_config 
-                                                    WHERE prop_nm = 'NumberDaysLookBack')
-        ) t
+            FROM demo_hr.countries
+            WHERE date_last_updated >= NOW()::DATE - (SELECT CAST(prop_val AS INTEGER)
+                                                      FROM test_case_config 
+                                                      WHERE prop_nm = 'NumberDaysLookBack')
+    ) t
 )
 , bll -- Business Logic Layer: Apply heuristics...what constitutes a pass or a fail? 
 AS (
@@ -3615,16 +3598,15 @@ AS (
 )
 , fdtl -- Fail Detail Rows, empty if a Pass 
 AS (
-	SELECT TOP(SELECT CAST(prop_val AS SMALLINT) FROM #test_case_config WHERE prop_nm='MaxNbrRowsRtn')
-	       cfg.tst_id
+	SELECT cfg.tst_id
 	     , cfg.tst_descr
 	     , 'FAIL' AS status
 	     , bll.rej_dtls
 	     , ' ' AS lookup_sql
 	FROM cfg, bll
 	WHERE bll.rej_dtls <> 'allgood'
+	LIMIT (SELECT CAST(prop_val AS SMALLINT) FROM test_case_config WHERE prop_nm='MaxNbrRowsRtn') 
 )
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
 SELECT * FROM hdr
 UNION
 SELECT * FROM fdtl
@@ -3636,31 +3618,28 @@ SELECT * FROM fdtl
 
 
 
-
 -- ===============================================================================================
 -- Calculate execution times as start next test minus start of current test
 -- ===============================================================================================
 -- log final systimestamp to close out last test case 
-INSERT INTO #test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
-VALUES('T999', '{ Final timestamp logged }', 'P', ' ', 'SELECT GETDATE();');
-
+INSERT INTO test_case_results(tst_id, tst_descr, status, rej_dtls, lookup_sql)
+VALUES('T999', '{ Final timestamp logged }', 'P', ' ', 'SELECT SYSTIMESTAMP;');
+COMMIT;
 
 -- update all execution times 
-UPDATE #test_case_results
-SET exec_tm = tst.exec_tm
-FROM (SELECT tst_id
-           , CAST(ROUND(CAST(MAX(DATEDIFF(ms, start_tm,end_tm)) AS FLOAT) / 1000.0, 3) AS VARCHAR(12)) + ' sec' AS exec_tm
-      FROM (
-	    SELECT tst_id, exec_tm, start_tm
-        , LEAD(start_tm) OVER(ORDER BY start_tm) end_tm
-        FROM #test_case_results
-      ) t1
-	  GROUP BY tst_id
-) tst
-WHERE #test_case_results.tst_id = tst.tst_id
+   -- https://www.oracletutorial.com/oracle-analytic-functions/oracle-lead/
+   -- https://stackoverflow.com/questions/49882395/oracle-sql-update-rows-using-analytical-functions
+UPDATE test_case_results tst
+SET exec_tm = (SELECT TO_CHAR(MAX(EXTRACT(SECOND FROM end_tm - start_tm)), '9,990.999') 
+               || CASE WHEN MAX(end_tm) IS NOT NULL THEN ' sec' ELSE '' END AS exec_tm
+               FROM (SELECT tst_id, exec_tm, start_tm
+                     , LEAD(start_tm) OVER(ORDER BY start_tm) end_tm
+                     FROM test_case_results
+                     ) t
+               WHERE tst_id = tst.tst_id
+              )
 ;
-
-
+COMMIT;
 
 
 -- ===============================================================================================
@@ -3674,15 +3653,15 @@ AS (
          WHEN status = 'WARN' THEN 2
          ELSE 3   -- 'SKIP' and 'P'
     END AS ord_lvl
-  FROM #test_case_results t
+  FROM test_case_results t
 )
 
 , rslts_ord
 AS (
-  SELECT t.*
-  , ROW_NUMBER() OVER(ORDER BY ord_lvl, tst_descr, rej_dtls) AS ord
+  SELECT t.*, ROW_NUMBER() OVER (ORDER BY ord_lvl) AS ord
   FROM (SELECT * 
         FROM rslts 
+        ORDER BY ord_lvl, tst_descr, rej_dtls
         ) t
 )
 
@@ -3691,11 +3670,13 @@ SELECT CASE WHEN rej_dtls = '(Header)' THEN status    ELSE ' ' END AS status
      , CASE WHEN rej_dtls = '(Header)' THEN tst_descr ELSE ' ' END AS tst_descr
      , CASE WHEN rej_dtls = '(Header)' THEN exec_tm   ELSE ' ' END AS exec_tm
      , CASE WHEN rej_dtls = '(Header)' THEN start_tm  ELSE NULL END AS start_tm
-     , SUBSTRING(rej_dtls, 1, NULLIF(CHARINDEX('|', rej_dtls) - 1, -1)) AS rej_dtls 
-     , SUBSTRING(rej_dtls, CHARINDEX('|', rej_dtls) + 1, LEN(rej_dtls) - CHARINDEX('|', rej_dtls) - CHARINDEX('|', REVERSE(rej_dtls)) ) AS exp_rslt
-     , REVERSE(SUBSTRING(REVERSE(rej_dtls), 0, CHARINDEX('|', REVERSE(rej_dtls)))) AS act_rslt 
+     , SUBSTRING(rej_dtls, 1, NULLIF(POSITION('|' IN rej_dtls) - 1, -1)) AS rej_dtls
+     , SUBSTRING(rej_dtls, POSITION('|' IN rej_dtls) + 1, LENGTH(rej_dtls) - POSITION('|' IN rej_dtls) - POSITION('|' IN REVERSE(rej_dtls)) ) AS exp_rslt
+     , REVERSE(SUBSTRING(REVERSE(rej_dtls), 0, POSITION('|' IN REVERSE(rej_dtls)))) AS act_rslt 
      , lookup_sql
 FROM rslts_ord
 WHERE tst_id <> 'T999'
 ORDER BY ord
 ;
+
+
