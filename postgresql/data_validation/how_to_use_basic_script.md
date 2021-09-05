@@ -46,12 +46,12 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <details><summary>Expand if you would like to see a review of the script layout and what a typical data validation test case looks like ...></summary><br>
 
 The script currently consists of 1,156 lines of SQL code broken down as follows:
-* Lines 1-41 are the comment block header, containing notes and definitions
-* Lines 42-1,156 are the 66 individual example validation test cases (written as SQL SELECTs)
+* Lines 1-52 are the comment block header, containing notes and definitions
+* Lines 53-1,156 are the 66 individual example validation test cases (written as SQL SELECTs)
 
 A typical data validation test has SQL code that looks something like this: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/img/01_data_val_mssql_example_test_case_sql_code.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/postgresql/data_validation/img/01_data_val_postgresql_example_test_case_sql_code.png">
 
 This test case validates that no carriage return (CR) or line feed (LF) characters exist in the last_name column across all rows. 
 
