@@ -92,7 +92,7 @@ Here are the steps to execute the advanced script in pgAdmin (typical output sho
 3. Blue Dot #2 - Click the "Run Statement" button (or equivalent in other IDEs) to run all 66 data validation test cases as INSERT INTOs, plus the final summary reoprt SELECT.
 4. Blue Dot #3 - The output is beautifully laid out for all data validation test cases in a grid.  You can scroll and view the grid details, or export it out to a file using your SQL Editor.  Fields include everything, from test id, test description, and status to test case execution time, start time, rejection details, expected and actual results, and lookup SQL.
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/postgresql/data_validation/img/04_data_val_mssql_run_results_adv.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/postgresql/data_validation/img/04_data_val_postgresql_run_results_adv.png">
 
 </details>
 <br>
@@ -100,7 +100,7 @@ Here are the steps to execute the advanced script in pgAdmin (typical output sho
 ### Next Steps - Build Your Own Validation Test Script(s)
 You could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #4 to download a copy of the advanced test case scripts that you will refactor to suit your needs.
 
-<detail><summary>Here are my recommendations for writing your validation script(s):</summary>
+<details><summary>Here are my recommendations for writing your validation script(s):</summary>
 
    
 1. **Learn**: You really should expand and read Step 5 above.  It goes into a lot of detail about how the test case script works, what the various blocks of code do, etc.
@@ -119,4 +119,4 @@ Likewise, if there are particular fields in "Table #1" that you'd like to setup 
 13. **Finishing Touches**: Don't forget to apply the best practice examples in data validation test cases T062-T066
 
 And then repeat items 1-13 above for the next table.  And again for the next table, and so on until you are done.  Your choice whether to write one giant 5-10,000 line script for the entire schema, or break down into separate scripts for each table or logical table grouping. 
-</detail>
+</details>
