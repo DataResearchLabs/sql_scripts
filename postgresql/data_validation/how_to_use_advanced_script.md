@@ -13,11 +13,11 @@ However, this script is more sophisticated as follows:
 2. The output is more comprehensive than just test id, status, and description.  The output also includes detailed rejection codes, expected results, and actual results behind every fail.
 <br><br>
 
-### Step 1 - Download & Install Microsoft SQL Server Management Studio (SSMS)
-<details><summary>Expand if you want to download and install SSMS...</summary><br>
+### Step 1 - Download & Install pgAdmin
+<details><summary>Expand if you want to download and install pgAdmin...</summary><br>
 
-1. Microsoft provides a powerful SQL editor named "SQL Server Management Studio", or SSMS, for free download and use.  
-2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15)</b> and install, following the prompts.
+1. pgAdmin.org provides a powerful SQL editor named "pgAdmin" for free download and use.  
+2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://www.pgadmin.org/download/)</b> and install, following the prompts.
 </details>
 <br>
 
@@ -25,20 +25,20 @@ However, this script is more sophisticated as follows:
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to your own databases, then you will need to download and deploy the demo_hr test dataset.
-1. Download the "demo_hr_01_create_database.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/demo_data/demo_hr_01_create_database.sql)</b>.
-2. Run the script on a SQL Server database where you have permissions (local is fine too).
-3. Download the "demo_hr_02_create_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/demo_data/demo_hr_02_create_tables.sql)</b>.
-4. Run the script on the same SQL Server database.
-5. Download the "demo_hr_03_populate_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/demo_data/demo_hr_03_populate_tables.sql)</b>.
-6. Run the script on the same SQL Server database.
-7. Using SSMS (or an equivalent SQL IDE), confirm that the tables exist and the data is populated.
+1. Download the "demo_hr_01_create_database.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/demo_data/demo_hr_01_create_database.sql)</b>.
+2. Run the script on a Postgresql database where you have permissions (local is fine too).
+3. Download the "demo_hr_02_create_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/demo_data/demo_hr_02_create_tables.sql)</b>.
+4. Run the script on the same Postgresql database.
+5. Download the "demo_hr_03_populate_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/demo_data/demo_hr_03_populate_tables.sql)</b>.
+6. Run the script on the same Postgresql database.
+7. Using pgAdmin (or an equivalent SQL IDE), confirm that the tables exist and the data is populated.
 </details>
 <br>
 
 ### Step 3 - Download and Configure the Advanced "Test Cases" Script
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
-1. Download the advanced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/sql_scripts/dv_advanced_test_cases.sql)</b>.
+1. Download the advanced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/sql_scripts/dv_advanced_test_cases.sql)</b>.
 2. Make the appropriate changes to lines 69-70 to insert parameter names and values your script needs into the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
 </details>
 <br>
