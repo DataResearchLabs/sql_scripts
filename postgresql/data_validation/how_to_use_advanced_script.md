@@ -39,7 +39,7 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <details><summary>Expand if you need instructions on how to download and execute the setup script (to build "temp" tables)...</summary><br>
    
 1. Download the advanced validation setup script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/sql_scripts/dv_advanced_test_cases.sql)</b>.
-2. Make the appropriate changes to lines 69-70 to insert parameter names and values your script needs into the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
+2. Make the appropriate changes to lines 74-75 to insert parameter names and values your script needs into the "test_case_config" table.  Note that you will keep coming back here to expand the list as you write SQL code for your test cases below. You'll notice yourself repeating hard-coded values and want to centralize them in one spot here in this table.
 </details>
 <br>
 
