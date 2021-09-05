@@ -48,7 +48,7 @@
 --  * https://stackoverflow.com/questions/17008749/outputting-results-from-multiple-sql-queries-in-postgresql
 --  * https://dba.stackexchange.com/questions/44781/pgadmin-to-display-multiple-result-sets
 
-ON ERROR STOP
+
 
 -- -----------------------------------------------------------------------------------------------
 -- RULE SET #1: ROW COUNTS
