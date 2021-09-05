@@ -24,21 +24,21 @@ Please email me if you have found a good, free SQL IDE that can output multiple 
 <details><summary>Expand if you want to download and deploy the "demo_hr" test dataset...</summary><br>
 
 If you'd like to run the test script as-is first, before copy-pasting the concepts out and applying to your own databases, then you will need to download and deploy the demo_hr test dataset.
-1. Download the "demo_hr_01_create_database.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/demo_data/demo_hr_01_create_database.sql)</b>.
+1. Download the "demo_hr_01_create_database.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/demo_data/demo_hr_01_create_database.sql)</b>.
 2. Run the script on a SQL Server database where you have permissions (local is fine too).
-3. Download the "demo_hr_02_create_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/demo_data/demo_hr_02_create_tables.sql)</b>.
+3. Download the "demo_hr_02_create_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/demo_data/demo_hr_02_create_tables.sql)</b>.
 4. Run the script on the same SQL Server database.
-5. Download the "demo_hr_03_populate_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/demo_data/demo_hr_03_populate_tables.sql)</b>.
+5. Download the "demo_hr_03_populate_tables.sql" script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/demo_data/demo_hr_03_populate_tables.sql)</b>.
 6. Run the script on the same SQL Server database.
-7. Using SSMS (or an equivalent SQL IDE), confirm that the tables exist and the data is populated.
+7. Using pgAdmin (or an equivalent SQL IDE), confirm that the tables exist and the data is populated.
 </details>
 <br>
 
 ### Step 3 - Download the Basic Data Validation Script
 <details><summary>Expand if you need instructions on how to download and configure the basic script...</summary><br>
    
-1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_validation/sql_scripts/dv_basic_test_cases.sql)</b>.
-2. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate SQL Server "demo_hr" database.
+1. Download the basic validation script from <b>[here](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/postgresql/data_validation/sql_scripts/dv_basic_test_cases.sql)</b>.
+2. Pick an appropriate directory in which to save the script.  Open your SQL Editor pointing to the appropriate Postgresql "demo_hr" database.
 </details>
 <br>
 
