@@ -105,7 +105,7 @@ You could just skip reading all the sections above and jump directly down here. 
    
 1. **Learn**: You really should expand and read Step 5 above.  It goes into a lot of detail about how the test case script works, what the various blocks of code do, etc.
 2. **Reference**: I would suggest that you open the advanced test case script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
-3. **Main Editor**: Open SSMS with a blank new script that you are going to build out for your tests as follows:
+3. **Main Editor**: Open pgAdmin with a blank new script that you are going to build out for your tests as follows:
 4. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
 5. **Select Schema**: You will have a schema (database) that is "under test".  Identify it.  List it in the comment block.  Prefix all SQL code with it going forward (below).
 6. **Table #1**:  Pick the first table for which you are going to start writing validation cases for.  Could be the first table alphabetically. Could be a highest priority table you want to begin writing validation checks against (biggest bang for the buck).  Could be the simplest table to ease in with baby steps (low-hanging fruit).  You decide.
