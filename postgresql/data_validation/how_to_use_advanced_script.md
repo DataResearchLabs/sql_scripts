@@ -47,40 +47,39 @@ If you'd like to run the test script as-is first, before copy-pasting the concep
 <details><summary>Expand if you would like to see a review of the script layout and what each data validation test case looks like ...></summary><br>
 
 The script currently consists of 3,701 lines of SQL code (3x bigger than the basic script) and is broken down as follows:
-* Lines 1-55 are the comment block header, containing notes and definitions
-* Lines 56-60 are to point the script environment to the correct database
-* Lines 61-77 are to populate the configuration table with parameter names and values
-* Lines 78-3,639 are the 66 individual example validation test cases (written as SQL SELECTs with a lot of boilerplate code)
-* Lines 3,640-3,665 are used to calculate the test case execution time -- very handy for tuning the data validation performance (if a test runs long, speed it up by only checking the past 1-5 days, or refactor the SQL, or combine with other tests into one large single pass table scan query).  Also, you can monitor the test case execution time over weeks and months to spot system performance issues (eg: need an archiving strategy b/c table getting too large, or need a covering index for where clause condition, etc.)
-* Lines 3,666-3,701 are used to organize and post the test case results as a "report" (splits out expected and actual values into own column, etc.)
+* Lines 1-56 are the comment block header, containing notes and definitions
+* Lines 57-71 are to populate the configuration table with parameter names and values
+* Lines 72-3,620 are the 66 individual example validation test cases (written as SQL SELECTs with a lot of boilerplate code)
+* Lines 3,621-3,644 are used to calculate the test case execution time -- very handy for tuning the data validation performance (if a test runs long, speed it up by only checking the past 1-5 days, or refactor the SQL, or combine with other tests into one large single pass table scan query).  Also, you can monitor the test case execution time over weeks and months to spot system performance issues (eg: need an archiving strategy b/c table getting too large, or need a covering index for where clause condition, etc.)
+* Lines 3,645-3,680 are used to organize and post the test case results as a "report" (splits out expected and actual values into own column, etc.)
 <br>
 
 A typical data validation test has SQL code that looks something like this one -- T031 which checks for carriage return or line feed characters in field last_name: <br>  
 
-<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/mssql/data_validation/img/03_data_val_mssql_adv_test_case_ex.png">
+<img src="https://github.com/DataResearchLabs/sql_scripts/blob/main/postgresql/data_validation/img/03_data_val_postgresql_adv_test_case_ex2.png">
 
 Notice the following aspects of the SQL code above:
 1. Each data validation test case is written as multiple SQL SELECT statements using a CTE (common table expression).  The format is WITH tbl_nm as sql, tbl_nm_2 as sql, etc.
 
 2. There are two blocks of SQL for every data validation test case: 
-    (a) Yellow lines 1656 thru 1675 that you customize for every test case
-    (b) Blue lines 1676 thr 1701 (plus line 1702) that are boilerplate and never change -- simply copy paste them over and over to automatically setup the header and detail rows  
+    (a) Yellow lines 1657 thru 1676 that you customize for every test case
+    (b) Blue lines 1677 thr 1702 that are boilerplate and never change -- simply copy paste them over and over to automatically setup the header and detail rows  
 
-3. Line 1697 sets up the entire data validation test case SQL query as an INSERT INTO the "temp" table test_case_results.
+3. Line 1654 sets up the entire data validation test case SQL query as an INSERT INTO the "temp" table test_case_results.
    
-4. Lines 1656-1660 establish the first subquery "cfg".  This is where you change the test case number (eg: 'T031') and the test case description (line 1659) when you refactor these.
+4. Lines 1657-1661 establish the first subquery "cfg".  This is where you change the test case number (eg: 'T031') and the test case description (line 1659) when you refactor these.
    
-5. Lines 1661-1671 establish the second subquery "dut" -- the Data Under Test.  Here is where the target table and field are queried and frequently (but not always) where the rejection code logic is applied at the row level (lines 1663-1666).  Notice in this example that not only is the rejection code listed (eg: REJ-01 + details), but the expected result (none exist) and the actual result including the location within the string is returned.  This provides 100% of the information needed to resolve the error...good enough to pass diretly on to the person who will fix the data without an analyst having to manually confirm or research to dial-in the problem first.
+5. Lines 1662-1672 establish the second subquery "dut" -- the Data Under Test.  Here is where the target table and field are queried and frequently (but not always) where the rejection code logic is applied at the row level (lines 1664-1667).  Notice in this example that not only is the rejection code listed (eg: REJ-01 + details), but the expected result (none exist) and the actual result including the location within the string is returned.  This provides 100% of the information needed to resolve the error...good enough to pass diretly on to the person who will fix the data without an analyst having to manually confirm or research to dial-in the problem first.
    
-6. Lines 1672-1675 are where higher level business logic goes (especially when aggregating data or doing multiple passes on a dataset).  In this simpler example, we just filter the "dut" dataset down to only those rows that were rejected (and ignore the vast majority of rows that were "allgood").
+6. Lines 1673-1676 are where higher level business logic goes (especially when aggregating data or doing multiple passes on a dataset).  In this simpler example, we just filter the "dut" dataset down to only those rows that were rejected (and ignore the vast majority of rows that were "allgood").
    
-7. Lines 1676-1685 are the start of the boilerplate code (copy-paste / never change).  This "hdr" sub query is used to ensure that every test case always has a header row in the test results table, regardless of whether there are error details or not.  The test ID, test description, and test status are all written to this one row per test case.
+7. Lines 1677-1686 are the start of the boilerplate code (copy-paste / never change).  This "hdr" sub query is used to ensure that every test case always has a header row in the test results table, regardless of whether there are error details or not.  The test ID, test description, and test status are all written to this one row per test case.
    
-8. Lines 1686-1696 are the second boilerplace subquery named "fdtl" -- short for fail details.  Only failed test cases will have rows in this subquery.  It contains the same test ID, test description and status (fail) as the header record (so they sort together in output).  However, these records also tack on additional valuable columns to the right: rej_dtls nad lookup_sql.  Both column names indicate what they are for:
+8. Lines 1687-1697 are the second boilerplace subquery named "fdtl" -- short for fail details.  Only failed test cases will have rows in this subquery.  It contains the same test ID, test description and status (fail) as the header record (so they sort together in output).  However, these records also tack on additional valuable columns to the right: rej_dtls nad lookup_sql.  Both column names indicate what they are for:
     (a) Rejection details (REJ-ID, rejection description, expected vs. actual values, etc.), and 
     (b) Lookup sql that you can copy-paste-execute to return the exact source row that failed with all its values (you specify as done in line 1688 abovve)
    
-9. Finally, lines 1697-1702 are the final boilerplate subquery that ties it all together (last subquery in a CTE has no name).  This simple little query unions the "hdr" row with all "fdtl" rows, if any.  The INSERT INTO at line 1673 picks these all up and write them out to our temp table "test_case_results".
+9. Finally, lines 1698-1702 are the final boilerplate subquery that ties it all together (last subquery in a CTE has no name).  This simple little query unions the "hdr" row with all "fdtl" rows, if any.  The INSERT INTO above at line 1656 picks these all up and write them out to our temp table "test_case_results".
 </details>
 <br>
 
