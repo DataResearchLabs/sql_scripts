@@ -14,7 +14,7 @@ This basic data validation script runs one of each type of data validation test 
 ### Step 1 - Download & Install SQL IDE
 pgAdmin4 will only display the results of the last executed SQL statement when you run a batch of SELECTs like this basic script does.  Unfortunately, that means you cannot run this script in pgAdmin.  <br>
 Your options are:<br>
-1. Use the advanced script
+1. Use the [advanced script](https://github.com/DataResearchLabs/sql_scripts/blob/main/postgresql/data_validation/how_to_use_advanced_script.md)
 2. Use another IDE like Toad
 Please email me if you have found a good, free SQL IDE that can output multiple postgersql SELECTs to text on screen, or to multiple grids (mpierce.email@yahoo.com)
 
