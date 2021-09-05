@@ -80,6 +80,8 @@ The steps to execute the basic data validation script are going to depend on the
 You could just skip reading all the sections above and jump directly down here.  Be sure to expand Step #3 to download a copy of the basic test case script that you will refactor to suit your needs.
 
 <details><summary>Here are my recommendations for writing your validation script(s):</summary>
+   
+   
 1. **Reference**: I would suggest that you open the basic script as a reference in notepad or text editor of your choice and position it off on a second monitor to the side.
 2. **Main Editor**: Open SQL Server Management Studio with a blank new script that you are going to build out for your tests as follows:
 3. **Comment Block**:  Create your own comment block at the top of your script, pulling anything of value from lines 1-44, but tailoring them to your specific scenario
