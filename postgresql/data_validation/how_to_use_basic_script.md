@@ -11,12 +11,13 @@ This basic data validation script runs one of each type of data validation test 
 **PROBLEM** - The native pgAdmin tool does not support teh output of multiple SQL selects.  Unfortunately, only the last SQL SELECT executed will be displayed.  That means you cannot use pgAdmin to run this script.  You must find another IDE like Toad or DB Visualizer to use this script, **OR** use the advanced script.
 <br><br>
 
-### Step 1 - Download & Install Microsoft SQL Server Management Studio (SSMS)
-<details><summary>Expand if you want to download and install SSMS...</summary><br>
+### Step 1 - Download & Install SQL IDE
+pgAdmin4 will only display the results of the last executed SQL statement when you run a batch of SELECTs like this basic script does.  Unfortunately, that means you cannot run this script in pgAdmin.  <br>
+Your options are:<br>
+1. Use the advanced script
+2. Use another IDE like Toad
+Please email me if you have found a good, free SQL IDE that can output multiple postgersql SELECTs to text on screen, or to multiple grids (mpierce.email@yahoo.com)
 
-1. Microsoft provides a powerful SQL editor named "SQL Server Management Studio", or SSMS, for free download and use.  
-2. If it is not already installed on your machine (and you're not using another database IDE like Toad), then download from <b>[here](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15)</b> and install, following the prompts.
-</details>
 <br>
 
 ### Step 2 - Download & Deploy the Demo Data
