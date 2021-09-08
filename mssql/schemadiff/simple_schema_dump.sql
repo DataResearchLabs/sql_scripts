@@ -123,7 +123,7 @@ SELECT (SELECT v_SchemaName FROM vars) AS SchemaName, o.name AS TableName
   /* NOTE: STRING_AGG was added in SQL Server 2017 and forward.
      If you have and older version, use FOR XML PATH approach here: https://stackoverflow.com/questions/15477743/listagg-in-sqlserver
   */
-, STRING_AGG(c.name, ',') WITHIN GROUP (ORDER BY ic.column_store_order_ordinal) AS PropertyValue 
+, STRING_AGG(c.name, ',') WITHIN GROUP (ORDER BY ic.key_ordinal /*column_store_order_ordinal*/) AS PropertyValue 
 FROM sys.indexes               i
   INNER JOIN sys.objects       o  ON i.object_id = o.object_id
   INNER JOIN sys.index_columns ic ON ic.object_id = i.object_id AND  ic.index_id = i.index_id
