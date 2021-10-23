@@ -42,6 +42,13 @@ In the table at the bottom of this article, find your preferred database platfor
 Once the SQL script is done executing, you should have hundreds or perhaps even thousands of rows of Data Dictionary metadata depending on the size of your schema.  Go ahead and export this to either a CSV file or directly into Microsoft Excel.  From there you can format the data dictionary to make it look pretty and add filters to make it quickly searchable.  See the YouTube tutorials below for more details.
 
 
+## Related Content
+- Free tool does same as script:  [Github Link](https://github.com/DataResearchLabs/data_analysts_toolbox/blob/main/data_dictionary_generator/readme.md)
+<br>
+<br>
+
+
+
 ## Scripts & Tutorials by Platform
 Links to the script source code as well as video tutorials are listed below, by platform (MSSQL, Oracle, MySQL, etc.):
 <br>
