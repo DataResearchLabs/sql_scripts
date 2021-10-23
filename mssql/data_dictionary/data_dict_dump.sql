@@ -7,6 +7,7 @@
 -- Platform:          SQL Server
 -- Author:            DataResearchLabs
 -- GitHub:            https://github.com/DataResearchLabs/sql_scripts
+-- GitHub Tool:       https://github.com/DataResearchLabs/data_analysts_toolbox/blob/main/data_dictionary_generator/readme.md
 -- YouTube Tutorials: https://www.youtube.com/channel/UCQciXv3xaBykeUFc04GxSXA
 ----------------------------------------------------------------------------------
 
