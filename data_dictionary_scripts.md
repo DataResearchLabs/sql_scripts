@@ -90,6 +90,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## MS SQL Server
 * [MSSQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/data_dictionary/data_dict_dump.sql)<br>
 * [MSSQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Y6ZUdLBOufY)<br>
+* *Important Note:  Works only with MSSQL 2017 forward (STRING_AGG fx)*
 </td>
 <td>
 <kbd>
@@ -114,7 +115,6 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## MySQL
 * [MySQL "Data Dictionary" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mysql/data_dictionary/data_dict_dump.sql)<br>
 * [MySQL "Data Dictionary" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=bfpS2LTEVbY)<br>
-* Important Note:  Works only with MSSQL 2017 forward (STRING_AGG fx)
 </td>
 <td>
 <kbd>
