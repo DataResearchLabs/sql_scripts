@@ -60,6 +60,7 @@ Links to the script source code as well as video tutorials are listed below, by 
 ## MS SQL Server
 * [MSSQL "Schema Dump" Script](https://raw.githubusercontent.com/DataResearchLabs/sql_scripts/main/mssql/schemadiff/simple_schema_dump.sql)<br>
 * [MSSQL "Schema Dump" Tutorial](http://www.youtube.com/watch?feature=player_embedded&v=Vxf3SM38Ar0)<br>
+* *Note:  MSSQL 2017 forward only (STRING_AGG fx)*
 </td>
 <td>
 <kbd>
